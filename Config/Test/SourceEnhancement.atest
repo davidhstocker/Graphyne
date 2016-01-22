@@ -1,0 +1,3 @@
+Examples.H SourceEnhancement1 H Examples.J SourceEnhancement1 J False
+Examples.H SourceEnhancement2 H Examples.F SourceEnhancement2 F True
+Examples.F SourceEnhancement3 F Examples.H SourceEnhancement3 H False

@@ -1,0 +1,77 @@
+>>B | TRUE
+>>(x = 0)B | FALSE
+>>(x > 0)B | TRUE
+>>(x < 0)B | FALSE
+>>(x >= 0)B | TRUE
+>>(x <= 0)B | FALSE
+>>(x != 0)B | TRUE
+>>(x = 3)B | TRUE
+>>(x > 3)B | FALSE
+>>(x < 3)B | FALSE
+>>(x >= 3)B | TRUE
+>>(x <= 3)B | TRUE
+>>(x != 3)B | FALSE
+>>(x = 4)B | FALSE
+>>(x > 4)B | FALSE
+>>(x < 4)B | TRUE
+>>(x >= 4)B | FALSE
+>>(x <= 4)B | TRUE
+>>(x != 4)B | TRUE
+>>(x <>)B | TRUE
+>>(x ><)B | FALSE
+>>(a <>)B | FALSE
+>>(a ><)B | TRUE
+>>(x = 4)(y > 1)B | FALSE
+>>(x = 3)(y < 1)B | FALSE
+>>(x = 3)(y >= 1)B | TRUE
+>>(x = 1)(y >= 1)B | FALSE
+>>(x <>)(y <>)B | TRUE
+>>(x ><)(y <>)B | FALSE
+>>(x <>)(y ><)B | FALSE
+>>(x ><)(y ><)B | FALSE
+>>[a = 4]B | TRUE
+>>[a > 4]B | FALSE
+>>[a < 4]B | FALSE
+>>[a >= 4]B | TRUE
+>>[a <= 4]B | TRUE
+>>[a != 4]B | FALSE
+>>[a = 5]B | FALSE
+>>[a != 5]B | TRUE
+>>[a >< ]B | FALSE
+>>[a <> ]B | TRUE
+>>[x >< ]B | TRUE
+>>[x <> ]B | FALSE
+>>(x > 4)[a = 4]B | FALSE
+>>(x > 4)[a > 4]B | FALSE
+>>(x > 4)[a < 4]B | FALSE
+>>(x > 4)[a >= 4]B | FALSE
+>>(x > 4)[a <= 4]B | FALSE
+>>(x > 4)[a != 4]B | FALSE
+>>(x > 4)[a = 5]B | FALSE
+>>(x > 4)[a != 5]B | FALSE
+>>(x > 4)[a >< ]B | FALSE
+>>(x > 4)[a <> ]B | FALSE
+>>(x > 4)[x >< ]B | FALSE
+>>(x > 4)[x <> ]B | FALSE
+>>(x < 4)[a = 4]B | TRUE
+>>(x < 4)[a > 4]B | FALSE
+>>(x < 4)[a < 4]B | FALSE
+>>(x < 4)[a >= 4]B | TRUE
+>>(x < 4)[a <= 4]B | TRUE
+>>(x < 4)[a != 4]B | FALSE
+>>(x < 4)[a = 5]B | FALSE
+>>(x < 4)[a != 5]B | TRUE
+>>(x < 4)[a >< ]B | FALSE
+>>(x < 4)[a <> ]B | TRUE
+>>(x < 4)[x >< ]B | TRUE
+>>[x >< ](x < 4)B | TRUE
+>>(x < 4)[x <> ]B | FALSE
+>>[x <> ](x < 4)B | FALSE
+>>(x = 4)(y > 1)B | FALSE
+>>(x = 3)(y < 1)B | FALSE
+>>(x = 3)(y >= 1)B | TRUE
+>>(x = 1)(y >= 1)B | FALSE
+>>(x <>)(y <>)B | TRUE
+>>(x ><)(y <>)B | FALSE
+>>(x <>)(y ><)B | FALSE
+>>(x ><)(y ><)B | FALSE

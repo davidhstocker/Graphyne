@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMeme>
+		<!-- Condition Memes -->
+		<Meme id="equalOrLessThan" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan_CN"/>
+		</Meme>
+		<Meme id="equalOrLessThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalOrGreaterThan" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan_CN"/>
+		</Meme>
+		<Meme id="equalOrGreaterThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="lessThan" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="lessThan_CN"/>
+		</Meme>
+		<Meme id="lessThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="LessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="greaterThan" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="greaterThan_CN"/>
+		</Meme>
+		<Meme id="greaterThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="GreaterThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalNumeric" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalNumeric_CN"/>
+		</Meme>
+		<Meme id="equalNumeric_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="Equal"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="notEqualNumeric" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="notEqualNumeric_CN"/>
+		</Meme>
+		<Meme id="notEqualNumeric_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="NotEqual"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_1"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		
+		<Meme id="equalOrLessThan30" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan30_CN"/>
+		</Meme>
+		<Meme id="equalOrLessThan30_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.equalOrLessThan30Value_30"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalOrLessThanDecimal" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThanDecimal_CN"/>
+		</Meme>
+		<Meme id="equalOrLessThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalOrGreaterThanDecimal" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThanDecimal_CN"/>
+		</Meme>
+		<Meme id="equalOrGreaterThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="lessThanDecimal" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="lessThanDecimal_CN"/>
+		</Meme>
+		<Meme id="lessThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="LessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="greaterThanDecimal" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="greaterThanDecimal_CN"/>
+		</Meme>
+		<Meme id="greaterThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="GreaterThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="notEqualDecimal" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="notEqualDecimal_CN"/>
+		</Meme>
+		<Meme id="notEqualDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="NotEqual"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalDecimal" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalDecimal_CN"/>
+		</Meme>
+		<Meme id="equalDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="Equal"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<Description/>
+		</Meme>
+		
+		<Meme id="equalOrLessThan31" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan31_CN"/>
+		</Meme>
+		<Meme id="equalOrLessThan31_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.equalOrLessThan31Value_31"/>
+			<MemberMeme occurrence="1" memberID="equalOrLessThan31_Argument"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalOrGreaterThan31" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan31_CN"/>
+		</Meme>
+		<Meme id="equalOrGreaterThan31_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.equalOrLessThan31Value_31"/>
+			<MemberMeme occurrence="1" memberID="equalOrLessThan31_Argument"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalOrLessThan90" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan90_CN"/>
+		</Meme>
+		<Meme id="equalOrLessThan90_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.equalOrGreaterThan90Value_90"/>
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_Argument"/>
+			<Description/>
+		</Meme>
+		<Meme id="equalOrGreaterThan90" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_CN"/>
+		</Meme>
+		<Meme id="equalOrGreaterThan90_CN" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.equalOrGreaterThan90Value_90"/>
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_Argument"/>
+			<Description/>
+		</Meme>
+
+		<!-- Arguments -->
+		<Meme id="ArgumentTestInt" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt_SArgument"/>
+		</Meme>			
+		<Meme id="ArgumentTestInt_SArgument" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="TestInt"/>
+		</Meme>		
+		<Meme id="equalOrGreaterThan90_Argument" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_SArgument"/>
+		</Meme>			
+		<Meme id="equalOrGreaterThan90_SArgument" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="StimulusLevel"/>
+		</Meme>	
+		<Meme id="equalOrLessThan31_Argument" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan31_SArgument"/>
+		</Meme>			
+		<Meme id="equalOrLessThan31_SArgument" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="StimulusLevel"/>
+		</Meme>	
+		
+	</ListOfMeme>
+</RMLModule>

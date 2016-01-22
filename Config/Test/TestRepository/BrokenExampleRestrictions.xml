@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+
+	<ListOfMeme>
+		<Meme id="MemeI4" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="not in the list"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="0.0"/>
+			<MemeProperty name="propI5" value="-1000.0"/>
+			<MemeProperty name="propI6" value="-10.0"/>
+			<MemeProperty name="propI7" value="0.0"/>
+			<MemeProperty name="propI8" value="-10.0"/>
+			<MemeProperty name="propI9" value="0.0"/>
+			<MemeProperty name="propI10" value=".5"/>
+			<MemeProperty name="propI11" value="0"/>
+			<MemeProperty name="propI12" value="-1000"/>
+			<MemeProperty name="propI13" value="-10"/>
+			<MemeProperty name="propI14" value="0"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="0"/>
+			<MemeProperty name="propI17" value="1"/>
+			<Description>propI0 fails - "not in the list" is not one of the allowed strings</Description>
+		</Meme>
+		
+		<Meme id="MemeI5" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="!boolean"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="10000.0"/>
+			<MemeProperty name="propI5" value="0.0"/>
+			<MemeProperty name="propI6" value="10.0"/>
+			<MemeProperty name="propI7" value="10.0"/>
+			<MemeProperty name="propI8" value="0.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="10000"/>
+			<MemeProperty name="propI12" value="0"/>
+			<MemeProperty name="propI13" value="10"/>
+			<MemeProperty name="propI14" value="10"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI2 fails - "!boolean" is not boolean</Description>
+		</Meme>
+		
+		<Meme id="MemeI6" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="15.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI6 fails - "15" is out of range</Description>
+		</Meme>
+		
+		<Meme id="MemeI7" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="-15.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI6 fails - "-15" is out of range</Description>
+		</Meme>
+		
+		<Meme id="MemeI8" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="2.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI9 fails - "2.0" is not an allowed value</Description>
+		</Meme>
+		
+		<Meme id="MemeI9" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.25"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI9 fails - "1.25" is not an allowed value</Description>
+		</Meme>
+		
+		<Meme id="MemeI10" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-15"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI13 fails - "-15" is not out of range</Description>
+		</Meme>
+		
+		<Meme id="MemeI11" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="15"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI13 fails - "-15" is not out of range</Description>
+		</Meme>
+		
+		<Meme id="MemeI3" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="5"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI16 fails - "5" is not an allowed value</Description>
+		</Meme>
+		
+		<Meme id="MemeI3" metameme="ExamplesRestrictions.I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="-1"/>
+			<MemeProperty name="propI17" value="3"/>
+			<Description>propI16 fails - "-1" is not an allowed value</Description>
+		</Meme>
+	</ListOfMeme>
+	
+	
+
+	
+	
+</RMLModule>
+
+

@@ -1,0 +1,8 @@
+Examples.MemeF1 propJ Boolean TRUE TRUE
+Examples.MemeF1 propJ Boolean FALSE FALSE
+Examples.MemeF1 propH String EnhancementProp TRUE
+Examples.MemeF1 propH String SomethingAwful FALSE
+Examples.MemeF1 propA String TestStringA4 TRUE
+Examples.MemeF1 propA String TestStringF1 FALSE
+Examples.MemeF1 propF String TestStringF1 TRUE
+Examples.MemeF1 propF String TestStringA4 FALSE

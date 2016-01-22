@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMeme>
+
+		<Meme id="setWithTargetsInPackage" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet"/>
+		</Meme>
+		<Meme id="setWithTargetsInPackage_ConSet" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="NOT"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet_I"/>
+		</Meme>
+		<Meme id="setWithTargetsInPackage_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith"/>
+			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel"/>
+		</Meme>		
+		
+		
+		<Meme id="setWithTargetsInAnotherPackage" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet"/>
+		</Meme>
+		<Meme id="setWithTargetsInAnotherPackage_ConSet" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="OR"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet_I"/>
+		</Meme>
+		<Meme id="setWithTargetsInAnotherPackage_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith"/>
+			<MemberMeme occurrence="1" memberID="TestPackage2.ConditionsString.endsWith"/>
+		</Meme>		
+
+		
+		<Meme id="setWithTargetsInFreeModule" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet"/>
+		</Meme>
+		<Meme id="setWithTargetsInFreeModule_ConSet" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="OR"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet_I"/>
+		</Meme>
+		<Meme id="setWithTargetsInFreeModule_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="ConditionsString.endsWith"/>
+			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel"/>
+		</Meme>	
+		
+		<!-- Arguments -->
+		<Meme id="ArgumentCurrency" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentCurrency_SArgument"/>
+		</Meme>			
+		<Meme id="ArgumentCurrency_SArgument" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="Currency"/>
+		</Meme>	
+		<Meme id="ArgumentTestWord" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentTestWord_SArgument"/>
+		</Meme>			
+		<Meme id="ArgumentTestWord_SArgument" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="TestWord"/>
+		</Meme>			
+
+
+	</ListOfMeme>
+</RMLModule>

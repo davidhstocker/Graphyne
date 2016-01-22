@@ -1,0 +1,17 @@
+Memetic.Condition.True	2 TestInt XXX XXX XXX XXX True
+Memetic.Condition.True XXX XXX XXX XXX XXX XXX True
+Memetic.Condition.False 2 TestInt XXX XXX XXX XXX False
+Memetic.Condition.False XXX XXX XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse TRUE TestValue XXX XXX XXX XXX True
+TestCaseAppendix.ConditionTrueOrFalse True TestValue XXX XXX XXX XXX True
+TestCaseAppendix.ConditionTrueOrFalse true TestValue XXX XXX XXX XXX True
+TestCaseAppendix.ConditionTrueOrFalse tRue TestValue XXX XXX XXX XXX True
+TestCaseAppendix.ConditionTrueOrFalse True TestInt XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse FALSE TestValue XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse False TestValue XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse false TestValue XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse false TestValue XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse 2 TestValue XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse ten TestValue XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse ten TestInt XXX XXX XXX XXX False
+TestCaseAppendix.ConditionTrueOrFalse XXX XXX XXX XXX XXX XXX False

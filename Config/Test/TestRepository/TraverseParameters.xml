@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="Base">
+			<MetaMemeProperty name="x" type="integer"/>
+			<MetaMemeProperty name="y" type="integer"/>
+			<MetaMemeProperty name="z" type="integer"/>
+			<MemberMetaMeme reference="Base" min="0" max="1"/>
+		</MetaMeme>
+	
+	</ListOfMetaMeme>
+	<ListOfMeme>
+
+		<Meme id="B" metameme="Base">
+			<MemeProperty name="x" value="3"/>
+			<MemeProperty name="y" value="2"/>
+			<MemeProperty name="z" value="1"/>
+		</Meme>	
+		<Meme id="C" metameme="Base">
+			<MemeProperty name="x" value="1"/>
+		</Meme>	
+		<Meme id="D" metameme="Base">
+			<MemeProperty name="x" value="3"/>
+		</Meme>	
+				
+		<Meme id="A" metameme="Base">
+			<MemeProperty name="x" value="1"/>
+			<MemeProperty name="y" value="2"/>
+			<MemeProperty name="z" value="3"/>
+		</Meme>	
+	</ListOfMeme>	
+</RMLModule>
+
+

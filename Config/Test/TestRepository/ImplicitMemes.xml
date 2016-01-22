@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/p/rulesetmodeling/code/HEAD/tree/Schemas
+	RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>Test data for Implicit Memes</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="SimpleMM" dynamic="implicit">
+			<MetaMemeProperty name="propertyA" type="string"/>	
+			<MetaMemeProperty name="propertyB" type="string"/>
+			<ImplicitMemeMasterData table="SimpleMM" primaryKeyColumn="propertyA">
+			    <PropertySource property="propertyA" column="propertyA"/>
+			    <PropertySource property="propertyB" column="propertyB"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="IsChild" dynamic="implicit">
+			<MetaMemeProperty name="propertyD" type="string"/>	
+			<ImplicitMemeMasterData table="IsChild" primaryKeyColumn="propertyD">
+			    <PropertySource property="propertyD" column="propertyD"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="IsBRChild" dynamic="implicit">
+			<MetaMemeProperty name="propertyK" type="string"/>	
+			<MetaMemeProperty name="propertyL" type="string"/>	
+			<ImplicitMemeMasterData table="IsBRChild" primaryKeyColumn="propertyK">
+			    <PropertySource property="propertyK" column="propertyK"/>
+			    <PropertySource property="propertyL" column="propertyL"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="IsGrandChild" dynamic="implicit">
+			<MetaMemeProperty name="propertyE" type="string"/>
+			<ImplicitMemeMasterData table="IsGrandChild" primaryKeyColumn="propertyE">
+			    <PropertySource property="propertyE" column="propertyE"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="IsBRGrandChild" dynamic="implicit">
+			<MetaMemeProperty name="propertyO" type="string"/>
+			<MetaMemeProperty name="propertyP" type="string"/>
+			<ImplicitMemeMasterData table="IsBRGrandChild" primaryKeyColumn="propertyO">
+			    <PropertySource property="propertyO" column="propertyO"/>
+			    <PropertySource property="propertyP" column="propertyP"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="EndEffector" dynamic="implicit">
+			<MetaMemeProperty name="propertyAA" type="string"/>
+			<ImplicitMemeMasterData table="EndEffector" primaryKeyColumn="propertyAA">
+			    <PropertySource property="propertyAA" column="propertyAA"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		    
+		<MetaMeme id="MiddleNode" dynamic="cloneable">
+		    <MetaMemeProperty name="propertyQ" type="string"/>	
+			<MemberMetaMeme reference="IsGrandChild" min="0"/>
+			<MemberMetaMeme reference="ImplicitMemes.IsBRGrandChild" min="0"/>
+			<MemberMetaMeme reference="ImplicitMemes.IsGrandChild" min="0" max="1"/>
+			<ImplicitMemeMasterData table="MiddleNode" primaryKeyColumn="propertyQ">
+			    <PropertySource property="propertyQ" column="propertyQ"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+
+		<MetaMeme id="SecondMiddleNodeHop" dynamic="implicit">
+		    <MetaMemeProperty name="propertyCC" type="string"/>	
+			<MemberMetaMeme reference="EndEffector" min="0"/>
+			<ImplicitMemeMasterData table="SecondMiddleNodeHop" primaryKeyColumn="propertyCC">
+			    <PropertySource property="propertyCC" column="propertyCC"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+
+		<MetaMeme id="FirstMiddleNodeHop" dynamic="implicit">
+		    <MetaMemeProperty name="propertyBB" type="string"/>	
+			<MemberMetaMeme reference="SecondMiddleNodeHop" min="0"/>
+			<ImplicitMemeMasterData table="FirstMiddleNodeHop" primaryKeyColumn="propertyBB">
+			    <PropertySource property="propertyBB" column="propertyBB"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="ClonedSecondHop" dynamic="cloneable">
+		    <MetaMemeProperty name="propertyDD" type="string"/>	
+			<MemberMetaMeme reference="EndEffector" min="0"/>
+			<ImplicitMemeMasterData table="ClonedSecondHop" primaryKeyColumn="propertyDD">
+			    <PropertySource property="propertyDD" column="propertyDD"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="NotClonedSecondHop" dynamic="implicit">
+		    <MetaMemeProperty name="propertyEE" type="string"/>	
+			<MemberMetaMeme reference="EndEffector" min="0"/>
+			<ImplicitMemeMasterData table="NotClonedSecondHop" primaryKeyColumn="propertyEE">
+			    <PropertySource property="propertyEE" column="propertyEE"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="ClonedFirstHop" dynamic="cloneable">
+		    <MetaMemeProperty name="propertyFF" type="string"/>	
+			<MemberMetaMeme reference="ClonedSecondHop" min="0"/>
+			<MemberMetaMeme reference="NotClonedSecondHop" min="0"/>
+			<ImplicitMemeMasterData table="ClonedFirstHop" primaryKeyColumn="propertyFF">
+			    <PropertySource property="propertyFF" column="propertyFF"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="NotClonedFirstHop" dynamic="implicit">
+		    <MetaMemeProperty name="propertyGG" type="string"/>	
+			<MemberMetaMeme reference="ClonedSecondHop" min="0"/>
+			<MemberMetaMeme reference="NotClonedSecondHop" min="0"/>
+			<ImplicitMemeMasterData table="NotClonedFirstHop" primaryKeyColumn="propertyGG">
+			    <PropertySource property="propertyGG" column="propertyGG"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+						
+		<MetaMeme id="BridgedTo" dynamic="implicit">
+			<MetaMemeProperty name="propertyF" type="string"/>	
+			<ImplicitMemeMasterData table="BridgedTo" primaryKeyColumn="propertyF">
+			    <PropertySource property="propertyF" column="propertyF"/>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="HasChild" dynamic="implicit">
+		    <MetaMemeProperty name="propertyC" type="string"/>
+		    <MetaMemeProperty name="propertyH" type="string"/>
+		    <MetaMemeProperty name="propertyM" type="string"/>
+		    <MetaMemeProperty name="propertyN" type="string"/>
+		    <MetaMemeProperty name="propertyR" type="string"/>
+			<MemberMetaMeme reference="ImplicitMemes.MiddleNode" min="0" max="1"/>	
+			<MemberMetaMeme reference="ImplicitMemes.IsBRChild" min="0"/>
+			<MemberMetaMeme reference="ImplicitMemes.IsChild" min="0"/>
+			<MemberMetaMeme reference="ImplicitMemes.Bridge" min="0" max="2"/>
+			<ImplicitMemeMasterData table="HasChild" primaryKeyColumn="propertyC">
+			    <PropertySource property="propertyC" column="propertyC"/>
+			    <Relationships>
+			        <BackReference table="IsBRChild" childColumn="propertyK" parentColumn="propertyC" backReferenceColumn="propertyL" traversePath="ImplicitMemes.Bridge"/>
+			        <BackReference table="Bridge" childColumn="propertyG" parentColumn="propertyC" backReferenceColumn="propertyI" traversePath="ImplicitMemes.IsBRChild"/>
+			        <BackReference table="IsBRGrandChild" childColumn="propertyO" parentColumn="propertyC" backReferenceColumn="propertyP" traversePath="ImplicitMemes.MiddleNode::ImplicitMemes.IsBRGrandChild"/>
+			        <ForwardReference table="MiddleNode" childColumn="propertyQ" parentColumn="propertyR" traversePath="ImplicitMemes.MiddleNode"/>
+			        <ForwardReference table="IsChild" childColumn="propertyD" parentColumn="propertyM" traversePath="ImplicitMemes.IsChild"/>
+			        <ForwardReference table="IsGrandChild" childColumn="propertyE" parentColumn="propertyN" traversePath="ImplicitMemes.MiddleNode::ImplicitMemes.IsGrandChild"/>
+			    </Relationships>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="HasChildPhase2" dynamic="implicit">
+		    <MetaMemeProperty name="propertyHH" type="string"/>
+		    <MetaMemeProperty name="propertyII" type="string"/>
+		    <MetaMemeProperty name="propertyJJ" type="string"/>
+		    <MetaMemeProperty name="propertyKK" type="string"/>
+		    <MetaMemeProperty name="propertyLL" type="string"/>
+		    <MetaMemeProperty name="propertyMM" type="string"/>
+		    <MetaMemeProperty name="propertyOO" type="string"/>
+		    <MetaMemeProperty name="propertyPP" type="string"/>
+		    <MetaMemeProperty name="propertyQQ" type="string"/>
+		    <MetaMemeProperty name="propertyRR" type="string"/>
+		    <MemberMetaMeme reference="ImplicitMemes.FirstMiddleNodeHop" min="0" max="1"/>
+			<MemberMetaMeme reference="ImplicitMemes.ClonedFirstHop" min="0" max="1"/>	
+			<MemberMetaMeme reference="ImplicitMemes.NotClonedFirstHop" min="0"/>
+			<ImplicitMemeMasterData table="HasChildPhase2" primaryKeyColumn="propertyHH">
+			    <PropertySource property="propertyHH" column="propertyHH"/>
+			    <Relationships>
+			        <ForwardReference table="FirstMiddleNodeHop" childColumn="propertyBB" parentColumn="propertyII" traversePath="ImplicitMemes.FirstMiddleNodeHop"/>
+			        <ForwardReference table="SecondMiddleNodeHop" childColumn="propertyCC" parentColumn="propertyLL" traversePath="ImplicitMemes.FirstMiddleNodeHop::ImplicitMemes.SecondMiddleNodeHop"/>
+					<ForwardReference table="NotClonedFirstHop" childColumn="propertyGG" parentColumn="propertyJJ" traversePath="ImplicitMemes.NotClonedFirstHop"/>
+					<ForwardReference table="ClonedSecondHop" childColumn="propertyDD" parentColumn="propertyQQ" traversePath="ImplicitMemes.NotClonedFirstHop::ImplicitMemes.ClonedSecondHop"/>
+			        <ForwardReference table="ClonedFirstHop" childColumn="propertyFF" parentColumn="propertyKK" traversePath="ImplicitMemes.ClonedFirstHop"/>
+			        <ForwardReference table="NotClonedSecondHop" childColumn="propertyEE" parentColumn="propertyRR" traversePath="ImplicitMemes.ClonedFirstHop::ImplicitMemes.NotClonedSecondHop"/>
+			        <ForwardReference table="EndEffector" childColumn="propertyAA" parentColumn="propertyMM" traversePath="ImplicitMemes.FirstMiddleNodeHop::ImplicitMemes.SecondMiddleNodeHop::ImplicitMemes.EndEffector"/>
+			        <ForwardReference table="EndEffector" childColumn="propertyAA" parentColumn="propertyOO" traversePath="ImplicitMemes.NotClonedFirstHop::ImplicitMemes.ClonedSecondHop::ImplicitMemes.EndEffector"/>
+			        <ForwardReference table="EndEffector" childColumn="propertyAA" parentColumn="propertyPP" traversePath="ImplicitMemes.ClonedFirstHop::ImplicitMemes.NotClonedSecondHop::ImplicitMemes.EndEffector"/>
+			    </Relationships>
+			</ImplicitMemeMasterData>
+		</MetaMeme>
+		
+		<MetaMeme id="Bridge" dynamic="implicit">
+		    <MetaMemeProperty name="propertyG" type="string"/>
+		    <MetaMemeProperty name="propertyI" type="string"/>
+		    <MetaMemeProperty name="propertyJ" type="string"/>
+			<MemberMetaMeme reference="ImplicitMemes.BridgedTo" min="0" max="1"/>	
+			<ImplicitMemeMasterData table="Bridge" primaryKeyColumn="propertyG">
+			    <PropertySource property="propertyG" column="propertyG"/>
+			    <Relationships>
+			        <ForwardReference table="BridgedTo" childColumn="propertyF" parentColumn="propertyJ" traversePath="ImplicitMemes.BridgedTo"/>
+			    </Relationships>
+			</ImplicitMemeMasterData>
+		</MetaMeme>	
+		
+		<!--
+		CREATE TABLE SimpleMM (propertyA NVARCHAR(36) NOT NULL , propertyB NVARCHAR(36), PRIMARY KEY (propertyA));
+		CREATE TABLE IsChild (propertyD NVARCHAR(36) NOT NULL , PRIMARY KEY (propertyD));
+		CREATE TABLE IsBRChild (propertyK NVARCHAR(36) NOT NULL, propertyL NVARCHAR(36) NOT NULL, PRIMARY KEY (propertyK));
+		CREATE TABLE IsGrandChild (propertyE NVARCHAR(36) NOT NULL , PRIMARY KEY (propertyE));
+		CREATE TABLE IsBRGrandChild (propertyO NVARCHAR(36) NOT NULL, propertyP NVARCHAR(36) NOT NULL, PRIMARY KEY (propertyO));
+		CREATE TABLE BridgedTo (propertyF NVARCHAR(36) NOT NULL , PRIMARY KEY (propertyF));
+		CREATE TABLE Bridge (propertyG NVARCHAR(36) NOT NULL, propertyI NVARCHAR(36) NOT NULL, propertyJ NVARCHAR(36) NOT NULL, PRIMARY KEY (propertyG));
+		CREATE TABLE HasChild (propertyC NVARCHAR(36) NOT NULL, propertyH NVARCHAR(36) NOT NULL, propertyM NVARCHAR(36) NOT NULL, propertyN NVARCHAR(36) NOT NULL, PRIMARY KEY (propertyC));
+		 -->
+	</ListOfMetaMeme>
+
+	<ListOfMeme>
+		<Meme id="SimpleMMMeme" metameme="SimpleMM" implicitMeme="true"/>
+		
+		<Meme id="IsChildMeme" metameme="IsChild" implicitMeme="true"/>
+		
+		<Meme id="IsBRChildMeme" metameme="IsBRChild" implicitMeme="true"/>
+		
+		<Meme id="IsGrandChildMeme" metameme="IsGrandChild" implicitMeme="true"/>
+		
+		<Meme id="IsBRGrandChildMeme" metameme="IsBRGrandChild" implicitMeme="true"/>
+		
+		<Meme id="EndEffectorMeme" metameme="EndEffector" implicitMeme="true"/>
+		
+		<Meme id="MiddleNodeMeme" metameme="MiddleNode" implicitMeme="true"/>
+		
+		<Meme id="SecondMiddleNodeHopMeme" metameme="SecondMiddleNodeHop" implicitMeme="true"/>
+		
+		<Meme id="FirstMiddleNodeHopMeme" metameme="FirstMiddleNodeHop" implicitMeme="true"/>
+		
+		<Meme id="ClonedSecondHopMeme" metameme="ClonedSecondHop" implicitMeme="true"/>
+		
+		<Meme id="NotClonedSecondHopMeme" metameme="NotClonedSecondHop" implicitMeme="true"/>
+		
+		<Meme id="ClonedFirstHopMeme" metameme="ClonedFirstHop" implicitMeme="true"/>
+		
+		<Meme id="NotClonedFirstHopMeme" metameme="NotClonedFirstHop" implicitMeme="true"/>
+		
+		<Meme id="BridgedToMeme" metameme="BridgedTo" implicitMeme="true"/>
+		
+		<Meme id="BridgeMeme" metameme="Bridge" implicitMeme="true"/>
+		
+		<Meme id="HasChildMeme" metameme="HasChild" implicitMeme="true">
+		    <ClonedMembers>
+		        <ClonedMember memberMetaMeme="ImplicitMemes.MiddleNode"/>
+		    </ClonedMembers>
+		</Meme>
+		
+		<Meme id="HasChildPhase2Meme" metameme="HasChildPhase2" implicitMeme="true">
+		    <ClonedMembers>
+		        <ClonedMember memberMetaMeme="ImplicitMemes.ClonedFirstHop"/>
+		        <ClonedMember memberMetaMeme="ImplicitMemes.ClonedSecondHop"/>
+		    </ClonedMembers>
+		</Meme>
+	</ListOfMeme>
+	
+	
+</RMLModule>

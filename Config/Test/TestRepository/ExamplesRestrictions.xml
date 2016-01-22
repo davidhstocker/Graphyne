@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfPropertyRestriction>
+		<PropertyRestriction id="PropI01_Restriction">
+			<RestrictionValueString>a string</RestrictionValueString>
+			<RestrictionValueString>another string</RestrictionValueString>
+			<RestrictionValueString>abc</RestrictionValueString>
+			<RestrictionValueString>xyz</RestrictionValueString>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="PropI04_Restriction">
+			<RestrictionMinMaxDecimal restrictionMin="0.00"/>
+		</PropertyRestriction>
+
+		<PropertyRestriction id="PropI05_Restriction">
+			<RestrictionMinMaxDecimal restrictionMax="0.00"/>
+		</PropertyRestriction>		
+		
+		<PropertyRestriction id="PropI06_Restriction">
+			<RestrictionMinMaxDecimal restrictionMin="-10.00" restrictionMax="10.00"/>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="PropI07_Restriction">
+			<RestrictionMinMaxDecimal restrictionMin="0.00" restrictionMax="10.00"/>
+		</PropertyRestriction>
+
+		<PropertyRestriction id="PropI08_Restriction">
+			<RestrictionMinMaxDecimal restrictionMin="-10.00" restrictionMax="0.00"/>
+		</PropertyRestriction>			
+		
+		<PropertyRestriction id="PropI09_Restriction">
+			<RestrictionValueDecimal>0.00</RestrictionValueDecimal>
+			<RestrictionValueDecimal>0.50</RestrictionValueDecimal>
+			<RestrictionValueDecimal>1.00</RestrictionValueDecimal>
+			<RestrictionValueDecimal>1.50</RestrictionValueDecimal>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="PropI11_Restriction">
+			<RestrictionMinMaxInteger restrictionMin="0"/>
+		</PropertyRestriction>
+
+		<PropertyRestriction id="PropI12_Restriction">
+			<RestrictionMinMaxInteger restrictionMax="0"/>
+		</PropertyRestriction>	
+		
+		<PropertyRestriction id="PropI13_Restriction">
+			<RestrictionMinMaxInteger restrictionMin="-10" restrictionMax="10"/>
+		</PropertyRestriction>	
+		
+		<PropertyRestriction id="PropI14_Restriction">
+			<RestrictionMinMaxInteger restrictionMin="0" restrictionMax="10"/>
+		</PropertyRestriction>	
+		
+		<PropertyRestriction id="PropI15_Restriction">
+			<RestrictionMinMaxInteger restrictionMin="0" restrictionMax="0"/>
+		</PropertyRestriction>	
+		
+		<PropertyRestriction id="PropI16_Restriction">
+			<RestrictionValueInteger>0</RestrictionValueInteger>
+			<RestrictionValueInteger>1</RestrictionValueInteger>
+			<RestrictionValueInteger>2</RestrictionValueInteger>
+			<RestrictionValueInteger>3</RestrictionValueInteger>
+		</PropertyRestriction>			
+
+	</ListOfPropertyRestriction>
+	<ListOfMetaMeme>
+		<MetaMeme id="I">
+			<MetaMemeProperty name="propI0" type="string" restriction="PropI01_Restriction" constrained="true"/>	
+			<MetaMemeProperty name="propI1" type="string" restriction="PropI01_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI2" type="boolean" constrained="true"/>
+			<MetaMemeProperty name="propI3" type="boolean" constrained="true"/>
+			<MetaMemeProperty name="propI4" type="decimal" restriction="PropI04_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI5" type="decimal" restriction="PropI05_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI6" type="decimal" restriction="PropI06_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI7" type="decimal" restriction="PropI07_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI8" type="decimal" restriction="PropI08_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI9" type="decimal" restriction="PropI09_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI10" type="decimal" restriction="PropI09_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI11" type="integer" restriction="PropI11_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI12" type="integer" restriction="PropI12_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI13" type="integer" restriction="PropI13_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI14" type="integer" restriction="PropI14_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI15" type="integer" restriction="PropI15_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI16" type="integer" restriction="PropI16_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propI17" type="integer" restriction="PropI16_Restriction" constrained="true"/>
+		</MetaMeme>
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<Meme id="MemeI1" metameme="I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="0.0"/>
+			<MemeProperty name="propI5" value="-1000.0"/>
+			<MemeProperty name="propI6" value="-10.0"/>
+			<MemeProperty name="propI7" value="0.0"/>
+			<MemeProperty name="propI8" value="-10.0"/>
+			<MemeProperty name="propI9" value="0.0"/>
+			<MemeProperty name="propI10" value=".5"/>
+			<MemeProperty name="propI11" value="0"/>
+			<MemeProperty name="propI12" value="-1000"/>
+			<MemeProperty name="propI13" value="-10"/>
+			<MemeProperty name="propI14" value="0"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="0"/>
+			<MemeProperty name="propI17" value="1"/>
+		</Meme>
+		
+		<Meme id="MemeI2" metameme="I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="10000.0"/>
+			<MemeProperty name="propI5" value="0.0"/>
+			<MemeProperty name="propI6" value="10.0"/>
+			<MemeProperty name="propI7" value="10.0"/>
+			<MemeProperty name="propI8" value="0.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="10000"/>
+			<MemeProperty name="propI12" value="0"/>
+			<MemeProperty name="propI13" value="10"/>
+			<MemeProperty name="propI14" value="10"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+		</Meme>
+		
+		<Meme id="MemeI3" metameme="I">
+			<MemeProperty name="propI0" value="abc"/>
+			<MemeProperty name="propI1" value="xyz"/>
+			<MemeProperty name="propI2" value="false"/>
+			<MemeProperty name="propI3" value="true"/>
+			<MemeProperty name="propI4" value="5.0"/>
+			<MemeProperty name="propI5" value="-5.0"/>
+			<MemeProperty name="propI6" value="1.0"/>
+			<MemeProperty name="propI7" value="2.0"/>
+			<MemeProperty name="propI8" value="-3.0"/>
+			<MemeProperty name="propI9" value="1.0"/>
+			<MemeProperty name="propI10" value="1.5"/>
+			<MemeProperty name="propI11" value="5"/>
+			<MemeProperty name="propI12" value="-3"/>
+			<MemeProperty name="propI13" value="-2"/>
+			<MemeProperty name="propI14" value="7"/>
+			<MemeProperty name="propI15" value="0"/>
+			<MemeProperty name="propI16" value="2"/>
+			<MemeProperty name="propI17" value="3"/>
+		</Meme>
+	</ListOfMeme>
+	
+	
+</RMLModule>
+
+

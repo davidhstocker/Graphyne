@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="A">
+			<MetaMemeProperty name="propA" type="string"/>
+			<MemberMetaMeme reference="B" min="0"/>
+			<MemberMetaMeme reference="K" min="0" max="1"/>
+		</MetaMeme>
+		
+		<MetaMeme id="B">
+			<MetaMemeProperty name="propB" type="decimal"/>
+			<MemberMetaMeme reference="C" min="0" max="2"/>
+		</MetaMeme>
+		
+		<MetaMeme id="C" singleton="true">
+			<MetaMemeExtensions>
+				<MetaMemeID>B</MetaMemeID>
+			</MetaMemeExtensions>
+			<MetaMemeProperty name="propC" type="string"/>
+		</MetaMeme>
+
+		<MetaMeme id="E">
+			<MetaMemeExtensions>
+				<MetaMemeID>A</MetaMemeID>
+			</MetaMemeExtensions>
+			<MetaMemeProperty name="propE" type="string"/>
+		</MetaMeme>		
+
+		<MetaMeme id="G">
+			<MetaMemeExtensions>
+				<MetaMemeID>C</MetaMemeID>
+				<MetaMemeID>E</MetaMemeID>
+			</MetaMemeExtensions>
+			<MetaMemeProperty name="propG" type="string"/>
+		</MetaMeme>
+		
+						
+		<MetaMeme id="D">
+			<MetaMemeEnhancements>
+				<MetaMemeID>B</MetaMemeID>
+			</MetaMemeEnhancements>
+			<MetaMemeProperty name="propD" type="string"/>
+			<MemberMetaMeme reference="C" min="0" max="3"/>
+		</MetaMeme>
+		
+		<MetaMeme id="F">
+			<MetaMemeExtensions>
+				<MetaMemeID>A</MetaMemeID>
+			</MetaMemeExtensions>
+			<MetaMemeProperty name="propF" type="string"/>
+		</MetaMeme>
+		
+		
+		<MetaMeme id="H">
+			<MetaMemeEnhancements>
+				<MetaMemeID>F</MetaMemeID>
+			</MetaMemeEnhancements>
+			<MetaMemeProperty name="propH" type="string"/>
+		</MetaMeme>
+		
+		<MetaMeme id="I">
+			<MetaMemeEnhancements>
+				<MetaMemeID>F</MetaMemeID>
+			</MetaMemeEnhancements>
+			<MetaMemeProperty name="propI" type="list"/>
+		</MetaMeme>
+
+		<MetaMeme id="J">
+			<MetaMemeEnhancements>
+				<MetaMemeID>F</MetaMemeID>
+				<MetaMemeID>K</MetaMemeID>
+			</MetaMemeEnhancements>
+			<MetaMemeProperty name="propJ" type="boolean"/>
+		</MetaMeme>	
+		
+		<MetaMeme id="K">
+			<MetaMemeProperty name="propK" type="integer"/>
+		</MetaMeme>
+		
+		<MetaMeme id="L">
+			<MetaMemeExtensions>
+				<MetaMemeID>J</MetaMemeID>
+			</MetaMemeExtensions>
+			<MetaMemeProperty name="propL" type="string"/>
+		</MetaMeme>
+		
+		<MetaMeme id="M" switch="true">
+			<MemberMetaMeme reference="L" min="1" max="1"/>
+			<MemberMetaMeme reference="G" min="1" max="1"/>
+		</MetaMeme>
+		
+		<MetaMeme id="N" switch="true">
+			<MemberMetaMeme reference="L"/>
+			<MemberMetaMeme reference="G"/>
+		</MetaMeme>	
+		
+		<MetaMeme id="O" switch="false">
+			<MetaMemeEnhancements>
+				<MetaMemeID>A</MetaMemeID>
+				<MetaMemeID>N</MetaMemeID>
+			</MetaMemeEnhancements>
+			<MetaMemeProperty name="propO" type="string"/>
+		</MetaMeme>	
+		
+		<MetaMeme id="P" singleton="false">
+			<MemberMetaMeme reference="A" min="0" max="1"/>
+		</MetaMeme>
+		
+		<MetaMeme id="Q" singleton="false">
+			<MemberMetaMeme reference="P" min="0" max="1"/>
+		</MetaMeme>
+		
+		<MetaMeme id="R" singleton="false">
+			<MemberMetaMeme reference="Q" min="0" max="1"/>
+		</MetaMeme>
+		
+		<!-- These two metamemes are problematic because they contain circular references in their children.
+			Such memes *can* be worked with, as long as the minimum cardinality does not force a circular reference -->
+		<MetaMeme id="SimpleRecursive1">
+			<MemberMetaMeme reference="SimpleRecursive2"/>
+		</MetaMeme>
+		<MetaMeme id="SimpleRecursive2">
+			<MemberMetaMeme reference="SimpleRecursive1"/>
+		</MetaMeme>
+		
+	</ListOfMetaMeme>
+	<ListOfMeme>
+		
+		<Meme id="MemeA1" metameme="A">
+			<MemeProperty name="propA" value="Test String A1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+		</Meme>		
+		
+		<Meme id="MemeA2" metameme="A">
+			<MemeProperty name="propA" value="Test String A2"/>
+			<MemberMeme memberID="MemeK1" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>OneMember</Tag>
+			</ListOfTag>
+		</Meme>
+		
+		<Meme id="MemeA3" metameme="A">
+			<MemeProperty name="propA" value="Test String A3"/>
+			<MemberMeme memberID="MemeK1" occurrence="1"/>
+			<MemberMeme memberID="MemeB" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>TwoMembers</Tag>
+			</ListOfTag>
+		</Meme>
+		
+		<Meme id="MemeA4" metameme="A" singleton="true">
+			<MemeProperty name="propA" value="Test String A4"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+				<Tag>Singleton</Tag>
+			</ListOfTag>
+			<Description>Parent metameme is not a singleton, but the meme is.</Description>
+		</Meme>
+
+		<Meme id="MemeB" metameme="B">
+			<MemeProperty name="propB" value="111.11"/>
+			<MemberMeme memberID="MemeC1" occurrence="1"/>
+			<MemberMeme memberID="MemeC2" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>ThreeMembers</Tag>
+			</ListOfTag>
+		</Meme>			
+				
+		<Meme id="MemeC1" metameme="C">
+			<MemeProperty name="propC" value="Test String C1"/>
+			<MemeProperty name="propB" value="22.2"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+				<Tag>Singleton</Tag>
+			</ListOfTag>
+			<Description>Inherits Singleton status from parent metameme.</Description>
+		</Meme>		
+		
+		<Meme id="MemeC2" metameme="C">
+			<MemeProperty name="propC" value="Test String C2"/>
+			<MemeProperty name="propB" value="33.3"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+				<Tag>Singleton</Tag>
+			</ListOfTag>
+			<Description>Inherits Singleton status from parent metameme.</Description>
+		</Meme>	
+		
+		<Meme id="MemeC3" metameme="C">
+			<MemeProperty name="propC" value="Test String C3"/>
+			<MemeProperty name="propB" value="33.3"/>
+			<ListOfTag>
+				<Tag>Enhanced</Tag>
+				<Tag>NoMembers</Tag>
+				<Tag>Singleton</Tag>
+			</ListOfTag>
+			<Description>Inherits Singleton status from parent metameme.  Also Enhanced by MemeD2</Description>
+		</Meme>	
+		
+		<Meme id="MemeD1" metameme="D">
+			<MemeProperty name="propD" value="Test String D1"/>
+			<MemeEnhancements>
+				<MemeID>MemeG4</MemeID>
+				<MemeID>MemeG1</MemeID>
+			</MemeEnhancements>
+			<ListOfTag>
+				<Tag>Enhances</Tag>
+				<Tag>TwoMembers</Tag>
+			</ListOfTag>
+			<Description>
+				D enhances B, C extends B and G extends C.  Therefore, MemeD1 may also enhance memes created from metameme G.
+			</Description>
+		</Meme>
+		
+		<Meme id="MemeE1" metameme="E">
+			<MemeProperty name="propA" value="Test String A5"/>
+			<MemeProperty name="propE" value="Test String E1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description>Extends A. so inherits propA</Description>
+		</Meme>		
+		
+		<Meme id="MemeF1" metameme="F">
+			<MemeProperty name="propA" value="TestStringA4"/>
+			<MemeProperty name="propF" value="TestStringF1"/>
+			<MemberMeme memberID="MemeK1" occurrence="1"/>
+			<MemberMeme memberID="MemeB" occurrence="3"/>
+			<ListOfTag>
+				<Tag>IsEnhanced</Tag>
+				<Tag>TwoMembers</Tag>
+			</ListOfTag>
+			<Description>Enhanced by MemeJ1 and MemeH1.</Description>
+		</Meme>	
+		
+		<Meme id="MemeG1" metameme="G">
+			<MemeProperty name="propA" value="Test String A5"/>
+			<MemeProperty name="propE" value="Test String E2"/>
+			<MemeProperty name="propB" value="44.4"/>
+			<MemeProperty name="propC" value="Test String C3"/>
+			<MemeProperty name="propG" value="Test String G1"/>
+			<MemberMeme memberID="MemeB" occurrence="1"/>
+			<MemberMeme memberID="MemeK1" occurrence="1"/>
+			<MemberMeme memberID="MemeC2" occurrence="1"/>
+			<ListOfTag>
+				<Tag>IsEnhanced</Tag>
+				<Tag>FiveMembers</Tag>
+			</ListOfTag>
+			<Description>
+				MemeG1 is the „everything“ meme.  It is also a singleton as metameme G inherits that property from metameme C
+			</Description>
+		</Meme>	
+		
+		<Meme id="MemeG2" metameme="G">
+			<MemeProperty name="propA" value="Test String A7"/>
+			<MemeProperty name="propE" value="Test String E3"/>
+			<MemeProperty name="propB" value="55.5"/>
+			<MemeProperty name="propC" value="Test String C4"/>
+			<MemeProperty name="propG" value="Test String G2"/>
+			<MemberMeme memberID="MemeK1" occurrence="1"/>
+			<ListOfTag>
+				<Tag>OneMember</Tag>
+			</ListOfTag>
+			<Description>
+				Is a singleton as metameme G inherits that property from metameme C
+			</Description>
+		</Meme>	
+		
+		<Meme id="MemeG3" metameme="G">
+			<MemeProperty name="propA" value="Test String A8"/>
+			<MemeProperty name="propE" value="Test String E4"/>
+			<MemeProperty name="propB" value="66.6"/>
+			<MemeProperty name="propC" value="Test String C5"/>
+			<MemeProperty name="propG" value="Test String G3"/>
+			<MemberMeme memberID="MemeB" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>TwoMembers</Tag>
+			</ListOfTag>
+			<Description>
+				Is a singleton as metameme G inherits that property from metameme C
+			</Description>
+		</Meme>
+		
+		<Meme id="MemeG4" metameme="G">
+			<MemeProperty name="propA" value="Test String A9"/>
+			<MemeProperty name="propE" value="Test String E5"/>
+			<MemeProperty name="propB" value="77.7"/>
+			<MemeProperty name="propC" value="Test String C6"/>
+			<MemeProperty name="propG" value="Test String G4"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description>
+				Has no members.  No propC.  Is also a singleton as metameme G inherits that property from metameme C
+			</Description>
+		</Meme>
+		
+		<Meme id="MemeH1" metameme="H">
+			<MemeProperty name="propH" value="EnhancementProp"/>
+			<MemeEnhancements>
+				<MemeID>MemeF1</MemeID>
+			</MemeEnhancements>
+			<ListOfTag>
+				<Tag>Enhances</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description>Enhances MemeF1.</Description>
+		</Meme>	
+		
+		<Meme id="MemeJ1" metameme="J">
+			<MemeProperty name="propJ" value="true"/>
+			<MemeEnhancements>
+				<MemeID>MemeF1</MemeID>
+			</MemeEnhancements>
+			<ListOfTag>
+				<Tag>Enhances</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description>Enhances MemeF1.</Description>
+		</Meme>
+		
+		<Meme id="MemeJ2" metameme="J">
+			<MemeProperty name="propJ" value="true"/>
+			<ListOfTag>
+				<Tag>Enhances</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme J enhances metameme F, but this meme does not enhance any other memes.  
+				The marental metameme enhancement gives the option of enhancing an „F“ meme.
+			</Description>
+		</Meme>
+		
+		<Meme id="MemeK1" metameme="K"> 
+			<MemeProperty name="propK" value="10"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+		</Meme>		
+		
+		<Meme id="MemeL1" metameme="L">
+			<MemeProperty name="propJ" value="true"/>
+			<MemeProperty name="propL" value="Test String L1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description/>
+		</Meme>
+		
+		<Meme id="MemeL2" metameme="L">
+			<MemeProperty name="propJ" value="true"/>
+			<MemeProperty name="propL" value="Test String L2"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+			</ListOfTag>
+			<Description/>
+		</Meme>
+
+		<Meme id="MemeM1" metameme="M">
+			<MemberMeme memberID="MemeG1" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>OneMember</Tag>
+				<Tag>Switch</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme M is a switch, with G and L as potential members.  
+				The cardinality on the G member is 1..1, so one MemeG1 member is valid.
+			</Description>
+		</Meme>
+		
+		<Meme id="MemeM2" metameme="M">
+			<MemberMeme memberID="MemeL1" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>OneMember</Tag>
+				<Tag>Switch</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme M is a switch, with G and L as potential members.  
+				The cardinality on the L member is 1..1, so one MemeL1 member is valid.
+			</Description>
+		</Meme>
+
+		<Meme id="MemeN1" metameme="N">
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+				<Tag>Switch</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme N is a switch, with G and L as potential members.  N actually has no members and is essentially a stub meme.  
+				Since the cardinality on both G and L membership is 0..n, this is valid; if a little wierd.  
+			</Description>
+		</Meme>
+		
+		<Meme id="MemeN2" metameme="N">
+			<MemberMeme memberID="MemeL1" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>OneMember</Tag>
+				<Tag>Switch</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme N is a switch, with G and L as potential members.  
+				The cardinality on the G member is 0..n, so one MemeG1 member is valid.
+			</Description>
+		</Meme>		
+		
+		<Meme id="MemeN3" metameme="N">
+			<MemberMeme memberID="MemeL1" occurrence="3"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>OneMemberType</Tag>
+				<Tag>TwoMembers</Tag>
+				<Tag>Switch</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme N is a switch, with G and L as potential members.  
+				The cardinality on the L member is 0..n, so three MemeL1 members is valid.
+			</Description>
+		</Meme>	
+		
+		<Meme id="MemeN4" metameme="N">
+			<MemberMeme memberID="MemeL2" occurrence="1"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>OneMember</Tag>
+				<Tag>Switch</Tag>
+			</ListOfTag>
+			<Description>
+				Metameme N is a switch, with G and L as potential members.  
+				The cardinality on the L member is 0..n, so one MemeL2 member is valid.
+			</Description>
+		</Meme>	
+		
+		<Meme id="MemeO1" metameme="O">
+			<MemeProperty name="propO" value="String O"/>
+			<MemeEnhancements>
+				<MemeID>MemeN4</MemeID>
+			</MemeEnhancements>
+			<ListOfTag>
+				<Tag>Enhances</Tag>
+				<Tag>OneMember</Tag>
+			</ListOfTag>
+			<Description>
+				Enhances a switch and has a member of its own.  This is the normal way for allowing switches to have siblings.
+			</Description>
+		</Meme>
+		
+		<Meme id="srMeme5" metameme="Examples.SimpleRecursive1">
+			<Description>These two show that it is possible to create valid memes from highly dangerous metamemes</Description>
+		</Meme>
+		<Meme id="srMeme6" metameme="Examples.SimpleRecursive2">
+			<Description>These two show that it is possible to create valid memes from highly dangerous metamemes</Description>
+		</Meme>	
+						
+		<Meme id="srMeme7" metameme="Examples.SimpleRecursive1">
+			<MemberMeme occurrence="1" memberID="srMeme8"/>
+			<Description>If the child membership is not in both directions at the same time, we are ok</Description>
+		</Meme>
+		<Meme id="srMeme8" metameme="SimpleRecursive2">
+			<Description>If the child membership is not in both directions at the same time, we are ok</Description>
+		</Meme>
+		
+		<Meme id="srMeme9" metameme="Examples.SimpleRecursive1">
+			<Description>If the child membership is not in both directions at the same time, we are ok</Description>
+		</Meme>
+		<Meme id="srMeme10" metameme="Examples.SimpleRecursive2">
+			<MemberMeme occurrence="1" memberID="srMeme9"/>
+			<Description>If the child membership is not in both directions at the same time, we are ok</Description>
+		</Meme>		
+	</ListOfMeme>	
+</RMLModule>
+
+

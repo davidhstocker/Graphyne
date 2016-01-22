@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMeme>
+		<!-- Numeric Values -->	
+		<Meme id="intValue_3" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_3"/>
+		</Meme>
+		<Meme id="nv_intValue_3" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="3"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>
+		<Meme id="intValue_2" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_2"/>
+		</Meme>
+		<Meme id="nv_intValue_2" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="2"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>
+		<Meme id="intValue_1" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_1"/>
+		</Meme>
+		<Meme id="nv_intValue_1" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="1"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>
+
+		<Meme id="equalOrGreaterThan90Value_90" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_equalOrGreaterThan90Value_90"/>
+		</Meme>		
+		<Meme id="nv_equalOrGreaterThan90Value_90" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="90.00"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>		
+		<Meme id="equalOrLessThan31Value_31" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_equalOrLessThan31Value_31"/>
+		</Meme>
+		<Meme id="nv_equalOrLessThan31Value_31" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="31.00"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>	
+		<Meme id="equalOrLessThan30Value_30" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_equalOrLessThan30Value_30"/>
+		</Meme>
+		<Meme id="nv_equalOrLessThan30Value_30" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="30.00"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>	
+		
+		<Meme id="decimalValue_2" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_decimalValue_2"/>
+		</Meme>		
+		<Meme id="nv_decimalValue_2" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="2.00"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>	
+		<Meme id="decimalValue_1_5" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_decimalValue_1_5"/>
+		</Meme>
+		<Meme id="nv_decimalValue_1_5" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="1.50"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>	
+		<Meme id="decimalValue_2_5" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_decimalValue_2_5"/>
+		</Meme>
+		<Meme id="nv_decimalValue_2_5" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="2.50"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>	
+
+	</ListOfMeme>
+</RMLModule>

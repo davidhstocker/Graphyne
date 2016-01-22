@@ -1,0 +1,12 @@
+TestPackage1.ConditionsString.setNotTest ants TestString XXX XXX XXX XXX False
+TestPackage1.ConditionsString.setNotTest ant TestString XXX XXX XXX XXX False
+TestPackage1.ConditionsString.setNotTest knots TestString XXX XXX XXX XXX False
+TestPackage1.ConditionsString.setNotTest Sparta endsWith Sparts TestString XXX XXX True
+TestPackage1.ConditionsString.setNotTest knots TestString owl TestSt owl TestLine False
+TestPackage1.ConditionsString.setNotTest knots TestString owl endsWith owl TestLine True
+TestPackage1.ConditionsString.setNotTest Sparta TestingString owl TestSt owl TestLine False
+TestPackage1.ConditionsString.endsWith Thomas endsWith XXX XXX XXX XXX True
+TestPackage1.ConditionsString.endsWith cat TestString XXX XXX XXX XXX False
+ConditionSetRemote.setWithTargetsInPackage Sparta TestString owl endsWith XXX XXX True
+ConditionSetRemote.setWithTargetsInFreeModule Sparta TestString Thomas endsWith XXX XXX True
+ConditionSetRemote.setWithTargetsInAnotherPackage Sparta TestString Thomas endsWith XXX XXX True

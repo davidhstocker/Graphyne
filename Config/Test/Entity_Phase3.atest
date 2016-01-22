@@ -1,0 +1,4 @@
+ExamplesRestrictions.MemeI1 strProp String xyz
+ExamplesRestrictions.MemeI1 boolProp Boolean TRUE
+ExamplesRestrictions.MemeI1 decProp Decimal 55
+ExamplesRestrictions.MemeI1 intProp Integer 55

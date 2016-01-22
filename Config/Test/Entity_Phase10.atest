@@ -1,0 +1,7 @@
+Examples.MemeA3 Examples.MemeG1 MemeB::MemeC2::MemeG1 TRUE
+Examples.MemeG1 Examples.MemeA3 MemeC2::MemeB::MemeA3 TRUE
+Examples.MemeA3 Examples.MemeG1 *::MemeC2::MemeG1 TRUE
+Examples.MemeA3 Examples.MemeG1 **::MemeC2::MemeG1 TRUE
+Examples.MemeA3 Examples.MemeG1 **::MemeG1 FALSE
+Examples.MemeG1 Examples.MemeA3 **::MemeA3 FALSE
+Examples.MemeG1 Examples.MemeA3 *::MemeB::MemeA3 TRUE

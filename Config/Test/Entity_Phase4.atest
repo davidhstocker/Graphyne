@@ -1,0 +1,5 @@
+ExamplesRestrictions.MemeI1 propI0 xyz
+ExamplesRestrictions.MemeI1 propI2 TRUE
+ExamplesRestrictions.MemeI1 propI4 10
+ExamplesRestrictions.MemeI1 propI4 1.0
+ExamplesRestrictions.MemeI1 propI16 2

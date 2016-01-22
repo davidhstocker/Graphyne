@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMeme>
+	    
+	    <!-- Scripts -->
+		
+		<Meme id="ConditionTrueOrFalse" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="ConditionTrueOrFalse_CScr"/>
+		</Meme>
+		<Meme id="ConditionTrueOrFalse_CScr" metameme="Memetic.Condition.ConditionScript">
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="TrueOrFalseSES"/>
+		</Meme>
+		<Meme id="TrueOrFalseScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="TestCaseAppendix.ConditionTrueOrFalse"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="TrueOrFalseSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="1"/>
+			<MemberMeme occurrence="1" memberID="TrueOrFalseScript" />
+		</Meme>	
+		
+		<!-- Numeric Values -->
+		<Meme id="fn_notEqualToOne" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="vn_notEqualToOne"/>
+		</Meme>
+		<Meme id="vn_notEqualToOne" metameme="Memetic.Numeric.ValueNumeric">
+			<MemeProperty name="Value" value="1"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+		</Meme>
+	    
+		<!-- Conditions -->
+		
+		<Meme id="EqualToOne" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="nc_equalToOne"/>
+		</Meme>
+		<Meme id="nc_equalToOne" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="Equal"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="fn_notEqualToOne"/>
+			<MemberMeme occurrence="1" memberID="a_notEqualToOne"/>
+		</Meme>		
+		<Meme id="notEqualToOne" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="nc_notEqualToOne"/>
+		</Meme>
+		<Meme id="nc_notEqualToOne" metameme="Memetic.Condition.ConditionNumeric">
+			<MemeProperty name="NumericOperator" value="NotEqual"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="fn_notEqualToOne"/>
+			<MemberMeme occurrence="1" memberID="a_notEqualToOne"/>
+		</Meme>
+		<Meme id="sa_notEqualToOne" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="NumValue"/>
+		</Meme>
+		<Meme id="a_notEqualToOne" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="sa_notEqualToOne"/>
+		</Meme>
+		
+		<Meme id="sa_Currency" metameme="Memetic.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="Currency"/>
+		</Meme>
+		<Meme id="a_Currency" metameme="Memetic.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="sa_Currency"/>
+		</Meme>				
+		
+		<Meme id="vs_CurrencyCrown" metameme="Memetic.Condition.ValueString">
+			<MemeProperty name="Value" value="crown"/>
+		</Meme>		
+		<Meme id="sc_CurrencyCrown" metameme="Memetic.Condition.ConditionString">
+			<MemeProperty name="StringOperator" value="Equal"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="vs_CurrencyCrown"/>
+			<MemberMeme occurrence="1" memberID="a_Currency"/>
+		</Meme>
+		<Meme id="CurrencyCrown" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="sc_CurrencyCrown"/>
+		</Meme>
+
+		<Meme id="MultipleCrowns" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="MultipleCrowns_Set"/>
+		</Meme>	
+		<Meme id="MultipleCrowns_Set" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="AND"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="MultipleCrowns_I"/>
+		</Meme>
+		<Meme id="MultipleCrowns_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="CurrencyCrown"/>
+			<MemberMeme occurrence="1" memberID="notEqualToOne"/>
+		</Meme>
+		<Meme id="SingleCrown" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="SingleCrown_Set"/>
+		</Meme>	
+		<Meme id="SingleCrown_Set" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="AND"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="SingleCrown_I"/>
+		</Meme>
+		<Meme id="SingleCrown_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="CurrencyCrown"/>
+			<MemberMeme occurrence="1" memberID="EqualToOne"/>
+		</Meme>
+		
+		<Meme id="vs_CurrencyThaler" metameme="Memetic.Condition.ValueString">
+			<MemeProperty name="Value" value="thaler"/>
+		</Meme>		
+		<Meme id="sc_CurrencyThaler" metameme="Memetic.Condition.ConditionString">
+			<MemeProperty name="StringOperator" value="Equal"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="vs_CurrencyThaler"/>
+			<MemberMeme occurrence="1" memberID="a_Currency"/>
+		</Meme>
+		<Meme id="CurrencyThaler" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="sc_CurrencyThaler"/>
+		</Meme>
+
+		<Meme id="MultipleThaler" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="MultipleThaler_Set"/>
+		</Meme>
+		<Meme id="MultipleThaler_Set" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="AND"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="MultipleThaler_I"/>
+		</Meme>
+		<Meme id="MultipleThaler_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="CurrencyThaler"/>
+			<MemberMeme occurrence="1" memberID="notEqualToOne"/>
+		</Meme>
+		<Meme id="SingleThaler" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="SingleThaler_Set"/>
+		</Meme>
+		<Meme id="SingleThaler_Set" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="AND"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="SingleThaler_I"/>
+		</Meme>
+		<Meme id="SingleThaler_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="CurrencyThaler"/>
+			<MemberMeme occurrence="1" memberID="EqualToOne"/>
+		</Meme>
+		
+		<Meme id="vs_CurrencyPenny" metameme="Memetic.Condition.ValueString">
+			<MemeProperty name="Value" value="penny"/>
+		</Meme>		
+		<Meme id="sc_CurrencyPenny" metameme="Memetic.Condition.ConditionString">
+			<MemeProperty name="StringOperator" value="Equal"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="vs_CurrencyPenny"/>
+			<MemberMeme occurrence="1" memberID="a_Currency"/>
+		</Meme>
+		<Meme id="CurrencyPenny" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="sc_CurrencyPenny"/>
+		</Meme>
+
+		<Meme id="MultiplePennies" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="MultiplePennies_Set"/>
+		</Meme>
+		<Meme id="MultiplePennies_Set" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="AND"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="MultiplePennies_I"/>
+		</Meme>
+		<Meme id="MultiplePennies_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="CurrencyPenny"/>
+			<MemberMeme occurrence="1" memberID="notEqualToOne"/>
+		</Meme>
+		<Meme id="SinglePenny" metameme="Memetic.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="SinglePenny_Set"/>
+		</Meme>
+		<Meme id="SinglePenny_Set" metameme="Memetic.Condition.ConditionSet">
+			<MemeProperty name="SetOperator" value="AND"/>
+			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+			<MemberMeme occurrence="1" memberID="SinglePenny_I"/>
+		</Meme>
+		<Meme id="SinglePenny_I" metameme="Memetic.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="CurrencyPenny"/>
+			<MemberMeme occurrence="1" memberID="EqualToOne"/>
+		</Meme>
+		
+
+
+	</ListOfMeme>	
+</RMLModule>
+
+

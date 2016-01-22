@@ -1,0 +1,7 @@
+NumericValue.intValue_2 2 True
+NumericValue.intValue_2 2.0 True
+NumericValue.intValue_2 5.00 False
+NumericValue.intValue_2 1 False
+NumericValue.intValue_1 1 True
+NumericValue.intValue_1 13.00 False
+NumericValue.intValue_1 2.00 False

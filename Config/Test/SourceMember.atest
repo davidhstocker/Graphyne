@@ -1,0 +1,3 @@
+Examples.L SourceMember1 L Examples.M SourceMember1 M 1 False
+Examples.M SourceMember2 M Examples.L SourceMember2 L 1 True
+Examples.M SourceMember3 M Examples.L SourceMember3 L 2 False

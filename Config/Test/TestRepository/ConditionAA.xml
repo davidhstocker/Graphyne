@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+    xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Metadata>
+        <Revision>
+          <CreationDate>2008-07-05</CreationDate>
+          <ParentUUID>ParentUUID</ParentUUID>
+          <ParentURL>ParentURL</ParentURL>
+        </Revision>
+        <Contributor>
+          <Author>David Stocker</Author>
+          <AuthorContact></AuthorContact>
+          <AuthorURL>http://www.projectangela.org</AuthorURL>
+          <Comments>First definition of Agent in RML</Comments>
+          <Copyright>Project Angela</Copyright>
+          <License>MIT</License>
+          <SourceData>SourceData</SourceData>
+        </Contributor>
+    </Metadata> 
+    
+    <ListOfMeme>
+        <!-- Numeric Conditions -->
+        <Meme id="propK_greaterThan5" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_greaterThan5_CN"/>
+        </Meme>
+        <Meme id="propK_greaterThan5_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="greaterThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="intValue_5"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+            <Description/>
+        </Meme>
+        <Meme id="propK_lessThan5" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_lessThan5_CN"/>
+        </Meme>
+        <Meme id="propK_lessThan5_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="intValue_5"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="propK_equalTo10" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_equalTo10_CN"/>
+        </Meme>
+        <Meme id="propK_equalTo10_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="Equal"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="intValue_10"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+            <Description/>
+        </Meme>
+        <Meme id="propK_notEqualTo10" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_notEqualTo10_CN"/>
+        </Meme>
+        <Meme id="propK_notEqualTo10_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="intValue_10"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="propK_greaterThan15" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_greaterThan15_CN"/>
+        </Meme>
+        <Meme id="propK_greaterThan15_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="greaterThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="intValue_15"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+            <Description/>
+        </Meme>
+        <Meme id="propK_lessThan15" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_lessThan15_CN"/>
+        </Meme>
+        <Meme id="propK_lessThan15_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="intValue_15"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="startsWithVowel" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="startsWithVowel_CS"/>
+        </Meme>
+        <Meme id="startsWithVowel_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="StartsWith"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_a"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_e"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_i"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_o"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_u"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_A"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_E"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_I"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_O"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_U"/>
+            <MemberMeme occurrence="1" memberID="ArgumentH1propH"/>
+        </Meme>
+        <Meme id="endsWithVowel" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="endsWithVowel_CS"/>
+        </Meme>
+        <Meme id="endsWithVowel_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="EndsWith"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_a"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_e"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_i"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_o"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_u"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_A"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_E"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_I"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_O"/>
+            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_U"/>
+            <MemberMeme occurrence="1" memberID="ArgumentH1propH"/>
+        </Meme>
+        
+        <Meme id="A4propA_notSameAsF1propA" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A4propA_notSameAsF1propA_CS"/>
+        </Meme>
+        <Meme id="A4propA_notSameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="NotEqual"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF"/>
+        </Meme>
+        
+        <Meme id="A4propA_sameAsF1propA" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A4propA_sameAsF1propA_CS"/>
+        </Meme>
+        <Meme id="A4propA_sameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="Equal"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF"/>
+        </Meme>
+        
+        <Meme id="A3propA_sameAsF1propA" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A3propA_sameAsF1propA_CS"/>
+        </Meme>
+        <Meme id="A3propA_sameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="Equal"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF"/>
+        </Meme>
+        
+        <!--<Meme id="A3propA_sameAsF1propA" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A3propA_sameAsF1propA_CS"/>
+        </Meme>
+        <Meme id="A3propA_sameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="Equal"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF"/>
+        </Meme>
+        -->
+        <Meme id="A4propA_notSameAsA1propA" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A4propA_notSameAsA1propA_CS"/>
+        </Meme>
+        <Meme id="A4propA_notSameAsA1propA_CS" metameme="Memetic.Condition.ConditionString">
+            <MemeProperty name="StringOperator" value="NotEqual"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_A1propA"/>
+        </Meme>
+        
+        <Meme id="C3propB_greaterThanK1propK" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_greaterThanK1propK_CN"/>
+        </Meme>
+        <Meme id="C3propB_greaterThanK1propK_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="greaterThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="C3propB_lessThanK1propK" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_lessThanK1propK_CN"/>
+        </Meme>
+        <Meme id="C3propB_lessThanK1propK_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="K1propK_greaterThanC3propB" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="K1propK_greaterThanC3propB_CN"/>
+        </Meme>
+        <Meme id="K1propK_greaterThanC3propB_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="greaterThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="K1propK_lessThanC3propB" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="K1propK_lessThanC3propB_CN"/>
+        </Meme>
+        <Meme id="K1propK_lessThanC3propB_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="C3propB_equaklToC2propB" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_equaklToC2propB_CN"/>
+        </Meme>
+        <Meme id="C3propB_equaklToC2propB_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="equal"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C2propB"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="C3propB_equaklToC1propB" metameme="Memetic.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_equaklToC1propB_CN"/>
+        </Meme>
+        <Meme id="C3propB_equaklToC1propB_CN" metameme="Memetic.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="equal"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C1propB"/>
+            <Description/>
+        </Meme>
+		
+		<Meme id="MemeC2" metameme="Examples.C">
+			<MemeProperty name="propC" value="Test String C2"/>
+			<MemeProperty name="propB" value="33.3"/>
+			<ListOfTag>
+				<Tag>SimpleMeme</Tag>
+				<Tag>NoMembers</Tag>
+				<Tag>Singleton</Tag>
+			</ListOfTag>
+			<Description>
+				Used in ConditionsMAA test case 12 for comparison with Examples.MemeC3.
+				Inherits Singleton status from parent metameme.
+				Examples.MemeC2 is changed from 33.3 by an earlier testcase, so we needed another meme for comparison.
+			</Description>
+		</Meme>	
+
+        <!-- Arguments -->
+        <Meme id="ArgumentK1propK" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK_SArgument"/>
+        </Meme>         
+        <Meme id="ArgumentK1propK_SArgument" metameme="Memetic.Condition.AgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propK"/>
+        </Meme>     
+        
+        <Meme id="ArgumentH1propH" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="ArgumentH1propH_SArgument"/>
+        </Meme>         
+        <Meme id="ArgumentH1propH_SArgument" metameme="Memetic.Condition.AgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propH"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_A4propA_F1propF" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_A4propA_F1propF_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propA"/>
+            <MemeProperty name="ObjectArgumentPath" value="propF"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_A3propA_F1propF" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_A3propA_F1propF_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propA"/>
+            <MemeProperty name="ObjectArgumentPath" value="propF"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_A4propA_A1propA" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_A1propA_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_A4propA_A1propA_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propA"/>
+            <MemeProperty name="ObjectArgumentPath" value="propA"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_C3propB_K1propK" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_C3propB_K1propK_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="ObjectArgumentPath" value="propB"/>
+            <MemeProperty name="SubjectArgumentPath" value="propK"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_K1propK_C3propB" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_K1propK_C3propB_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propB"/>
+            <MemeProperty name="ObjectArgumentPath" value="propK"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_C3propB_C2propB" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C2propB_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_C3propB_C2propB_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propB"/>
+            <MemeProperty name="ObjectArgumentPath" value="propB"/>
+        </Meme> 
+        
+        <Meme id="MultiArg_C3propB_C1propB" metameme="Memetic.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C1propB_SArgument"/>
+        </Meme>         
+        <Meme id="MultiArg_C3propB_C1propB_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+            <MemeProperty name="SubjectArgumentPath" value="propB"/>
+            <MemeProperty name="ObjectArgumentPath" value="propB"/>
+        </Meme>
+
+        
+        <!-- Numeric Values --> 
+		<Meme id="intValue_5" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_5"/>
+		</Meme>
+        <Meme id="nv_intValue_5" metameme="Memetic.Numeric.ValueNumeric">
+            <MemeProperty name="Value" value="5"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+        </Meme>
+		<Meme id="intValue_10" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_10"/>
+		</Meme>
+        <Meme id="nv_intValue_10" metameme="Memetic.Numeric.ValueNumeric">
+            <MemeProperty name="Value" value="10"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+        </Meme>
+		<Meme id="intValue_15" metameme="Memetic.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_15"/>
+		</Meme>
+        <Meme id="nv_intValue_15" metameme="Memetic.Numeric.ValueNumeric">
+            <MemeProperty name="Value" value="15"/>
+            <MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+        </Meme>
+
+                
+        
+    </ListOfMeme>
+</RMLModule>

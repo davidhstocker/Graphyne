@@ -1,0 +1,3 @@
+Examples.L SourceProperty1 L propJ 1 True
+Examples.L SourceProperty2 L propL aString True
+Examples.L SourceProperty3 F propF aString False
