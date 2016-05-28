@@ -25,6 +25,7 @@ import time
 import decimal
 import queue
 import sys
+import argparse
 #from os.path import expanduser
 
 import Graphyne.Graph as Graph
@@ -2299,6 +2300,42 @@ def testSourceSingletonSet(filename):
 
 
 
+def testGeneric():
+    method = moduleName + '.' + 'testGeneric'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+        
+    method = moduleName + '.' + 'testSourceEnhancementRemove'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+    resultSet = []
+    errata = []
+    testResult = False
+       
+    expectedResult = "True" 
+    try:
+        testEntityID = scriptFacade.createEntity()
+        memeType = scriptFacade.getEntityMemeType(testEntityID)
+        if memeType == "Graphyne.Generic":
+            operationResult = {"memeID" : "Graphyne.Generic", "ValidationResults" : [True, []]}
+            testResult = "True"
+        else:
+            errorMsg = ('Generic Entity Has meme type = %s' % (memeType) )
+            operationResult = {"memeID" : "Graphyne.Generic", "ValidationResults" : [True, []]}
+    except Exception as e:
+        errorMsg = ('Error!  Traceback = %s' % (e) )
+        operationResult = {"memeID" : "Graphyne.Generic", "ValidationResults" : [False, errorMsg]}
+        errata.append(errorMsg)
+        
+    testcase = str(operationResult["memeID"])
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+
+
 ######################
 #End Test Block
 #####################
@@ -2346,7 +2383,6 @@ def publishResults(testReports, css, fileName, titleText):
     
     # Create the <html> base element
     html = doc.createElement("html")
-    html.setAttribute("xmlns", "http://www.w3.org/1999/xhtml")
         
     # Create the <head> element
     head = doc.createElement("head")
@@ -2821,6 +2857,11 @@ def runTests(css):
     testSetData = testSourceSingletonSet('SourceCreateMeme.atest')
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Editor Singleton Setting", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #Create a Generic entity and check to see that it's meme is Graphyne.Generic
+    testSetData = testGeneric()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Generic Entity", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
@@ -2928,69 +2969,79 @@ def smokeTestSet(persistence, lLevel, css, profileName, persistenceArg = None, p
     print(("...%s: Engine Stopped (%s)") %(persistence.__name__, profileName))   
     return testReport 
 
+  
     
 if __name__ == "__main__":
-    '''         
-    Three (optional) initial params:
-        sys.argv[1] - Is the connection string.
-            "none" - no persistence
-            "memory" - Use SQLite in in-memory mode (connection = ":memory:")
-            "<valid filename>" - Use SQLite, with that file as the database
-            "<filename with .sqlite as extension, but no file>" - Use SQLite and create that file to use as the DB file
-            "<anything else>" - Presume that it is a pyodbc connection string
-            Default to None, which is no persistence
-
-        sys.argv[2]     persistenceType = The type of database used by the persistence engine.  This is used to determine which flavor of SQL syntax to use.
-            Enumeration of Possible values:
-            Default to None, which is no persistence
-            "sqlite" - Sqlite3
-            "mssql" - Miscrosoft SQL Server
-            "hana" - SAP Hana
-                        
-        sys.argv[3] - Is the log level.
-            "info", "debug" and "warning" are valid options.    
-            Default to "warning"
-        
-    E.g. Smoketest.py 'memory' 'sqlite'      #For sqlite3 database, with :memory: connection
-    E.g. Smoketest.py                        #For no persistence
-    
-    '''
-        
     print("\nStarting Graphyne Smoke Test")
+    parser = argparse.ArgumentParser(description="Graphyne Smoke Test")
+    parser.add_argument("-l", "--logl", type=str, help="|String| Graphyne's log level during the validation run.  \n    Options are (in increasing order of verbosity) 'warning', 'info' and 'debug'.  \n    Default is 'warning'")
+    parser.add_argument("-r", "--resetdb", type=str, help="|String| Reset the esisting persistence DB  This defaults to true and is only ever relevant when Graphyne is using relational database persistence.")
+    parser.add_argument("-d", "--dbtype", type=str, help="|String| The database type to be used.  If --dbtype is a relational database, it will also determine which flavor of SQL syntax to use.\n    Possible options are 'none', 'sqlite', 'mssql' and 'hana'.  \n    Default is 'none'")
+    parser.add_argument("-c", "--dbtcon", type=str, help="|String| The database connection string (if a relational DB) or filename (if SQLite).\n    'none' - no persistence.  This is the default value\n    'memory' - Use SQLite in in-memory mode (connection = ':memory:')  None persistence defaults to memory id SQlite is used\n    '<valid filename>' - Use SQLite, with that file as the database\n    <filename with .sqlite as extension, but no file> - Use SQLite and create that file to use as the DB file\n    <anything else> - Presume that it is a pyodbc connection string")
+    args = parser.parse_args()
     
-    lLevel = Graph.logLevel.DEBUG
-    try:
-        if sys.argv[4] == "info":
+    
+    lLevel = Graph.logLevel.WARNING
+    if args.logl:
+        if args.logl == "info":
             lLevel = Graph.logLevel.INFO
-        elif sys.argv[4] == "debug":
+            print("\n  -- log level = 'info'")
+        elif args.logl == "debug":
             lLevel = Graph.logLevel.DEBUG
-    except:
-        pass
+            print("\n  -- log level = 'debug'")
+        elif args.logl == "warning":
+            pass
+        else:
+            print("Invalid log level %s!  Permitted valies of --logl are 'warning', 'info' and 'debug'!" %args.logl)
+            sys.exit()
     
     persistenceType = None
+    if args.dbtype:
+        if (args.dbtype is None) or (args.dbtype == 'none'):
+            pass
+        elif (args.dbtype == 'sqlite') or (args.dbtype == 'mssql') or (args.dbtype == 'hana'):
+            persistenceType = args.dbtype
+            print("\n  -- using persistence type %s" %args.dbtype)
+        else:
+            print("Invalid persistence type %s!  Permitted valies of --dbtype are 'none', 'sqlite', 'mssql' and 'hana'!" %args.logl)
+            sys.exit()
+            
     dbConnectionString = None
-    try:
-        if sys.argv[1] is not None:
-            #dbConnectionString = sys.argv[1]
-            dbConnectionString = sys.argv[1]
-    except:
-        pass
-    try:
-        if sys.argv[2] is not None:
-            #dbConnectionString = sys.argv[1]
-            persistenceType = sys.argv[2]
-    except:
-        pass
+    if args.dbtcon:
+        if (args.dbtcon is None) or (args.dbtcon == 'none'):
+            if persistenceType is None:
+                print("\n  -- Using in-memory persistence (no connection required)")
+            elif persistenceType == 'sqlite':
+                dbConnectionString = 'memory'
+                print("\n  -- Using sqlite persistence with connection = :memory:")
+            else:
+                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                sys.exit()
+        elif args.dbtcon == 'memory':
+            if persistenceType is None:
+                #memory is a valid alternative to none with no persistence
+                print("\n  -- Using in-memory persistence (no connection required)")
+            elif persistenceType == 'sqlite':
+                dbConnectionString = args.dbtcon
+                print("\n  -- Using sqlite persistence with connection = :memory:")
+            else:
+                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                sys.exit()
+        else:
+            dbConnectionString = args.dbtcon
+            if persistenceType == 'sqlite':
+                if dbConnectionString.endswith(".sqlite"):
+                    print("\n  -- Using sqlite persistence with file %s" %dbConnectionString)
+                else:
+                    print("\n  -- Using sqlite persistence with invalid filename %s.  It must end with the .sqlite extension" %dbConnectionString)
+                    sys.exit()
+            else:
+                print("\n  -- Using persistence type %s with connection = %s" %(args.dbtype, args.dbtcon))
     
-    resetDatabase = True
-    try:
-        if sys.argv[3] is not None:
-            if sys.argv[3] == "false":
-                resetDatabase = False
-            elif sys.argv[3] == "False":
-                resetDatabase = False
-    except:
-        pass
+    resetDatabase = True    
+    if args.resetdb:
+        if args.logl.lower() == "false":
+            resetDatabase = False
     
     print(("   ...params: log level = %s, db driver = %s, connection string = %s" %(lLevel, persistenceType, dbConnectionString)))
     

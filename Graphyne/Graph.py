@@ -29,6 +29,9 @@ from . import Exceptions
 from . import Fileutils
 #import PluginFacade
 
+#remote debugger support for pydev
+#import pydevd
+
 class GraphyneTemplate(object):
     
     def getTemplateType(self):
@@ -295,24 +298,28 @@ class TemplateRepository(object):
                 try:
                     resolvedTemplate = self.templates[resolvedTemplatePath]
                 except Exception as e:
-                        exception = "Resolved template path %s has no entry in the template repository.  Traceback = %s" %(resolvedTemplatePath, e)
-                        #logQ.put( [logType , logLevel.DEBUG , method , "self.templates == %s" % (self.templates)])
-                        #debug
-                        #if resolvedTemplatePath is None:
-                            #self.resolveTemplate(callingTemplate, calledTemplate, noWarningOnFail)
-                        #/debug
-                        '''
-                        for path in self.templates:
-                            if path == resolvedTemplatePath:
-                                #logQ.put( [logType , logLevel.DEBUG , method , "----- %s == %s" % (resolvedTemplatePath, path)])
-                                resolvedTemplatePath = path[1]
-                            else: 
-                                #logQ.put( [logType , logLevel.DEBUG , method , "----- %s != %s" % (resolvedTemplatePath, path)])
-                                pass 
-                        logQ.put( [logType , logLevel.WARNING , method , exception])
-                        logQ.put( [logType , logLevel.DEBUG , method , method + u' with errors!'])
-                        '''
-                        raise Exceptions.TemplatePathError(exception)
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    exception = "Unable to resolve template path %s, Nested Traceback = %s: %s" %(resolvedTemplatePath, errorID, errorMsg)
+
+                    #debug
+                    #if resolvedTemplatePath is None:
+                        #self.resolveTemplate(callingTemplate, calledTemplate, noWarningOnFail)
+                    #/debug
+                    '''
+                    for path in self.templates:
+                        if path == resolvedTemplatePath:
+                            #logQ.put( [logType , logLevel.DEBUG , method , "----- %s == %s" % (resolvedTemplatePath, path)])
+                            resolvedTemplatePath = path[1]
+                        else: 
+                            #logQ.put( [logType , logLevel.DEBUG , method , "----- %s != %s" % (resolvedTemplatePath, path)])
+                            pass 
+                    logQ.put( [logType , logLevel.WARNING , method , exception])
+                    logQ.put( [logType , logLevel.DEBUG , method , method + u' with errors!'])
+                    '''
+                    raise Exceptions.TemplatePathError(exception).with_traceback(tb)
             
             except Exception as e:
                 
@@ -323,8 +330,12 @@ class TemplateRepository(object):
                 #if noWarningOnFail == True:
                 #    failLogLevel = logLevel.DEBUG
                     
-                #logQ.put( [logType , failLogLevel , method , "Encountered problem resolving %s from %s .  Traceback = %s" % (calledTemplate, callingTemplate, e)])
-                exception = "Unable to resolve template path %s, nested traceback = %s" %(resolvedTemplatePath,e)
+                #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                errorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                exception = "Unable to resolve template path %s, Nested Traceback = %s: %s" %(resolvedTemplatePath,errorID, errorMsg)
                 #logQ.put( [logType , logLevel.DEBUG , method , "self.templates == %s" % (self.templates)])
                 for path in self.templates:
                     if path == resolvedTemplatePath:
@@ -333,9 +344,7 @@ class TemplateRepository(object):
                     else: 
                         #logQ.put( [logType , logLevel.DEBUG , method , "----- %s != %s" % (resolvedTemplatePath, path)])
                         pass  
-                #logQ.put( [logType , logLevel.WARNING , method , exception])
-                #logQ.put( [logType , logLevel.DEBUG , method , method + u' with errors!'])
-                raise Exceptions.TemplatePathError(exception)
+                raise Exceptions.TemplatePathError(exception).with_traceback(tb)
                    
 
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
@@ -368,7 +377,12 @@ class TemplateRepository(object):
         try:
             resolvedTemplate = self.templates[calledTemplate]
         except Exception as e:
-            exception = "Resolved template path %s has no entry in the template repository.  Traceback = %s" %(calledTemplate, e)
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+
+            exception = "Resolved template path %s has no entry in the template repository.  Nested Traceback = %s: %s" %(calledTemplate, errorID, errorMsg)
             #logQ.put( [logType , logLevel.DEBUG , method , "self.templates == %s" % (self.templates)])
             for path in self.templates:
                 if path == calledTemplate:
@@ -379,7 +393,7 @@ class TemplateRepository(object):
                     pass  
             logQ.put( [logType , logLevel.WARNING , method , exception])
             #logQ.put( [logType , logLevel.DEBUG , method , method + u' with errors!'])
-            raise Exceptions.TemplatePathError(exception)
+            raise Exceptions.TemplatePathError(exception).with_traceback(tb)
             
 
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
@@ -2231,9 +2245,13 @@ class Meme(object):
         try:
             memeberMeme = templateRepository.resolveTemplate(self.path, self.metaMeme)
         except:
-            exception = "Parent metameme %s of meme %s has no entry in the template repository" % (self.metaMeme, self.path.fullTemplatePath)
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            exception = "Parent metameme %s of meme %s has no entry in the template repository.  Nested Traceback = %s: %s" % (self.metaMeme, self.path.fullTemplatePath, errorID, errorMsg)
             logQ.put( [logType , logLevel.WARNING , method , exception])
-            raise Exceptions.TemplatePathError(exception)
+            raise Exceptions.TemplatePathError(exception).with_traceback(tb)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return memeberMeme   
     
@@ -2504,8 +2522,6 @@ class Entity(object):
                     scriptLanguage = scriptEntity.getPropertyValue('Language')
                     self.setStateEventScript(scriptLocation, scriptLanguage, state)
             except Exception as e:
-                ex = "Failed to resolve Memetic.StateEventScript entity %s, child of %s entity %s. Traceback = %s" %(sesEntity.memePath.fullTemplatePath, self.memePath.fullTemplatePath, self.uuid, e)
-                
                 #debug aid
                 state = sesEntity.getPropertyValue(u'State')
                 scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType(u'Memetic.DNA.Script', linkTypes.SUBATOMIC)
@@ -2515,8 +2531,15 @@ class Entity(object):
                     scriptLanguage = scriptEntity.getPropertyValue(u'Language')
                     self.setStateEventScript(scriptLocation, scriptLanguage, state)
                     
+                #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                errorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                ex = "Failed to initialize Memetic.StateEventScript entity %s, child of %s entity %s. Nested Traceback = %s: %s" %(sesEntity.memePath.fullTemplatePath, self.memePath.fullTemplatePath, self.uuid, errorID, errorMsg)
                 logQ.put( [logType , logLevel.WARNING , method , ex])
-                raise Exceptions.StateEventScriptInitError(ex)
+                raise Exceptions.EntityInitializationError(ex).with_traceback(tb)
+
             
         if self.initScript is not None:
             try:
@@ -3436,12 +3459,14 @@ class Entity(object):
                 elif state == 1:    
                     self.execScript = function
                 elif state == 2:    
-                    self.terminateScript = function
-            except Exception as e:
-                warningMsg = "%s entity unable to resolve state event script %s in module %s.  Traceback = %e" %(self.memePath, cName, mName, e)
-                helpMsg = "This usually results from a typo in the module location or a bug in loading it.  Please check the location and verify that it can be loaded"
-                logQ.put( [logType , logLevel.WARNING , method , warningMsg])
-                logQ.put( [logType , logLevel.WARNING , method , helpMsg])
+                    self.terminateScript = function      
+            except Exception:
+                #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                errorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                raise Exceptions.StateEventScriptInitError("%s entity unable to aquire state event script %s in module %s.  Nested Traceback %s: %s" %(self.memePath, cName, mName, errorID, errorMsg)).with_traceback(tb)
 
         else:
             #Note - If any script language is added, this will need to be updated
@@ -3496,43 +3521,46 @@ class createEntityFromMeme(object):
     #evaluateEntity params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
     #five params: memePath, ActionID = None, Subject = None, Controller = None, supressInit = False
     def execute(self, params):
-        #try:
-        meme = templateRepository.resolveTemplateAbsolutely(params[0])
-        entityID = meme.getEntityFromMeme()
-        entity = entityRepository.getEntity(entityID)
-        #entity.entityLock.acquire(True)
-        
         try:
-            #todo - wtf?  params[4]?
-            if params[4] == False:
-                entity.initialize()
-        except Exception as e:
-            ex = "Unable to init entity %s of type %s.  Traceback = %s" %(entityID, entity.memePath.fullTemplatePath, e)
-            #debug
-            #entity.isInitialized = False
-            #entity.initialize()
-            '''
+            meme = templateRepository.resolveTemplateAbsolutely(params[0])
+            entityID = meme.getEntityFromMeme()
+            entity = entityRepository.getEntity(entityID)
+            #entity.entityLock.acquire(True)
+            
             try:
-                meme = templateRepository.resolveTemplateAbsolutely(params[0])
-                entityID = meme.getEntityFromMeme()
-                entity = entityRepository.getEntity(entityID)
-                entity.entityLock.acquire(True)
-                
+                #todo - wtf?  params[4]?
+                if params[4] == False:
+                    entity.initialize()
+            except Exception as e:
+                ex = "Unable to init entity %s of type %s.  Traceback = %s" %(entityID, entity.memePath.fullTemplatePath, e)
+                #debug
+                #entity.isInitialized = False
+                #entity.initialize()
+                '''
                 try:
-                    #todo - wtf?  params[4]?
-                    if params[4] == False:
-                        entity.initialize()
+                    meme = templateRepository.resolveTemplateAbsolutely(params[0])
+                    entityID = meme.getEntityFromMeme()
+                    entity = entityRepository.getEntity(entityID)
+                    entity.entityLock.acquire(True)
+                    
+                    try:
+                        #todo - wtf?  params[4]?
+                        if params[4] == False:
+                            entity.initialize()
+                    except Exception as e:
+                        pass
                 except Exception as e:
                     pass
-            except Exception as e:
-                pass
-            '''
-            raise Exceptions.ScriptError(ex)
-        #finally:
-            entity.entityLock.release()
-
-        return entityID
+                '''
+                raise Exceptions.ScriptError(ex)
+            #finally:
+                entity.entityLock.release()
     
+            return entityID
+        except Exception as e:
+            raise e
+
+
     
     
 class execStateEventScript(object):
@@ -5303,6 +5331,10 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 logQ.put( [logType , logLevel.ERROR , method , "Load queue item does not fit format: %s" %toBeIndexed])
         except Exception as e:
             logQ.put( [logType , logLevel.ERROR , method , "Error while loading metamemes from file %s.  Traceback = %s" %(toBeIndexed, e)])
+    #Before Continuing, create a Generic Metameme
+    gPath = TemplatePath("Graphyne", "GenericMetaMeme")
+    gmetaMeme = MetaMeme(gPath, False, [], [], {}, {}, False)
+    metamemes.append(gmetaMeme)
 
     #Before we can load the memes, we have to catalog the metamemes
     for metameme in metamemes:
@@ -5455,16 +5487,18 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
             #logQ.put( [logType , logLevel.WARNING , method , errorMsg])
         except Exception as e:
             logQ.put( [logType , logLevel.ERROR , method , "Error while loading memes from file %s.  Traceback = %s" %(toBeIndexed, e)])
-
     #/Loading from file
-        
-            
+    
     #lets duplicate the clonables and add them to the list
     logQ.put( [logType , logLevel.INFO , method ,"Cloning cloneable memes"])
     sourceMemesExtended = getSourceMemesExtension(sourceMemes, sourceMemes)
     sourceMemes = sourceMemesExtended
     
-    
+    #Before Compiling, just as we created a generic metameme, we'll now create a generic, hardcoded Graphyne.Generic meme
+    gMetaMeme = templateRepository.resolveTemplateAbsolutely("Graphyne.GenericMetaMeme")
+    gPath = TemplatePath("Graphyne", "Generic")
+    gMeme = SourceMeme(gPath, gMetaMeme)  
+    sourceMemes.append(gMeme)
     
     logQ.put( [logType , logLevel.INFO , method ,"Transforming implicit meme references to explicit ones"])
     for sourceMeme in sourceMemes:
@@ -5555,13 +5589,26 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
             try:
                 entity.initialize()
             except Exception as e:
-                errorMsg = "Failed to initialize entity of type %s.  Traceback = %s" %(entity.memePath.fullTemplatePath, e)
-                logQ.put( [logType , logLevel.WARNING , method , errorMsg])
                 # if a new initialization is throwing an exception, the following statement can be uncommented to try debugging it
                 entity.initialize()
-                 
+                
+                #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                nestEerrorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                errorMsg = "Failed to initialize entity of type %s.  Nested Traceback = %s: %s" %(entity.memePath.fullTemplatePath, errorID, nestEerrorMsg)
+                logQ.put( [logType , logLevel.WARNING , method , errorMsg])
+                raise Exceptions.EntityInitializationError(errorMsg).with_traceback(tb)
+        except Exceptions.EntityInitializationError as e:
+            #Error already logged
+            pass
         except Exception as e:
-            errorMsg = "Failed to initialize entity %s of unknown type.  It seems not to be in the repository.  Traceback = %s" %(entityID, e)
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            nestEerrorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            errorMsg = "Failed to initialize entity %s of unknown type.  It seems not to be in the repository.  Nested Traceback = %s: %s" %(entityID, errorID, nestEerrorMsg)
             logQ.put( [logType , logLevel.WARNING , method , errorMsg])
             #debug
             #entity = entityRepository.getEntity(entityID)
@@ -6497,13 +6544,22 @@ class ScriptFacade(object):
         
         
     def createEntityFromMeme(self, memePath, ActionID = None, Subject = None, Controller = None, supressInit = False):
-        #try: 
-        params = [memePath, ActionID, Subject, Controller, supressInit]
-        entity = self._createEntityFromMeme.execute(params)
-        return entity
-        #except Exception as e:
-            #exception = "createEntityFromMeme(%s, %s, %s, %s) traceback = %s" %(memePath, ActionID, Subject, Controller, e)
-            #raise Exceptions.ScriptError(exception)  
+        try: 
+            params = [memePath, ActionID, Subject, Controller, supressInit]
+            entity = self._createEntityFromMeme.execute(params)
+            return entity
+        except Exception as e:
+            exception = "createEntityFromMeme(%s, %s, %s, %s) traceback = %s" %(memePath, ActionID, Subject, Controller, e)
+            raise Exceptions.ScriptError(exception)  
+        
+    def createEntity(self):
+        try: 
+            params = ["Graphyne.Generic", None, None, None, False]
+            entity = self._createEntityFromMeme.execute(params)
+            return entity
+        except Exception as e:
+            exception = "createEntity(%s) traceback = %s" %("Graphyne.Generic", e)
+            raise Exceptions.ScriptError(exception)
         
         
     def deinstantiateEntity(self, entityUUID):
