@@ -21,6 +21,7 @@ from time import ctime
 import os
 import time
 import sys
+import argparse
 
 import Graphyne.Graph as Graph
 import Graphyne.Fileutils as Fileutils
@@ -39,6 +40,53 @@ totalValidSingletons = [0,0]    #[total, valid]
 
 def usage():
     print(__doc__)
+    
+    
+def busyHTMLFile(outputFilename = None):
+    # Create the minidom document
+    doc = minidom.Document()
+    
+    # Create the <html> base element
+    html = doc.createElement("html")
+    html.setAttribute("xmlns", "http://www.w3.org/1999/xhtml")
+    doc.appendChild(html)
+    
+    # Create the <head> element
+    head = doc.createElement("head")
+    title = doc.createElement("title")
+    titleTextNode = doc.createTextNode("Repository Validation - Busy")
+    title.appendChild(titleTextNode)
+    head.appendChild(title)
+    html.appendChild(head)
+    
+    # Create the <body> element
+    body = doc.createElement("body")
+    h1 = doc.createElement("h1")
+    h1Text = doc.createTextNode("The Repository is currently being validated")
+    h1.appendChild(h1Text)
+    
+    paragraph1 = doc.createElement("p")
+    pText = doc.createTextNode("Please Check back when validation is finished")
+    paragraph1.appendChild(pText)
+    
+    body.appendChild(h1)
+    body.appendChild(paragraph1)
+    
+    html.appendChild(body)
+    
+    if outputFilename is None:
+        outputFilename = "GraphyneValidationStatus.html"    
+    logRoot =  expanduser("~")
+    logDir = os.path.join(logRoot, "Graphyne")
+    if not os.path.exists(logDir):
+        os.makedirs(logDir)
+    resultFileLoc = os.path.join(logDir, outputFilename)    
+    
+    fileStream = doc.toprettyxml(indent = "    ")
+    fileObject = open(resultFileLoc, "w", encoding="utf-8")
+    fileObject.write(fileStream)
+    fileObject.close()
+    
     
 
 def countTemplates():
@@ -131,14 +179,6 @@ def validateMemes():
             except Exception as e: 
                 print(e)
         totalResults.append([moduleID, moduleCount, moduleValid, moduleResults])   
-
-    #debugging aid
-    stringThing = ""
-    for result in totalResults:
-        stringThing = "\n%s" %result
-    fileObject = open("ValidationStatus.txt", "w", encoding="utf-8")
-    fileObject.write(stringThing)
-    fileObject.close()
     return [totalValid, totalResults]
 
 
@@ -523,6 +563,9 @@ def publishResults(validationTime, counts, validationReportMeme, css = "", outpu
 def main(css, contentRepositories = [], outputFilename = None, lLevel = logLevel.WARNING, alsoValidateTestRepo = True, flaggedPersistenceType = 'none', persistenceArg = 'none', alsoUseTestDatabase = False):
     #method = moduleName + '.' + 'main'
 
+    #Flag the file busy while we work
+    busyHTMLFile()
+
     print("...Engine Start")
     #rmlEngine.start("test_info", False)
     
@@ -538,12 +581,6 @@ def main(css, contentRepositories = [], outputFilename = None, lLevel = logLevel
     Graph.startDB(contentRepositories, flaggedPersistenceType, persistenceArg, True, True, True)
         
     print("...Engine Started")
-    
-    #Flag the file busy while we work
-    Fileutils.busyHTMLFile("ValidationStatus.xhtml",\
-                           "Repository Validation",\
-                           "The Repository is currently being validated",\
-                           "Validate.py")
 
     #validation reports
     startTime = time.time()
@@ -568,12 +605,12 @@ if __name__ == "__main__":
     ''' 
     Four (optional) initial params:
         sys.argv[1] - Is the connection string.
-            "none" - no persistence
-            "memory" - Use SQLite in in-memory mode (connection = ":memory:")
-            "<valid filename>" - Use SQLite, with that file as the database
-            "<filename with .sqlite as extension, but no file>" - Use SQLite and create that file to use as the DB file
-            "<anything else>" - Presume that it is a pyodbc connection string
-            Default to None, which is no persistence
+            'none' - no persistence.  This is the default value
+            'memory' - Use SQLite in in-memory mode (connection = ":memory:")  None persistence defaults to memory id SQlite is used
+            '<valid filename>' - Use SQLite, with that file as the database
+            <filename with .sqlite as extension, but no file> - Use SQLite and create that file to use as the DB file
+            <anything else> - Presume that it is a pyodbc connection string
+            Default to None, which is no persistence.  
 
         sys.argv[2]  -  persistenceType = The type of database used by the persistence engine.  This is used to determine which flavor of SQL syntax to use.
             Enumeration of Possible values:
@@ -595,61 +632,100 @@ if __name__ == "__main__":
     
     '''
         
-    print("\nTesting Validity of Graphyne Default Schema Repository")
+    print("\nGraphyne Schema Repository Test Utility\n   ...Running")
+    parser = argparse.ArgumentParser(description="Validate the schemas in repository folders specified with the --repo option")
+    parser.add_argument("-l", "--logl", type=str, help="|String| Graphyne's log level during the validation run.  \n    Options are (in increasing order of verbosity) 'warning', 'info' and 'debug'.  \n    Default is 'warning'")
+    parser.add_argument("-v", "--valrtrepo", type=str, help="|Boolean| Include validation of Graphyne's own regression test repository.  This defaults to false and is only ever relevant when Graphyne itself is being worked on.  In that case, the regression test repo should be validated before any smoketest run")
+    parser.add_argument("-d", "--dbtype", type=str, help="|String| The database type to be used.  \n    Possible options are 'none', 'sqlite', 'mssql' and 'hana'.  \n    Default is 'none'")
+    parser.add_argument("-c", "--dbtcon", type=str, help="|String| The database connection string (if a relational DB) or filename (if SQLite).\n    'none' - no persistence.  This is the default value\n    'memory' - Use SQLite in in-memory mode (connection = ':memory:')  None persistence defaults to memory id SQlite is used\n    '<valid filename>' - Use SQLite, with that file as the database\n    <filename with .sqlite as extension, but no file> - Use SQLite and create that file to use as the DB file\n    <anything else> - Presume that it is a pyodbc connection string")
+    parser.add_argument("-r", "--repo", nargs='*', type=str, help="|String| One or more repository folders to be tested")
+    args = parser.parse_args()
     
     lLevel = Graph.logLevel.WARNING
-    try:
-        if sys.argv[4] == "info":
+    if args.logl:
+        if args.logl == "info":
             lLevel = Graph.logLevel.INFO
-        elif sys.argv[4] == "debug":
+            print("\n  -- log level = 'info'")
+        elif args.logl == "debug":
             lLevel = Graph.logLevel.DEBUG
-    except:
-        pass
+            print("\n  -- log level = 'debug'")
+        elif args.logl == "warning":
+            pass
+        else:
+            print("Invalid log level %s!  Permitted valies of --logl are 'warning', 'info' and 'debug'!" %args.logl)
+            sys.exit()
     
-    alsoValidateRepo = True
-    try:
-        if sys.argv[3] == "false":
-            alsoValidateRepo = False
-        elif sys.argv[3] == "False":
-            alsoValidateRepo = False
-    except:
-        pass   
-
-    if alsoValidateRepo == True:
-        print("\n  -- also validating the standard regression test repository")
+    nRepoCount = 1
+    alsoValidateRepo = False
+    if args.valrtrepo:
+        if (args.logl == 'true') or (args.logl == 'True'):
+            alsoValidateRepo = True
+            nRepoCount = nRepoCount + 1
+            print("\n  -- also validating the standard regression test repository")
 
     persistenceType = None
+    if args.dbtype:
+        if (args.dbtype is None) or (args.dbtype == 'none'):
+            pass
+        elif (args.dbtype == 'sqlite') or (args.dbtype == 'mssql') or (args.dbtype == 'hana'):
+            persistenceType = args.dbtype
+            print("\n  -- using persistence type %s" %args.dbtype)
+        else:
+            print("Invalid persistence type %s!  Permitted valies of --dbtype are 'none', 'sqlite', 'mssql' and 'hana'!" %args.logl)
+            sys.exit()
+            
     dbConnectionString = None
-    try:
-        if sys.argv[1] is not None:
-            #dbConnectionString = sys.argv[1]
-            dbConnectionString = sys.argv[1]
-    except:
-        pass
-    try:
-        if sys.argv[2] is not None:
-            #dbConnectionString = sys.argv[1]
-            persistenceType = sys.argv[2]
-    except:
-        pass
+    if args.dbtcon:
+        if (args.dbtcon is None) or (args.dbtcon == 'none'):
+            if persistenceType is None:
+                print("\n  -- Using in-memory persistence (no connection required)")
+            elif persistenceType == 'sqlite':
+                dbConnectionString = 'memory'
+                print("\n  -- Using sqlite persistence with connection = :memory:")
+            else:
+                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                sys.exit()
+        elif args.dbtcon == 'memory':
+            if persistenceType is None:
+                #memory is a valid alternative to none with no persistence
+                print("\n  -- Using in-memory persistence (no connection required)")
+            elif persistenceType == 'sqlite':
+                dbConnectionString = args.dbtcon
+                print("\n  -- Using sqlite persistence with connection = :memory:")
+            else:
+                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                sys.exit()
+        else:
+            dbConnectionString = args.dbtcon
+            if persistenceType == 'sqlite':
+                if dbConnectionString.endswith(".sqlite"):
+                    print("\n  -- Using sqlite persistence with file %s" %dbConnectionString)
+                else:
+                    print("\n  -- Using sqlite persistence with invalid filename %s.  It must end with the .sqlite extension" %dbConnectionString)
+                    sys.exit()
+            else:
+                print("\n  -- Using persistence type %s with connection = %s" %(args.dbtype, args.dbtcon))
+
+ 
+    additionalRepoToTest = []
+    if args.repo:
+        for additionalRepo in args.repo:            
+            additionalRepoToTest.append(additionalRepo)  
+            nRepoCount = nRepoCount + 1
+            print("\n  -- repo: %s" %additionalRepo)
+    print("\n  %s repositories (including Memetic core repo) are being validated" %nRepoCount)
+
   
     css = Fileutils.defaultCSS()
 
     try:
-        if sys.argv[3] == "sqlite":
+        if dbConnectionString == "sqlite":
             from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
-            main(css, [], None, lLevel, alsoValidateRepo, persistenceModule2)
+            main(css, additionalRepoToTest, None, lLevel, alsoValidateRepo, persistenceModule2)
             time.sleep(10.0)
-            print((sys.argv))
-            print("-- using sqlite persistence")
         else:
-            main(css, [], None, lLevel, alsoValidateRepo)
+            main(css, additionalRepoToTest, None, lLevel, alsoValidateRepo)
             time.sleep(10.0)
-            print((sys.argv))
-            print("-- using no persistence")
     except Exception as e:
-            main(css, [], None, lLevel, alsoValidateRepo)
+            main(css, additionalRepoToTest, None, lLevel, alsoValidateRepo)
             time.sleep(10.0)
-            #print(e)
-            #print (sys.argv)
-            print("-- using no persistence (default)")

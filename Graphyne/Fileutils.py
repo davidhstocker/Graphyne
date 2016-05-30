@@ -44,6 +44,15 @@ def getModuleFromResolvedPath(fullModuleName):
         #    x = getattr(x, fragment)
         x = importlib.import_module(fullModuleName)
         return x
+    except ImportError:
+        fullerror = sys.exc_info()
+        errorID = str(fullerror[0])
+        errorMsg = str(fullerror[1])
+        pathlist = []
+        for aDir in sys.path:
+            pathlist.append(aDir)
+        errorMessage = "Unable to resolve module at path %s.  module not in sys.path [ %s ].  Nested Traceback = %s:%s" %(fullModuleName, pathlist, errorID, errorMsg)
+        raise ImportError(errorMessage)
     except Exception as e:
         unused_errorMsg = "unable to resolve module at path %s" %fullModuleName
         #debug
@@ -179,7 +188,7 @@ def defaultCSS():
     goodDRow = "tr.goodDRow {background-color:white;color:black;padding-right:50px;padding-left:10px;padding-top:10px;text-align:top}"
     badOverviewRow = "tr.badOverviewRow {background-color:LightPink;color:black;font-weight:bold;padding-right:10px;padding-left:10px;padding-top:10px;text-align:top}"
     goodOverviewRow = "tr.goodOverviewRow {background-color:LightGreen;color:black;padding-right:10px;padding-left:10px;padding-top:10px;text-align:top}"
-    detailsCell = "td.detailsCell {padding-right:50px;padding-left:10px;padding-top:10px;text-align:top}"
+    detailsCell = "td.detailsCell {padding-right:50px;padding-left:10px;padding-top:10px;text-align:top;border-style:solid}}"
     vBlankSpace = "div.vBlankSpace {padding-top:100px}"
     hBlankSpace = "div.hBlankSpace {padding-left:100px}"
     vAlignment = "div.vAlignment {margin-top:10px}"
@@ -189,44 +198,6 @@ def defaultCSS():
 
 
 
-def busyHTMLFile(fileName, titleText, headerText, scriptName):
-    # Create the minidom document
-    doc = minidom.Document()
-    
-    # Create the <html> base element
-    html = doc.createElement("html")
-    html.setAttribute("xmlns", "http://www.w3.org/1999/xhtml")
-    doc.appendChild(html)
-    
-    # Create the <head> element
-    head = doc.createElement("head")
-    title = doc.createElement("title")
-    titleTextNode = doc.createTextNode("%s - Busy" %titleText)
-    title.appendChild(titleTextNode)
-    head.appendChild(title)
-    html.appendChild(head)
-    
-    # Create the <body> element
-    body = doc.createElement("body")
-    h1 = doc.createElement("h1")
-    h1Text = doc.createTextNode(headerText)
-    h1.appendChild(h1Text)
-    
-    paragraph1 = doc.createElement("p")
-    pText = doc.createTextNode("Please Check back when the script %s is finished" %scriptName)
-    paragraph1.appendChild(pText)
-    
-    body.appendChild(h1)
-    body.appendChild(paragraph1)
-    
-    html.appendChild(body)
-    
-    fileStream = doc.toprettyxml(indent="    ")
-    fileObject = open(fileName, "w", encoding="utf-8")
-    fileObject.write(fileStream)
-    fileObject.close()
-    
-    
     
 def smart_str(s, encoding='utf-8', strings_only=False, errors='strict'):
     """
