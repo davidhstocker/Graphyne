@@ -21,7 +21,7 @@ moduleName = 'Scripting'
 class API(threading.Thread):
 
     def __init__(self):
-        self.localFacade = Graph.scriptFacade.getFacade()
+        self.localFacade = Graph.api.getAPI()
 
 
 

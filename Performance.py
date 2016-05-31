@@ -33,7 +33,7 @@ import Graphyne.Fileutils as Fileutils
 
 responseQueue = queue.Queue()
 entityList = []
-scriptFacade = None
+api = None
 
 
 global testImplicit

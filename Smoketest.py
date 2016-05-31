@@ -34,7 +34,7 @@ import Graphyne.Exceptions as Exceptions
 
 responseQueue = queue.Queue()
 entityList = []
-scriptFacade = None
+api = None
 
 
 global testImplicit
@@ -441,23 +441,23 @@ def testEntityPhase1(phaseName = 'testEntityPhase1', fName = "Entity_Phase1.ates
 
         testResult = False
         try:
-            entityID = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
+            entityID = Graph.api.createEntityFromMeme(stringArray[0])
             Graph.logQ.put( [logType , logLevel.DEBUG , method , "Entity UUID = %s" %(entityID)])
             propTypeCorrect = False
             propValueCorrect = False
             
             Graph.logQ.put( [logType , logLevel.DEBUG , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
-            hasProp = Graph.scriptFacade.getEntityHasProperty(entityID, stringArray[1])
+            hasProp = Graph.api.getEntityHasProperty(entityID, stringArray[1])
             if hasProp == False:
                 Graph.logQ.put( [logType , logLevel.DEBUG , method , "entity from meme %s does not have property %s" %(entityID, stringArray[1])])
             else:
-                propType = Graph.scriptFacade.getEntityPropertyType(entityID, stringArray[1])
+                propType = Graph.api.getEntityPropertyType(entityID, stringArray[1])
                 if stringArray[2] == propType:
                     propTypeCorrect = True
                 else:
                     Graph.logQ.put( [logType , logLevel.DEBUG , method , "property %s in entity from meme %s is wrong type.  Expected %s.  Got %s" %(stringArray[1], entityID, stringArray[2], propType)])
                 
-                propValue = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+                propValue = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
                 if propType == 'Boolean':
                     expValue = False
                     if stringArray[3].lower() == "true":
@@ -498,7 +498,7 @@ def testEntityPhase1(phaseName = 'testEntityPhase1', fName = "Entity_Phase1.ates
     
     
 def testEntityPhase1_1(phaseName = 'testEntityPhase1_1', fName = "Entity_Phase1.atest"):
-    ''' a repeat of testEntityPhase1, but using the Python script interface instead of going directly against Graph.scriptFacade 
+    ''' a repeat of testEntityPhase1, but using the Python script interface instead of going directly against Graph.api 
         Tests the following script commands:
             createEntityFromMeme
             getEntityHasProperty
@@ -525,27 +525,27 @@ def testEntityPhase1_1(phaseName = 'testEntityPhase1_1', fName = "Entity_Phase1.
 
         testResult = False
         try:
-            #entityID = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
-            entityID = scriptFacade.createEntityFromMeme(stringArray[0])
+            #entityID = Graph.api.createEntityFromMeme(stringArray[0])
+            entityID = api.createEntityFromMeme(stringArray[0])
             Graph.logQ.put( [logType , logLevel.DEBUG , method , "Entity UUID = %s" %(entityID)])
             propTypeCorrect = False
             propValueCorrect = False
             
             Graph.logQ.put( [logType , logLevel.DEBUG , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
-            #hasProp = Graph.scriptFacade.getEntityHasProperty(entityID, stringArray[1])
-            hasProp = scriptFacade.getEntityHasProperty(entityID, stringArray[1])
+            #hasProp = Graph.api.getEntityHasProperty(entityID, stringArray[1])
+            hasProp = api.getEntityHasProperty(entityID, stringArray[1])
             if hasProp == False:
                 Graph.logQ.put( [logType , logLevel.DEBUG , method , "entity from meme %s does not have property %s" %(entityID, stringArray[1])])
             else:
-                #propType = Graph.scriptFacade.getEntityPropertyType(entityID, stringArray[1])
-                propType = scriptFacade.getEntityPropertyType(entityID, stringArray[1])
+                #propType = Graph.api.getEntityPropertyType(entityID, stringArray[1])
+                propType = api.getEntityPropertyType(entityID, stringArray[1])
                 if stringArray[2] == propType:
                     propTypeCorrect = True
                 else:
                     Graph.logQ.put( [logType , logLevel.DEBUG , method , "property %s in entity from meme %s is wrong type.  Expected %s.  Got %s" %(stringArray[1], entityID, stringArray[2], propType)])
                 
-                #propValue = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
-                propValue = scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+                #propValue = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
+                propValue = api.getEntityPropertyValue(entityID, stringArray[1])
                 if propType == 'Boolean':
                     expValue = False
                     if stringArray[3].lower() == "true":
@@ -608,10 +608,10 @@ def testEntityPhase2(testPhase = 'testEntityPhase2', fileName = 'Entity_Phase2.a
 
         testResult = False
         try:
-            entityID = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
-            Graph.scriptFacade.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
-            getter = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
-            propType = Graph.scriptFacade.getEntityPropertyType(entityID, stringArray[1])
+            entityID = Graph.api.createEntityFromMeme(stringArray[0])
+            Graph.api.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
+            getter = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
+            propType = Graph.api.getEntityPropertyType(entityID, stringArray[1])
             
             #reformat the expected result from unicode string to that which is expected in the property
             expectedResult = None
@@ -651,7 +651,7 @@ def testEntityPhase2(testPhase = 'testEntityPhase2', fileName = 'Entity_Phase2.a
     
     
 def testEntityPhase2_1( testPhase = 'testEntityPhase2_1', fileName = 'Entity_Phase2.atest'):
-    ''' a repeat of testEntityPhase2, but using the Python script interface instead of going directly against Graph.scriptFacade 
+    ''' a repeat of testEntityPhase2, but using the Python script interface instead of going directly against Graph.api 
         Tests the following script commands:
             setEntityPropertyValue
             getEntityPropertyValue
@@ -676,10 +676,10 @@ def testEntityPhase2_1( testPhase = 'testEntityPhase2_1', fileName = 'Entity_Pha
 
         testResult = False
         try:
-            entityID = scriptFacade.createEntityFromMeme(stringArray[0])
-            scriptFacade.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
-            getter = scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
-            propType = scriptFacade.getEntityPropertyType(entityID, stringArray[1])
+            entityID = api.createEntityFromMeme(stringArray[0])
+            api.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
+            getter = api.getEntityPropertyValue(entityID, stringArray[1])
+            propType = api.getEntityPropertyType(entityID, stringArray[1])
             
             #reformat the expected result from unicode string to that which is expected in the property
             expectedResult = None
@@ -758,46 +758,46 @@ def testEntityPhase3():
         step3Result = False
         try:
 
-            entityID = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
+            entityID = Graph.api.createEntityFromMeme(stringArray[0])
             
             #step 1
             if stringArray[2] == "String":
-                Graph.scriptFacade.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = stringArray[3]
             elif stringArray[2] == "Integer":
-                Graph.scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = int(stringArray[3])
             elif stringArray[2] == "Decimal":
-                Graph.scriptFacade.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = decimal.Decimal(stringArray[3])
             else:
-                Graph.scriptFacade.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = False
                 if str.lower(stringArray[3]) == 'true':
                     expectedResult = True
                     
-            getter = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+            getter = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
             #now compare getter to the reformatted stringArray[2] and see if we have successfully altered the property
             if getter == expectedResult:
                 step1Result = True
                 
             #step 2
-            Graph.scriptFacade.removeEntityProperty(entityID, stringArray[1])
-            getter = Graph.scriptFacade.getEntityHasProperty(entityID, stringArray[1])
+            Graph.api.removeEntityProperty(entityID, stringArray[1])
+            getter = Graph.api.getEntityHasProperty(entityID, stringArray[1])
             if getter == False:
                 step2Result = True
                 
             #step 3
             if stringArray[2] == "String":
-                Graph.scriptFacade.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
             elif stringArray[2] == "Integer":
-                Graph.scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
             elif stringArray[2] == "Decimal":
-                Graph.scriptFacade.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
             else:
-                Graph.scriptFacade.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
-            Graph.scriptFacade.removeAllCustomPropertiesFromEntity(entityID)
-            getter = Graph.scriptFacade.getEntityHasProperty(entityID, stringArray[1])
+                Graph.api.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
+            Graph.api.removeAllCustomPropertiesFromEntity(entityID)
+            getter = Graph.api.getEntityHasProperty(entityID, stringArray[1])
             if getter == False:
                 step3Result = True
 
@@ -825,7 +825,7 @@ def testEntityPhase3():
     
     
 def testEntityPhase3_1():
-    ''' a repeat of testEntityPhase3, but using the Python script interface instead of going directly against Graph.scriptFacade  
+    ''' a repeat of testEntityPhase3, but using the Python script interface instead of going directly against Graph.api  
         
         Tests the following script commands:
             addEntityDecimalProperty
@@ -859,58 +859,58 @@ def testEntityPhase3_1():
         step3Result = False
         try:
 
-            entityID = scriptFacade.createEntityFromMeme(stringArray[0])
+            entityID = api.createEntityFromMeme(stringArray[0])
             
             #step 1
             if stringArray[2] == "String":
-                #Graph.scriptFacade.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
+                #Graph.api.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = stringArray[3]
             elif stringArray[2] == "Integer":
-                #Graph.scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                #Graph.api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = int(stringArray[3])
             elif stringArray[2] == "Decimal":
-                #Graph.scriptFacade.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
+                #Graph.api.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = decimal.Decimal(stringArray[3])
             else:
-                Graph.scriptFacade.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
+                Graph.api.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
                 expectedResult = False
                 if str.lower(stringArray[3]) == 'true':
                     expectedResult = True
                     
-            #getter = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
-            getter = scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+            #getter = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
+            getter = api.getEntityPropertyValue(entityID, stringArray[1])
             #now compare getter to the reformatted stringArray[2] and see if we have successfully altered the property
             if getter == expectedResult:
                 step1Result = True
                 
             #step 2
-            #Graph.scriptFacade.removeEntityProperty(entityID, stringArray[1])
-            #getter = Graph.scriptFacade.getEntityHasProperty(entityID, stringArray[1])
-            scriptFacade.removeEntityProperty(entityID, stringArray[1])
-            getter = scriptFacade.getEntityHasProperty(entityID, stringArray[1])
+            #Graph.api.removeEntityProperty(entityID, stringArray[1])
+            #getter = Graph.api.getEntityHasProperty(entityID, stringArray[1])
+            api.removeEntityProperty(entityID, stringArray[1])
+            getter = api.getEntityHasProperty(entityID, stringArray[1])
             if getter == False:
                 step2Result = True
                 
             #step 3
             if stringArray[2] == "String":
-                #Graph.scriptFacade.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
+                #Graph.api.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityStringProperty(entityID, stringArray[1], stringArray[3])
             elif stringArray[2] == "Integer":
-                #Graph.scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                #Graph.api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
             elif stringArray[2] == "Decimal":
-                #Graph.scriptFacade.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
+                #Graph.api.addEntityDecimalProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityIntegerProperty(entityID, stringArray[1], stringArray[3])
             else:
-                #Graph.scriptFacade.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
-                scriptFacade.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
-            #Graph.scriptFacade.removeAllCustomPropertiesFromEntity(entityID)
-            #getter = Graph.scriptFacade.getEntityHasProperty(entityID, stringArray[1])
-            scriptFacade.removeAllCustomPropertiesFromEntity(entityID)
-            getter = scriptFacade.getEntityHasProperty(entityID, stringArray[1])
+                #Graph.api.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
+                api.addEntityBooleanProperty(entityID, stringArray[1], stringArray[3])
+            #Graph.api.removeAllCustomPropertiesFromEntity(entityID)
+            #getter = Graph.api.getEntityHasProperty(entityID, stringArray[1])
+            api.removeAllCustomPropertiesFromEntity(entityID)
+            getter = api.getEntityHasProperty(entityID, stringArray[1])
             if getter == False:
                 step3Result = True
 
@@ -966,12 +966,12 @@ def testEntityPhase4():
 
         testResult = False
         try:
-            entityID = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
-            baseValue = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+            entityID = Graph.api.createEntityFromMeme(stringArray[0])
+            baseValue = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
             
-            Graph.scriptFacade.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
-            getter = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
-            propType = Graph.scriptFacade.getEntityPropertyType(entityID, stringArray[1])
+            Graph.api.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
+            getter = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
+            propType = Graph.api.getEntityPropertyType(entityID, stringArray[1])
             
             #reformat the expected result from unicode string to that which is expected in the property
             expectedResult = None
@@ -988,8 +988,8 @@ def testEntityPhase4():
 
             #now compare getter to the reformatted stringArray[2] and see if we have successfully altered the property
             if getter == expectedResult:
-                Graph.scriptFacade.revertEntityPropertyValues(entityID, False)
-                getter = Graph.scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+                Graph.api.revertEntityPropertyValues(entityID, False)
+                getter = Graph.api.getEntityPropertyValue(entityID, stringArray[1])
                 if getter == baseValue:
                     testResult = True
 
@@ -1015,7 +1015,7 @@ def testEntityPhase4():
     
     
 def testEntityPhase4_1():
-    ''' a repeat of testEntityPhase3, but using the Python script interface instead of going directly against Graph.scriptFacade '''
+    ''' a repeat of testEntityPhase3, but using the Python script interface instead of going directly against Graph.api '''
         
     method = moduleName + '.' + 'testEntityPhase4.1'
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
@@ -1036,12 +1036,12 @@ def testEntityPhase4_1():
 
         testResult = False
         try:
-            entityID = scriptFacade.createEntityFromMeme(stringArray[0])
-            baseValue = scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+            entityID = api.createEntityFromMeme(stringArray[0])
+            baseValue = api.getEntityPropertyValue(entityID, stringArray[1])
             
-            scriptFacade.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
-            getter = scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
-            propType = scriptFacade.getEntityPropertyType(entityID, stringArray[1])
+            api.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
+            getter = api.getEntityPropertyValue(entityID, stringArray[1])
+            propType = api.getEntityPropertyType(entityID, stringArray[1])
             
             #reformat the expected result from unicode string to that which is expected in the property
             expectedResult = None
@@ -1058,8 +1058,8 @@ def testEntityPhase4_1():
 
             #now compare getter to the reformatted stringArray[2] and see if we have successfully altered the property
             if getter == expectedResult:
-                scriptFacade.revertEntityPropertyValues(entityID, False)
-                getter = scriptFacade.getEntityPropertyValue(entityID, stringArray[1])
+                api.revertEntityPropertyValues(entityID, False)
+                getter = api.getEntityPropertyValue(entityID, stringArray[1])
                 if getter == baseValue:
                     testResult = True
 
@@ -1129,7 +1129,7 @@ def testEntityPhase6():
 
         try: 
         
-            isSingleton = Graph.scriptFacade.getIsMemeSingleton(stringArray[0])
+            isSingleton = Graph.api.getIsMemeSingleton(stringArray[0])
             if expectedTestResult == isSingleton:
                 mSingletonFlagCorrect = True
                 
@@ -1152,8 +1152,8 @@ def testEntityPhase6():
     
     
                 
-            entityID = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
-            entityIsSingleton = Graph.scriptFacade.getIsEntitySingleton(entityID)
+            entityID = Graph.api.createEntityFromMeme(stringArray[0])
+            entityIsSingleton = Graph.api.getIsEntitySingleton(entityID)
             if isSingleton == False:
                 if entityIsSingleton == False:
                     eSingletonFlagCorrect = True
@@ -1225,7 +1225,7 @@ def testEntityPhase6_1():
 
         try: 
         
-            isSingleton = scriptFacade.getIsMemeSingleton(stringArray[0])
+            isSingleton = api.getIsMemeSingleton(stringArray[0])
             if expectedTestResult == isSingleton:
                 mSingletonFlagCorrect = True
                 
@@ -1248,8 +1248,8 @@ def testEntityPhase6_1():
     
     
                 
-            entityID = scriptFacade.createEntityFromMeme(stringArray[0])
-            entityIsSingleton = scriptFacade.getIsEntitySingleton(entityID)
+            entityID = api.createEntityFromMeme(stringArray[0])
+            entityIsSingleton = api.getIsEntitySingleton(entityID)
             if isSingleton == False:
                 if entityIsSingleton == False:
                     eSingletonFlagCorrect = True
@@ -1317,18 +1317,18 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
 
         testResult = False
         try:
-            entityID0 = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
-            entityID1 = Graph.scriptFacade.createEntityFromMeme(stringArray[1])
+            entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
+            entityID1 = Graph.api.createEntityFromMeme(stringArray[1])
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if stringArray[2] != "X":
-                #mountPoints = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
-                mountPoints = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
                                 
                 unusedMountPointsOverview = {}
                 for mountPoint in mountPoints:
                     try:
-                        mpMemeType = scriptFacade.getEntityMemeType(mountPoint)
+                        mpMemeType = api.getEntityMemeType(mountPoint)
                         unusedMountPointsOverview[mountPoint] = mpMemeType
                     except Exception as e:
                         #errorMessage = "debugHelperMemeType warning in Smoketest.testEntityPhase7.  Traceback = %s" %e
@@ -1336,9 +1336,9 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
                         raise e
                 
                 for mountPoint in mountPoints:
-                    scriptFacade.addEntityLink(mountPoint, entityID1, int(stringArray[5]))
+                    api.addEntityLink(mountPoint, entityID1, int(stringArray[5]))
             else:
-                scriptFacade.addEntityLink(entityID0, entityID1, int(stringArray[5]))
+                api.addEntityLink(entityID0, entityID1, int(stringArray[5]))
               
             backTrackCorrect = False
             linkType = None
@@ -1347,15 +1347,15 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
             
             #see if we can get from entityID0 to entityID1 via stringArray[3]
             addLocationCorrect = False
-            #addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], [}, linkType)
-            addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
+            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], [}, linkType)
+            addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
             if len(addLocationList) > 0:
                 addLocationCorrect = True
                 
             #see if we can get from entityID1 to entityID0 via stringArray[4]
             backTrackCorrect = False
-            #backTrackLocationList = scriptFacade.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
-            backTrackLocationList = scriptFacade.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
+            #backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
+            backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
             if len(backTrackLocationList) > 0:
                 backTrackCorrect = True   
             
@@ -1415,16 +1415,16 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
         part1TestResult = False
         testResult = False
         try:
-            entityID0 = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
-            entityID1 = Graph.scriptFacade.createEntityFromMeme(stringArray[1])
+            entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
+            entityID1 = Graph.api.createEntityFromMeme(stringArray[1])
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             rememberMe = {}
             
-            #mountPoints = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
-            mountPoints = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+            #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
+            mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
             for mountPoint in mountPoints:
-                scriptFacade.addEntityLink(mountPoint, entityID1, int(stringArray[5]))
+                api.addEntityLink(mountPoint, entityID1, int(stringArray[5]))
                 rememberMe[mountPoint] = entityID1
              
             backTrackCorrect = False
@@ -1434,15 +1434,15 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
             
             #see if we can get from entityID0 to entityID1 via stringArray[3]
             addLocationCorrect = False
-            #addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
-            addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
+            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
+            addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
             if len(addLocationList) > 0:
                 addLocationCorrect = True
                 
             #see if we can get from entityID1 to entityID0 via stringArray[4]
             backTrackCorrect = False
-            #backTrackLocationList = scriptFacade.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
-            backTrackLocationList = scriptFacade.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
+            #backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
+            backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
             if len(backTrackLocationList) > 0:
                 backTrackCorrect = True   
             
@@ -1452,11 +1452,11 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
             #Time for phase 2    
             #Now remove that added member.  This is why we kept track of that added member; to speed up removal
             for mountPoint in rememberMe.keys():
-                scriptFacade.removeEntityLink(mountPoint, entityID1)
+                api.removeEntityLink(mountPoint, entityID1)
     
             secondAddLocationCorrect = False
-            #addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
-            addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
+            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
+            addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
                 
             if len(addLocationList) == 0:
                 secondAddLocationCorrect = True
@@ -1511,10 +1511,10 @@ def testEntityPhase10(phaseName = 'testEntityPhase10', fName = "Entity_Phase10.a
         testResult = False
         
         try:
-            entityID0 = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
+            entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
             
-            #trackLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], {}, None)
-            trackLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], None)
+            #trackLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, None)
+            trackLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[2], None)
             if len(trackLocationList) > 0:
                 testResult = True
         except Exception as e:
@@ -1566,15 +1566,15 @@ def testTraverseParams(phaseName = 'testTraverseParams', fName = "TraverseWithPa
         testResult = False
         
         try:
-            entityID0 = Graph.scriptFacade.createEntityFromMeme("TraverseParameters.A")
-            entityID1 = Graph.scriptFacade.createEntityFromMeme("TraverseParameters.B")
-            Graph.scriptFacade.addEntityLink(entityID0, entityID1, 0, {'a':4})
+            entityID0 = Graph.api.createEntityFromMeme("TraverseParameters.A")
+            entityID1 = Graph.api.createEntityFromMeme("TraverseParameters.B")
+            Graph.api.addEntityLink(entityID0, entityID1, 0, {'a':4})
             
             if n == 70:
                 unusedCatchMe = True
             
             traversePath = stringArray[0].strip()
-            trackLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, traversePath, None)
+            trackLocationList = api.getLinkCounterpartsByType(entityID0, traversePath, None)
             if len(trackLocationList) > 0:
                 testResult = True
         except Exception as e:
@@ -1618,10 +1618,10 @@ def testNumericValue(filename):
 
         testResult = False
         try:
-            entityIDList = scriptFacade.getEntitiesByMemeType(stringArray[0])
+            entityIDList = api.getEntitiesByMemeType(stringArray[0])
             for entityIDListEntry in entityIDList:
                 entityID = entityIDListEntry
-            numberList = scriptFacade.evaluateEntity(entityID, testArgumentMap)
+            numberList = api.evaluateEntity(entityID, testArgumentMap)
             argAsDecimal = decimal.Decimal(stringArray[1])
             if argAsDecimal in numberList:
                 testResult = True
@@ -1676,39 +1676,39 @@ def testImplicitMeme(phaseName = 'testImplicitMeme', fName = "ImplicitMeme.atest
         testResult = False
         try:
             try:
-                entityID0 = Graph.scriptFacade.createEntityFromMeme(stringArray[0])
+                entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
             except Exception as e:
                 raise DBError(stringArray[0])
             try:
-                entityID1 = Graph.scriptFacade.createEntityFromMeme(stringArray[1])
+                entityID1 = Graph.api.createEntityFromMeme(stringArray[1])
             except Exception as e:
                 raise DBError(stringArray[1])
                 
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if (stringArray[2] != '**DIRECT**'):
-                #mountPoints = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
-                mountPoints = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
                 for mountPoint in mountPoints:
-                    scriptFacade.addEntityLink(mountPoint, entityID1, 0)
+                    api.addEntityLink(mountPoint, entityID1, 0)
             else:
                 #If we have a **DIRECT** mount, then attach entity 1 to entity 0
-                scriptFacade.addEntityLink(entityID0, entityID1, 0)
+                api.addEntityLink(entityID0, entityID1, 0)
               
             backTrackCorrect = False
             linkType = None
             
             #see if we can get from entityID0 to entityID1 via stringArray[3]
             addLocationCorrect = False
-            #addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
-            addLocationList = scriptFacade.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
+            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
+            addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
             if len(addLocationList) > 0:
                 addLocationCorrect = True
                 
             #see if we can get from entityID1 to entityID0 via stringArray[4]
             backTrackCorrect = False
-            #backTrackLocationList = scriptFacade.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
-            backTrackLocationList = scriptFacade.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
+            #backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
+            backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
             if len(backTrackLocationList) > 0:
                 backTrackCorrect = True   
             
@@ -1753,7 +1753,7 @@ def testCondition(filename):
         unicodeReadLine = str(eachReadLine)
         stringArray = str.split(unicodeReadLine)
         
-        entityIDList = scriptFacade.getEntitiesByMemeType(stringArray[0])
+        entityIDList = api.getEntitiesByMemeType(stringArray[0])
         for entityIDListEntry in entityIDList:
             subjectID = entityIDListEntry
             testArgumentMap = {'subjectID' : subjectID, 'objectID': subjectID, stringArray[2] : stringArray[1]}
@@ -1773,10 +1773,10 @@ def testCondition(filename):
 
         testResult = False
         try:
-            entityIDList = scriptFacade.getEntitiesByMemeType(stringArray[0])
+            entityIDList = api.getEntitiesByMemeType(stringArray[0])
             for entityIDListEntry in entityIDList:
                 entityID = entityIDListEntry
-            testResult = scriptFacade.evaluateEntity(entityID, testArgumentMap)
+            testResult = api.evaluateEntity(entityID, testArgumentMap)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
             errata.append(errorMsg)
@@ -1812,10 +1812,10 @@ def testAACondition(filename):
         unicodeReadLine = str(eachReadLine)
         stringArray = str.split(unicodeReadLine)
         testArgumentMap = {}
-        subjectID = scriptFacade.createEntityFromMeme(stringArray[1])
+        subjectID = api.createEntityFromMeme(stringArray[1])
         objectID = None
         try:
-            objectID = scriptFacade.createEntityFromMeme(stringArray[2])
+            objectID = api.createEntityFromMeme(stringArray[2])
         except:
             pass
 
@@ -1832,7 +1832,7 @@ def testAACondition(filename):
         
         testResult = False
         try:
-            testResult = scriptFacade.evaluateEntity(stringArray[0], testArgumentMap)
+            testResult = api.evaluateEntity(stringArray[0], testArgumentMap)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
             errata.append(errorMsg)
@@ -1875,7 +1875,7 @@ def testSourceCreateMeme(filename):
         
         testResult = False
         try:
-            operationResult = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
+            operationResult = api.sourceMemeCreate(modulePath, memeName, metamemePath)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
             operationResult = {"memeID" : "%s.%s" %(modulePath, memeName), "ValidationResults" : [False, errorMsg]}
@@ -1927,8 +1927,8 @@ def testSourceProperty(filename):
         
         testResult = "False"
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
-            operationResult = scriptFacade.sourceMemePropertySet(sourceMeme["memeID"], propName, propValueStr)
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            operationResult = api.sourceMemePropertySet(sourceMeme["memeID"], propName, propValueStr)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
             operationResult = {"memeID" : "%s.%s" %(modulePath, memeName), "ValidationResults" : [False, errorMsg]}
@@ -1980,9 +1980,9 @@ def testSourcePropertyRemove(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
-            unusedAddProp = scriptFacade.sourceMemePropertySet(sourceMeme["memeID"], propName, propValueStr)
-            operationResult = scriptFacade.sourceMemePropertyRemove(sourceMeme["memeID"], propName)
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            unusedAddProp = api.sourceMemePropertySet(sourceMeme["memeID"], propName, propValueStr)
+            operationResult = api.sourceMemePropertyRemove(sourceMeme["memeID"], propName)
             
             #list: [u'SourceProperty1_remove.L', [True, []]]
             validation = operationResult["ValidationResults"]
@@ -2040,9 +2040,9 @@ def testSourceMember(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = scriptFacade.sourceMemeCreate(memberModulePath, memberMemeName, memberMetamemePath)
-            operationResult = scriptFacade.sourceMemeMemberAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"], occurrence)
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(memberModulePath, memberMemeName, memberMetamemePath)
+            operationResult = api.sourceMemeMemberAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"], occurrence)
             validation = operationResult["ValidationResults"]
             if validation[0] == True:
                 testResult = str(True)
@@ -2051,7 +2051,7 @@ def testSourceMember(filename):
                 errata = validation[1]
         except Exception as e:
             errorMsg = ('Error in testcase testSourceMember!  Traceback = %s' % (e) )
-            scriptFacade.writeError(errorMsg)
+            api.writeError(errorMsg)
             errata.append(errorMsg)
 
         testcase = "%s has member %s" %(sourceMeme["memeID"], sourceMemberMeme["memeID"])
@@ -2096,10 +2096,10 @@ def testSourceMemberRemove(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = scriptFacade.sourceMemeCreate(memberModulePath, memberMemeName, memberMetamemePath)
-            unusedAdd = scriptFacade.sourceMemeMemberAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"], occurrence)
-            operationResult = scriptFacade.sourceMemeMemberRemove(sourceMeme["memeID"], sourceMemberMeme["memeID"])
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(memberModulePath, memberMemeName, memberMetamemePath)
+            unusedAdd = api.sourceMemeMemberAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"], occurrence)
+            operationResult = api.sourceMemeMemberRemove(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             validation = operationResult["ValidationResults"]
             if validation[0] == True:
                 testResult = str(True)
@@ -2152,9 +2152,9 @@ def testSourceEnhancement(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = scriptFacade.sourceMemeCreate(enhancedModulePath, enhancedMemeName, enhancedMetamemePath)
-            operationResult = scriptFacade.sourceMemeEnhancementAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"])
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(enhancedModulePath, enhancedMemeName, enhancedMetamemePath)
+            operationResult = api.sourceMemeEnhancementAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             validation = operationResult["ValidationResults"]
             if validation[0] == True:
                 testResult = str(True)
@@ -2209,10 +2209,10 @@ def testSourceEnhancementRemove(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = scriptFacade.sourceMemeCreate(enhancedModulePath, enhancedMemeName, enhancedMetamemePath)
-            unusedAddEnhancement = scriptFacade.sourceMemeEnhancementAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"])
-            operationResult = scriptFacade.sourceMemeEnhancementRemove(sourceMeme["memeID"], sourceMemberMeme["memeID"])
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(enhancedModulePath, enhancedMemeName, enhancedMetamemePath)
+            unusedAddEnhancement = api.sourceMemeEnhancementAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"])
+            operationResult = api.sourceMemeEnhancementRemove(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             validation = operationResult["ValidationResults"]
             if validation[0] == True:
                 testResult = str(True)
@@ -2265,16 +2265,16 @@ def testSourceSingletonSet(filename):
         afterRemoval = False
         operationResult = {}
         try:
-            sourceMeme = scriptFacade.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
             
-            setAsSingleton = scriptFacade.sourceMemeSetSingleton(sourceMeme["memeID"], True)
-            afterSingleton = scriptFacade.getIsMemeSingleton(sourceMeme["memeID"])
+            setAsSingleton = api.sourceMemeSetSingleton(sourceMeme["memeID"], True)
+            afterSingleton = api.getIsMemeSingleton(sourceMeme["memeID"])
             if afterSingleton == False:
                 verboseResults = setAsSingleton["ValidationResults"]
                 errata.append(verboseResults[1]) 
                 
-            setAsNonSingleton = scriptFacade.sourceMemeSetSingleton(sourceMeme["memeID"], False)
-            afterRemoval = scriptFacade.getIsMemeSingleton(sourceMeme["memeID"])
+            setAsNonSingleton = api.sourceMemeSetSingleton(sourceMeme["memeID"], False)
+            afterRemoval = api.getIsMemeSingleton(sourceMeme["memeID"])
             if afterRemoval == True:
                 verboseResults = setAsNonSingleton["ValidationResults"]
                 errata.append(verboseResults[1]) 
@@ -2312,8 +2312,8 @@ def testGeneric():
        
     expectedResult = "True" 
     try:
-        testEntityID = scriptFacade.createEntity()
-        memeType = scriptFacade.getEntityMemeType(testEntityID)
+        testEntityID = api.createEntity()
+        memeType = api.getEntityMemeType(testEntityID)
         if memeType == "Graphyne.Generic":
             operationResult = {"memeID" : "Graphyne.Generic", "ValidationResults" : [True, []]}
             testResult = "True"
@@ -2650,17 +2650,17 @@ def runTests(css):
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
     
     #Make sure that we have a script facade available
-    global scriptFacade
-    scriptFacade = Graph.scriptFacade.getFacade()
+    global api
+    api = Graph.api.getAPI()
     
     # A line to prevent pydev from complaining about unused variables
-    dummyIgnoreThis = str(scriptFacade)
+    dummyIgnoreThis = str(api)
     
     # a helper item for debugging whther or not a particular entity is in the repo
-    debugHelperIDs = scriptFacade.getAllEntities()
+    debugHelperIDs = api.getAllEntities()
     for debugHelperID in debugHelperIDs:
         try:
-            debugHelperMemeType = scriptFacade.getEntityMemeType(debugHelperID)
+            debugHelperMemeType = api.getEntityMemeType(debugHelperID)
             entityList.append([str(debugHelperID), debugHelperMemeType])
         except Exception as unusedE:
             #This exception is normally left as a pass.  If you need to debug the preceeding code, then uncomment the block below.
@@ -2941,7 +2941,7 @@ def smokeTestSet(persistence, lLevel, css, profileName, persistenceArg = None, p
                         if template.className == "Meme":
                             if template.isSingleton != True:
                                 try:
-                                    unusedEntityID = Graph.scriptFacade.createEntityFromMeme(template.path.fullTemplatePath)
+                                    unusedEntityID = Graph.api.createEntityFromMeme(template.path.fullTemplatePath)
                                 except Exception as e:
                                     pass
         print("Performance Test: Finished Creating Content")

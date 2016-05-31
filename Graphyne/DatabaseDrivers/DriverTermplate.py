@@ -76,19 +76,19 @@ class linkAttributeOperatorType(object):
 #To be 'circularly' imported, via the initialize function.  
 global logQ
 global templateRepository
-global scriptFacade
+global api
 global persistence 
 
 
-def initialize(iscriptFacade, itemplateRepository, ilogQ, iConnection, passedPersistence = None, reInitialize = False):
+def initialize(iapi, itemplateRepository, ilogQ, iConnection, passedPersistence = None, reInitialize = False):
     global logQ
     global templateRepository
-    global scriptFacade
+    global api
     global persistence
     persistence = iConnection
     logQ = ilogQ
     templateRepository = itemplateRepository
-    scriptFacade = iscriptFacade
+    api = iapi
     
     
 
@@ -255,9 +255,9 @@ class EntityLink(object):
             member1Meme = ""
             member2Meme = ""
             try:
-                member1Meme = scriptFacade.getEntityMemeType(self.memberID1)
-                member2Meme = scriptFacade.getEntityMemeType(self.memberID2)
-                testEntityMeme = scriptFacade.getEntityMemeType(uuid)
+                member1Meme = api.getEntityMemeType(self.memberID1)
+                member2Meme = api.getEntityMemeType(self.memberID2)
+                testEntityMeme = api.getEntityMemeType(uuid)
             except Exception as e:
                 raise e
             errorMsg = "%s entity %s not a member of link %s.  It has members %s %s and %s %s" %(testEntityMeme, uuid, self.uuid, member1Meme, self.memberID1, member2Meme, self.memberID2)
@@ -361,7 +361,7 @@ class LinkRepository(object):
             pass  
          
         for assocKey in assocList:
-            memberType = scriptFacade.getEntityMemeType(assocKey)
+            memberType = api.getEntityMemeType(assocKey)
             counterparts.append([assocKey, memberType])    
             
         return counterparts
@@ -787,7 +787,7 @@ def testEntityForAttribute(entityID, attributeName = '', value = None, operator 
                 returnVal = True
             else:
                 #if the next line does not raise an exception, then we have the attribute in this link
-                testForAttribute = scriptFacade.getEntityHasProperty(entityID, attributeName)
+                testForAttribute = api.getEntityHasProperty(entityID, attributeName)
                 if operator == linkAttributeOperator.NOTIN: 
                     if testForAttribute == False:
                         returnVal = True
@@ -798,10 +798,10 @@ def testEntityForAttribute(entityID, attributeName = '', value = None, operator 
                     #If we'll be for checking specific values and the attribute is not present, don't bother processing any further
                     returnVal = True
                 else:
-                    attributeValue = scriptFacade.getEntityPropertyValue(entityID, attributeName)
+                    attributeValue = api.getEntityPropertyValue(entityID, attributeName)
                     
                     #Normalize attributeValue and value to ve the same type                   
-                    proptype = scriptFacade.getEntityPropertyType(entityID, attributeName)
+                    proptype = api.getEntityPropertyType(entityID, attributeName)
                     proptype = proptype.lower()
                     if proptype == "integer":
                         value = int(value)
@@ -823,7 +823,7 @@ def testEntityForAttribute(entityID, attributeName = '', value = None, operator 
                     elif (operator == linkAttributeOperator.NOTEQUAL) and (value != attributeValue): returnVal = True
                     elif (operator == linkAttributeOperator.NOTIN) and (value != attributeValue): returnVal = True
                     else:
-                        entityType = scriptFacade.getEntityMemeType(entityID)
+                        entityType = api.getEntityMemeType(entityID)
                         badOperatorMsg = "testEntityForAttribute on entity %s called with invalid attribute comparison operator parameter %s.  " %(entityType, operator)
                         badOperatorMsg = "%s. Valid values are linkAttributeOperator.EQUAL (%s), " %(badOperatorMsg, linkAttributeOperator.EQUAL)
                         badOperatorMsg = "%s linkAttributeOperator.EQUALORGREATER (%s), " %(badOperatorMsg, linkAttributeOperator.EQUALORGREATER)

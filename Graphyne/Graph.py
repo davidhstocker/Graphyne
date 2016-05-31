@@ -5191,7 +5191,7 @@ def stopLogger():
         pass
     
     
-def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None, useDefaultSchema=True, resetDatabase=False, createTestDatabase=False, validate=True):
+def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None, useDefaultSchema=False, resetDatabase=False, createTestDatabase=False, validate=True):
     ''' Initialization of restrictions, meta-memes and memes.
             Sequentially empty the restrictionQueue, metamemeQueue and memeQueue,
             loading the relevant template types as found in each queue.
@@ -5365,8 +5365,8 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
         print("Warning!  No persistence declared.  Deaulting to in-memory transient persistentce")
         logQ.put( [logType , logLevel.ERROR , method , "Warning!  No persistence declared.  Deaulting to in-memory transient persistentce"])
         from .DatabaseDrivers import NonPersistent as persistenceNone
-        #persistenceNone.initialize(scriptFacade, repoLocations, logQ, persistenceArg)
-        persistenceNone.initialize(scriptFacade, templateRepository, logQ, persistenceArg)
+        #persistenceNone.initialize(api, repoLocations, logQ, persistenceArg)
+        persistenceNone.initialize(api, templateRepository, logQ, persistenceArg)
         entityRepository = persistenceNone.entityRepository
         linkRepository = persistenceNone.linkRepository
     elif persistenceType == "sqlite":
@@ -5380,8 +5380,8 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 persistenceDB = dbDriverMemory
                 sqlSyntax = SQLDictionary.SyntaxDefSQLite()
                 dbConnection = persistenceDB.connect(":memory:")
-                #persistenceMemory.initialize(scriptFacade, repoLocations, logQ, persistenceArg, dbConnection)
-                persistenceMemory.initialize(scriptFacade, templateRepository, logQ, persistenceArg, dbConnection)
+                #persistenceMemory.initialize(api, repoLocations, logQ, persistenceArg, dbConnection)
+                persistenceMemory.initialize(api, templateRepository, logQ, persistenceArg, dbConnection)
                 persistenceMemory.setSyntax(sqlSyntax)
                 persistenceMemory.ensureDatabase() 
                 if createTestDatabase == True:
@@ -5398,8 +5398,8 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 persistenceDB = dbDriverExisting
                 sqlSyntax = SQLDictionary.SyntaxDefSQLite()
                 dbConnection = persistenceDB.connect(persistenceArg)
-                #persistenceExisting.initialize(scriptFacade, repoLocations, logQ, persistenceArg, dbConnection)
-                persistenceExisting.initialize(scriptFacade, templateRepository, logQ, persistenceArg, dbConnection)
+                #persistenceExisting.initialize(api, repoLocations, logQ, persistenceArg, dbConnection)
+                persistenceExisting.initialize(api, templateRepository, logQ, persistenceArg, dbConnection)
                 persistenceExisting.setSyntax(sqlSyntax)
                 entityRepository = persistenceExisting.entityRepository
                 linkRepository = persistenceExisting.linkRepository
@@ -5426,8 +5426,8 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 persistenceDB = dbDriverNew
                 sqlSyntax = SQLDictionary.SyntaxDefSQLite()
                 dbConnection = persistenceDB.connect(dbLoc)
-                #persistenceNew.initialize(scriptFacade, repoLocations, logQ, persistenceArg, dbConnection)
-                persistenceNew.initialize(scriptFacade, templateRepository, logQ, persistenceArg, dbConnection, resetDatabase, False)
+                #persistenceNew.initialize(api, repoLocations, logQ, persistenceArg, dbConnection)
+                persistenceNew.initialize(api, templateRepository, logQ, persistenceArg, dbConnection, resetDatabase, False)
                 persistenceNew.setSyntax(sqlSyntax)
                 persistenceNew.ensureDatabase() 
                 entityRepository = persistenceNew.entityRepository
@@ -5448,7 +5448,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 sqlSyntax = SQLDictionary.SyntaxDefMSSQL()
                 dbConnection = dbDriverMSSQL.connect(persistenceArg)
                 persistenceMSSQL.setSyntax(sqlSyntax)
-                persistenceMSSQL.initialize(scriptFacade, repoLocations, logQ, persistenceArg, dbConnection, resetDatabase)
+                persistenceMSSQL.initialize(api, repoLocations, logQ, persistenceArg, dbConnection, resetDatabase)
                 entityRepository = persistenceMSSQL.entityRepository
                 linkRepository = persistenceMSSQL.linkRepository
             except Exception as e:
@@ -5581,7 +5581,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
     
     #Lastly, iterate over any already created entities (singletons and members) and 
     #    make sure that they have their scripts intialized
-    entityList = scriptFacade.getAllEntities()
+    entityList = api.getAllEntities()
     logQ.put( [logType , logLevel.INFO , method , "Instantiating %s enities." %(len(entityList))])
     for entityID in entityList:
         try:
@@ -6266,8 +6266,8 @@ def filterListDuplicates(listToFilter):
     
     
 #/Engine
-#ScriptFacade
-class ScriptFacade(object):
+#API
+class API(object):
     scriptDict = {}
  
     def __init__(self):
@@ -6348,7 +6348,7 @@ class ScriptFacade(object):
         self.scriptDict["getHasTaxonomy"] = getHasTaxonomy()
         self.scriptDict["getTaxonomy"] = getTaxonomy()
     
-    def getFacade(self):
+    def getAPI(self):
         returnCopy = copy.deepcopy(self)
         return returnCopy
     
@@ -6434,7 +6434,7 @@ class ScriptFacade(object):
             self._reduce =self.scriptDict["reduceBroker"]
         except Exception as e:
             errorMsg = "Failed to initialize script API.  Traceback = %s" %e
-            logQ.put( [logType , logLevel.ERROR , "ScriptFacade.initialize", errorMsg])
+            logQ.put( [logType , logLevel.ERROR , "API.initialize", errorMsg])
             
             
     
@@ -7439,6 +7439,6 @@ class ScriptFacade(object):
             exception = "Unable to determine if %s has %s as a taxonomy.  Traceback = %s" %(memeFullTemplatePath, taxonomyFullTemplatePath, e)
             raise Exceptions.ScriptError(exception) 
         
-#/ScriptFacade
-scriptFacade = ScriptFacade()
-scriptFacade.initialize()          
+#/api
+api = API()
+api.initialize()          

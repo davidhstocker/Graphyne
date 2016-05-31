@@ -20,7 +20,7 @@ from decimal import Decimal
 #To be 'circularly' imported, via the initialize function.  
 global logQ
 global templateRepository
-global scriptFacade
+global api
 global dbDriverModule 
 global connectionString
 global persistence
@@ -88,17 +88,17 @@ class linkAttributeOperatorType(object):
 
 
 
-def initialize(iscriptFacade, itemplateRepository, ilogQ, iConnectionString, passedPersistence, reInitialize = False, canCommit = True):
+def initialize(iapi, itemplateRepository, ilogQ, iConnectionString, passedPersistence, reInitialize = False, canCommit = True):
     global logQ
     global templateRepository
-    global scriptFacade
+    global api
     global entityRepository
     global connectionString
     global persistence
     connectionString = iConnectionString
     logQ = ilogQ
     templateRepository = itemplateRepository
-    scriptFacade = iscriptFacade
+    api = iapi
     persistence = passedPersistence
     ensureDatabase()
     if reInitialize == True:
@@ -1538,7 +1538,7 @@ def testEntityForAttribute(entityID, attributeName = '', value = None, operator 
                 returnVal = True
             else:
                 #if the next line does not raise an exception, then we have the attribute in this link
-                testForAttribute = scriptFacade.getEntityHasProperty(entityID, attributeName)
+                testForAttribute = api.getEntityHasProperty(entityID, attributeName)
                 if operator == linkAttributeOperator.NOTIN: 
                     if testForAttribute == False:
                         returnVal = True
@@ -1549,10 +1549,10 @@ def testEntityForAttribute(entityID, attributeName = '', value = None, operator 
                     #If we'll be for checking specific values and the attribute is not present, don't bother processing any further
                     returnVal = True
                 else:
-                    attributeValue = scriptFacade.getEntityPropertyValue(entityID, attributeName)
+                    attributeValue = api.getEntityPropertyValue(entityID, attributeName)
                     
                     #Normalize attributeValue and value to ve the same type                   
-                    proptype = scriptFacade.getEntityPropertyType(entityID, attributeName)
+                    proptype = api.getEntityPropertyType(entityID, attributeName)
                     proptype = proptype.lower()
                     if proptype == "integer":
                         value = int(value)
@@ -1574,7 +1574,7 @@ def testEntityForAttribute(entityID, attributeName = '', value = None, operator 
                     elif (operator == linkAttributeOperator.NOTEQUAL) and (value != attributeValue): returnVal = True
                     elif (operator == linkAttributeOperator.NOTIN) and (value != attributeValue): returnVal = True
                     else:
-                        entityType = scriptFacade.getEntityMemeType(entityID)
+                        entityType = api.getEntityMemeType(entityID)
                         badOperatorMsg = "testEntityForAttribute on entity %s called with invalid attribute comparison operator parameter %s.  " %(entityType, operator)
                         badOperatorMsg = "%s. Valid values are linkAttributeOperator.EQUAL (%s), " %(badOperatorMsg, linkAttributeOperator.EQUAL)
                         badOperatorMsg = "%s linkAttributeOperator.EQUALORGREATER (%s), " %(badOperatorMsg, linkAttributeOperator.EQUALORGREATER)
