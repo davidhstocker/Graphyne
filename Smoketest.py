@@ -1336,9 +1336,9 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
                         raise e
                 
                 for mountPoint in mountPoints:
-                    api.addEntityLink(mountPoint, entityID1, int(stringArray[5]))
+                    api.addEntityLink(mountPoint, entityID1, {}, int(stringArray[5]))
             else:
-                api.addEntityLink(entityID0, entityID1, int(stringArray[5]))
+                api.addEntityLink(entityID0, entityID1, {}, int(stringArray[5]))
               
             backTrackCorrect = False
             linkType = None
@@ -1424,7 +1424,7 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
             #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
             mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
             for mountPoint in mountPoints:
-                api.addEntityLink(mountPoint, entityID1, int(stringArray[5]))
+                api.addEntityLink(mountPoint, entityID1, {}, int(stringArray[5]))
                 rememberMe[mountPoint] = entityID1
              
             backTrackCorrect = False
@@ -1568,7 +1568,7 @@ def testTraverseParams(phaseName = 'testTraverseParams', fName = "TraverseWithPa
         try:
             entityID0 = Graph.api.createEntityFromMeme("TraverseParameters.A")
             entityID1 = Graph.api.createEntityFromMeme("TraverseParameters.B")
-            Graph.api.addEntityLink(entityID0, entityID1, 0, {'a':4})
+            Graph.api.addEntityLink(entityID0, entityID1, {'a':4}, 0)
             
             if n == 70:
                 unusedCatchMe = True
@@ -1690,10 +1690,10 @@ def testImplicitMeme(phaseName = 'testImplicitMeme', fName = "ImplicitMeme.atest
                 #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
                 mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
                 for mountPoint in mountPoints:
-                    api.addEntityLink(mountPoint, entityID1, 0)
+                    api.addEntityLink(mountPoint, entityID1)
             else:
                 #If we have a **DIRECT** mount, then attach entity 1 to entity 0
-                api.addEntityLink(entityID0, entityID1, 0)
+                api.addEntityLink(entityID0, entityID1)
               
             backTrackCorrect = False
             linkType = None

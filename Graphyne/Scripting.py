@@ -48,8 +48,8 @@ class API(threading.Thread):
     def addEntityTaxonomy(self, entityUUID, taxonomy):
         self.localFacade.addEntityTaxonomy(entityUUID, taxonomy)
         
-    def addEntityLink(self, entityUUID1, entityUUID2, linkType = Graph.linkTypes.ATOMIC, linkAttributes = {}):
-        self.localFacade.addEntityLink(entityUUID1, entityUUID2, linkType, linkAttributes)        
+    def addEntityLink(self, entityUUID1, entityUUID2, linkAttributes = {}, linkType = Graph.linkTypes.ATOMIC):
+        self.localFacade.addEntityLink(entityUUID1, entityUUID2, linkAttributes, linkType)        
         
         
     def createEntityFromMeme(self, memePath, ActionID = None, Subject = None, Controller = None, supressInit = False):

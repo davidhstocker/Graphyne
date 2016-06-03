@@ -3757,7 +3757,7 @@ class addEntityTaxonomy(object):
         return None
 
 class addEntityLink(object):
-    ''' Three params: entityUUID1, entityUUID2, linkType = linkTypes.ATOMIC'''
+    ''' Three params: entityUUID1, entityUUID2, linkAttributes = {}, linkType = linkTypes.ATOMIC'''
     #ToDo: add paremeter dict as param[3]
     def execute(self, params):
         try:
@@ -3767,7 +3767,7 @@ class addEntityLink(object):
                 entity0.entityLock.acquire(True)
                 entity1.entityLock.acquire(True)
                 try:
-                    linkRepository.catalogLink(params[0], params[1], params[2], params[3])
+                    linkRepository.catalogLink(params[0], params[1], params[3], params[2])
                 except Exception as e:
                     raise e                
                 finally:
@@ -6527,9 +6527,9 @@ class API(object):
             raise Exceptions.ScriptError(exception)   
         
         
-    def addEntityLink(self, entityUUID1, entityUUID2, linkType = 0, linkAttributes = {}):
+    def addEntityLink(self, entityUUID1, entityUUID2, linkAttributes = {}, linkType = 0):
         try: 
-            params = [entityUUID1, entityUUID2, linkType, linkAttributes]
+            params = [entityUUID1, entityUUID2, linkAttributes, linkType]
             entity = self._addEntityLink.execute(params)
         except Exception as e:
             exception = None
