@@ -7092,6 +7092,8 @@ class API(object):
             params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
             evalResult = self._evaluateEntity.execute(params)
             return evalResult
+        except Exceptions.ScriptError as e:
+            raise e
         except Exceptions.NoSuchEntityError as e:
             exception = "Action on entity of unknown type: evaluateEntity(%s, %s) fails because that entity is not in repository.  traceback = %s" %(entityUUID, runtimeVariables, e)
             raise Exceptions.ScriptError(exception) 
