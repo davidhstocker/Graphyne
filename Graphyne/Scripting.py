@@ -283,12 +283,12 @@ class API(threading.Thread):
         uStatement = str(statement)
         self.localFacade.writeError(uStatement) 
         
-    def getCounterpartOverview(self, entityUUID):
-        overview = self.localFacade.getCounterpartOverview(entityUUID) 
+    def getEntityCounterparts(self, entityUUID):
+        overview = self.localFacade.getEntityCounterparts(entityUUID) 
         return overview 
         
-    def getAssemblyNetworkOverview(self, entityUUID, linkTypes = 0, crossSingletons = False):
-        overview = self.localFacade.getAssemblyNetworkOverview(entityUUID, linkTypes, crossSingletons) 
+    def getClusterMembers(self, entityUUID, linkTypes = 0, crossSingletons = False):
+        overview = self.localFacade.getClusterMembers(entityUUID, linkTypes, crossSingletons) 
         return overview 
     
     def sourceMemeCreate(self, modulePath, memeName, metamemePath):

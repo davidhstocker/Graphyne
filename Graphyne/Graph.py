@@ -2804,7 +2804,7 @@ class Entity(object):
 
 
     #Todo - add getCounterparts params
-    def getAssemblyNetworkOverview(self, linkTypes = 0, crossSingletons = False, excludeLinks = []):
+    def getClusterMembers(self, linkTypes = 0, crossSingletons = False, excludeLinks = []):
         """ This is a method is a close relative of getLinkedEntitiesByTemplateType.  It is used for finding 
         associated (linked) entities and their meme types.  Like getLinkedEntitiesByTemplateType, it parses the
             link path and follows each step of the path in turn by a recursive call.  
@@ -2831,7 +2831,7 @@ class Entity(object):
                 isSingleton = member.getIsSingleton()
                 returnMembers.append([self.uuid, member.uuid, member.memePath.fullTemplatePath, member.metaMeme])
                 if (isSingleton == False) or (crossSingletons == True):
-                    partialRet = member.getAssemblyNetworkOverview(linkTypes, crossSingletons, excludeLinks)
+                    partialRet = member.getClusterMembers(linkTypes, crossSingletons, excludeLinks)
                     returnMembers.extend(partialRet)                      
 
         except Exception as e:
@@ -3818,6 +3818,12 @@ class destroyEntity(object):
                     # depricate the entity
                     entity.depricated = True
                     
+                    #remove all links involving this entity
+                    linkList = self.getLinkIDs()
+                    for linkID in linkList:
+                        #Todo
+                        pass
+                    
                     if drillDown == True:
                         #Do the same for the children
                         for memberEntityEntry in entity.memberEntities:
@@ -4676,7 +4682,7 @@ class hotLoadTemplate (object):
     def execute(self, params):
         return True 
     
-class getAssemblyNetworkOverview (object):
+class getClusterMembers (object):
     ''' Three params - entity UUID, link types, halt on singleton'''
     def execute(self, params):
         bigList = []
@@ -4685,7 +4691,7 @@ class getAssemblyNetworkOverview (object):
             if entity.depricated != True:
                 entity.entityLock.acquire(True)
                 try:
-                    bigList = entity.getAssemblyNetworkOverview(params[1], params[2])
+                    bigList = entity.getClusterMembers(params[1], params[2])
                 except Exception as e:
                     raise e                
                 finally:
@@ -4698,7 +4704,7 @@ class getAssemblyNetworkOverview (object):
         except Exceptions.EntityPropertyValueOutOfBoundsError as e:
             raise Exceptions.EntityPropertyValueOutOfBoundsError(e)
         except Exception as e:
-            ex = "Function getAssemblyNetworkOverview failed.  Traceback = %s" %e
+            ex = "Function getClusterMembers failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
         return bigList 
     
@@ -6299,7 +6305,7 @@ class API(object):
         self.scriptDict["installPythonExecutor"] = installPythonExecutor()
         self.scriptDict["getMemeExists"] = getMemeExists()
         self.scriptDict["evaluateEntity"] = evaluateEntity()
-        self.scriptDict["getAssemblyNetworkOverview"] = getAssemblyNetworkOverview()
+        self.scriptDict["getClusterMembers"] = getClusterMembers()
         self.scriptDict["getChildMemes"] = getChildMemes()
         self.scriptDict["getParentMemes"] = getParentMemes()
         self.scriptDict["getChildMetaMemes"] = getChildMetaMemes()
@@ -6382,7 +6388,7 @@ class API(object):
             self._setStateEventScript = self.scriptDict["setStateEventScript"]
             self._installPythonExecutor = self.scriptDict["installPythonExecutor"]
             self._evaluateEntity = self.scriptDict["evaluateEntity"]
-            self._getAssemblyNetworkOverview = self.scriptDict["getAssemblyNetworkOverview"]
+            self._getClusterMembers = self.scriptDict["getClusterMembers"]
             self._getChildMemes = self.scriptDict["getChildMemes"]
             self._getParentMemes = self.scriptDict["getParentMemes"]
             self._getChildMetaMemes = self.scriptDict["getChildMetaMemes"]
@@ -7093,7 +7099,7 @@ class API(object):
             raise Exceptions.ScriptError(exception)   
         
 
-    def getCounterpartOverview(self, entityUUID):
+    def getEntityCounterparts(self, entityUUID):
         global linkRepository
         try: 
             #params = [entityUUID]
@@ -7112,10 +7118,10 @@ class API(object):
                 raise Exceptions.ScriptError(exception)
 
         
-    def getAssemblyNetworkOverview(self, entityUUID, linkTypes = 0, crossSingletons = False):
+    def getClusterMembers(self, entityUUID, linkTypes = 0, crossSingletons = False):
         try: 
             params = [entityUUID, linkTypes, crossSingletons]
-            evalResult = self._getAssemblyNetworkOverview.execute(params)
+            evalResult = self._getClusterMembers.execute(params)
             return evalResult
         except Exception as e:
             exception = "Get Assembly Network Overview of entity %s failed. traceback = %s" %(entityUUID, e)
