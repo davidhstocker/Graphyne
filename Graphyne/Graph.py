@@ -74,6 +74,15 @@ class LinkAttributeOperatorType(object):
     NOTIN = 7
     
     
+class StateEventType(object):
+    INIT = 0
+    EXECUTE = 1
+    TERMINATE = 2
+    LINKADDED =3
+    LINKREMOVED = 4
+    PROPERTYCHANGED = 5
+    
+    
 
 class StartupState(object):
     def __init__(self):
@@ -1524,7 +1533,7 @@ class Property(PropertyDefinition):
                         self.propError.append(exception)
             elif self.propertyType == 'boolean':
                 if (self.value > 1) or (self.value < 0):  
-                    exception = "Out of bounds list property %s.  Value %s is not boolean" % (self.name, self.value)
+                    exception = "Out of bounds boolean property %s.  Value %s is not boolean" % (self.name, self.value)
                     self.propError.append(exception)
                     isValid = False
             
@@ -1533,7 +1542,7 @@ class Property(PropertyDefinition):
                     isValid = False   
                     exception = "Out of bounds list property %s.  Value %s is not among list of valid values %s " % (self.name, self.value, self.restList)
                     self.propError.append(exception)            
-        except:
+        except Exception as eE:
             exception = "Property %s of meme %s has no value property.  Likely reason is that restriction constraints were violated during intiialization" % (self.name, memeID)
             self.propError.append(exception)
             isValid = False
@@ -3438,7 +3447,7 @@ class Entity(object):
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         
 
-    def setStateEventScript(self, scriptLocation, scriptLanguage = "python", state = 1):
+    def setStateEventScript(self, scriptLocation, scriptLanguage = "python", state = "execute"):
         """ Set the state event callable object on self.
         scriptLocation = The classpath of the callable object
         scriptLanguage = at the moment, only Python is supported
@@ -3454,12 +3463,18 @@ class Entity(object):
                 mod = Fileutils.getModuleFromResolvedPath(mName)
                 tmpClass = getattr(mod, cName)
                 function = tmpClass()
-                if state == 0:
+                if state == "initialize":
                     self.initScript = function
-                elif state == 1:    
+                elif state == "execute":    
                     self.execScript = function
-                elif state == 2:    
-                    self.terminateScript = function      
+                elif state == "terminate":    
+                    self.terminateScript = function   
+                elif state == "linkAdd":    
+                    self.terminateScript = function 
+                elif state == "linkRemove":    
+                    self.terminateScript = function 
+                elif state == "propertiesChanged":    
+                    self.terminateScript = function    
             except Exception:
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
@@ -3788,40 +3803,6 @@ class addEntityLink(object):
             raise Exceptions.ScriptError(ex)
         return None
 
-class deinstantiateEntity(object):
-    ''' Two params: entity, drillDown (optional.  default = True'''
-    def execute(self, params):
-        drillDown = True
-        if len(params) == 2:
-            drillDown = params[1]
-        try:
-            entity = entityRepository.getEntity(params[0])
-            if entity.depricated != True:
-                entity.entityLock.acquire(True)
-                try:
-                    # depricate the entity
-                    entity.depricated = True
-                    
-                    if drillDown == True:
-                        #Do the same for the children
-                        for memberEntityEntry in entity.memberEntities:
-                            memberEntityID = memberEntityEntry[0]
-                            depricator = deinstantiateEntity()
-                            depricator.execute([memberEntityID, True])
-                except Exception as e:
-                    raise e                
-                finally:
-                    entity.entityLock.release()
-                    
-                    #Now that the entity is released, schedule it for removal from the entity repo
-                    #todo
-            else:
-                ex = "Entity %s has been archived and is no longer available" %params[0]
-                raise Exceptions.ScriptError(ex)
-        except Exception as e:
-            ex = "Function deinstantiateEntity failed.  Traceback = %s" %e
-            raise Exceptions.ScriptError(ex)
-        return None
 
 class destroyEntity(object):
     ''' Two params: entity, drillDown (optional, default True)'''
@@ -5590,7 +5571,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 entity.initialize()
             except Exception as e:
                 # if a new initialization is throwing an exception, the following statement can be uncommented to try debugging it
-                entity.initialize()
+                #entity.initialize()
                 
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
@@ -6278,7 +6259,6 @@ class API(object):
         self.scriptDict["addEntityStringProperty"] = addEntityStringProperty()
         self.scriptDict["addEntityBooleanProperty"] = addEntityBooleanProperty()
         self.scriptDict["addEntityTaxonomy"] = addEntityTaxonomy()
-        self.scriptDict["deinstantiateEntity"] = deinstantiateEntity()
         self.scriptDict["destroyEntity"] = destroyEntity()
         self.scriptDict["getAllEntitiesByTag"] = getAllEntitiesByTag()
         self.scriptDict["getAllEntitiesByTaxonomy"] = getAllEntitiesByTaxonomy()
@@ -6363,7 +6343,6 @@ class API(object):
             self._addEntityTaxonomy = self.scriptDict["addEntityTaxonomy"]
             self._addEntityLink = self.scriptDict["addEntityLink"]
             self._createEntityFromMeme = self.scriptDict["createEntityFromMeme"]
-            self._deinstantiateEntity = self.scriptDict["deinstantiateEntity"]
             self._destroyEntity = self.scriptDict["destroyEntity"]
             self._getAllEntitiesByTag = self.scriptDict["getAllEntitiesByTag"]
             self._getAllEntitiesByTaxonomy = self.scriptDict["getAllEntitiesByTaxonomy"]
@@ -6560,21 +6539,7 @@ class API(object):
         except Exception as e:
             exception = "createEntity(%s) traceback = %s" %("Graphyne.Generic", e)
             raise Exceptions.ScriptError(exception)
-        
-        
-    def deinstantiateEntity(self, entityUUID):
-        try: 
-            params = [entityUUID]
-            entity = self._deinstantiateEntity.execute(params)
-        except Exception as e:
-            exception = "deinstantiateEntity(%s) error %s" %(entityUUID, e)
-            exception = None
-            try:
-                entity = self.getEntity(entityUUID)
-                exception = "Action on %s entity: deinstantiateEntity(%s) traceback = %s" %(entity.memePath.fullTemplatePath, entityUUID, e)
-            except:
-                exception = "Action on entity of unknown type: deinstantiateEntity(%s) .  Possible reason is that entity is not in repository.  traceback = %s" %(entityUUID, e)
-            raise Exceptions.ScriptError(exception)              
+                  
         
         
     def destroyEntity(self, entityUUID):

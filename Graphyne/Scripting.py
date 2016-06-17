@@ -58,10 +58,7 @@ class API(threading.Thread):
             return returnMe 
         except:
             return None   
-        
-        
-    def deinstantiateEntity(self, entityUUID):
-        self.localFacade.deinstantiateEntity(entityUUID)          
+              
         
         
     def destroyEntity(self, entityUUID):
