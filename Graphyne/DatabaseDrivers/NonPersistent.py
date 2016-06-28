@@ -482,6 +482,22 @@ class EntityRepository(object):
     def getAllControllers(self):
         controllers = []
         return controllers
+    
+    def removeEntity(self, uuid):
+        ''' remove entity with specified uuid.  The graph API is responsible for making sure that all links are already removed'''
+        #method = moduleName + '.' +  self.className + '.removeEntity'
+        #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+        try:
+            del self.indexByID[uuid]
+        except KeyError:
+            try:
+                #let's see if it is because of the type of variable by casting it to a string
+                stringifiedUUID = getUUIDAsString(uuid)
+                del self.indexByID[stringifiedUUID]
+            except KeyError as e:
+                raise e
+            except Exception as e:
+                raise e
 
 
 
@@ -609,7 +625,6 @@ class LinkRepository(object):
             linkDictOutbound = self.getAllOutboundLinks(entityUUID)
             linkList.extend(linkDictInbound)
             linkList.extend(linkDictOutbound)
-            linkList.append(entityUUID)
             filteredLinkList = filterListDuplicates(linkList)
             return filteredLinkList
         except KeyError as e:

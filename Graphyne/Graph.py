@@ -2759,8 +2759,13 @@ class Entity(object):
     def getLinkIDs(self):
         """ Get all of the UUIDs for all links involving this entity"""
         #method = moduleName + '.' +  self.className + '.getLinkIDs'
+        filteredLinkList = []
         try:
-            filteredLinkList = linkRepository.getAllLinks(self.uuid)
+            sourceID = self.uuid
+            filteredLinkList = linkRepository.getAllLinks(sourceID)
+            #filteredLinkTuples= linkRepository.getAllLinks(sourceID)
+            #for filteredLinkTuple in filteredLinkTuples:
+            #    filteredLinkList.append(filteredLinkTuple[0])
         except Exception as e:
             unusedDummy = e #dummy variable declaration to prevent false alarm pydev warnings when debug statement is commented out
             #logQ.put( [logType , logLevel.DEBUG , method , "Failure getting link IDs.  Traceback = %s" %e])
@@ -2781,7 +2786,7 @@ class Entity(object):
         """
         #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByMemeType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
-        returnMembers = self.getLinkedEntitiesByTemplateType(memePath, True, linkTypes, False, [])
+        returnMembers = self.getLinkedEntitiesByTemplateType(memePath, True, linkTypes, False, [], True, None)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return returnMembers
         
@@ -2797,7 +2802,7 @@ class Entity(object):
         """
         #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByMetaMemeType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
-        returnMembers = self.getLinkedEntitiesByTemplateType(metaMemePath, False, linkTypes, False, [], returnUniqueValuesOnly)
+        returnMembers = self.getLinkedEntitiesByTemplateType(metaMemePath, False, linkTypes, False, [], returnUniqueValuesOnly, None)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return returnMembers
     
@@ -2892,7 +2897,7 @@ class Entity(object):
 
 
     #Todo - update the method with the getCounterparts
-    def getLinkedEntitiesByTemplateType(self, splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = [], returnUniqueValuesOnly = True):
+    def getLinkedEntitiesByTemplateType(self, splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
         """ This is a critically important method for finding associated (linked) entities.  It parses the
             link path and follows each step of the path in turn by a recursive call.  
             
@@ -2919,12 +2924,20 @@ class Entity(object):
                 with a forced continue until we get our entity
                 
             returnUniqueValuesOnly - I set to True, this method will filter returnlist duplicates.
+            
+            excludeCluster - This is an option for increasing performance on traverses; at the potential cost of fidelity.  
+                If this paramter is a list and not None, whenerver we traverse entity 1+n in a cluster, we can never cross
+                back over an entity that we already traversed.
         """
         method = moduleName + '.' +  self.className + '.getLinkedEntitiesByTemplateType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
         
+        selfUUIDAsStr = str(self.uuid)
+        if excludeCluster is not None:
+            excludeCluster.append(selfUUIDAsStr)
+        
         #Debug aid- Only used for logging in the event of a KeyError exception
-        unusedOldSplitPath = copy.deepcopy(splitPath)
+        oldSplitPath = copy.deepcopy(splitPath)
 
         returnMembers = []
         soughtPath = None
@@ -3026,33 +3039,46 @@ class Entity(object):
         try:
             #linkDirectionTypes.BIDIRECTIONAL, '', None, linkAttributeOperatorTypes.EQUAL
             members = linkRepository.getCounterparts(self.uuid, soughtPathDirection, linkParams, nodeParams, linkTypes, excludeLinks)
-            newExcludeLinks = self.getLinkIDs()
-            excludeLinks.extend(newExcludeLinks)
-        
-            for memberEntityID in members:
-                member = entityRepository.getEntity(memberEntityID)
-                isSingleton = member.getIsSingleton()
-                if soughtPath is not None:
-                    #we are searching for a specific template
-                    if ((isMeme == True) and (member.memePath.fullTemplatePath == soughtPath.path.fullTemplatePath)) or\
-                        (member.metaMeme == soughtPath.path.fullTemplatePath):
-                        if len(splitPath) > 0:
-                            #splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = []
-                            partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, False, excludeLinks, returnUniqueValuesOnly)
-                            returnMembers.extend(partialRet)
-                        else:
-                            returnMembers.append(member.uuid)   
-                    if (forcedContinue == True) and (isSingleton == False):
-                        partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly)
-                        returnMembers.extend(partialRet)                      
-                else:
-                    #currentPathFragment is a wildcard.  Therefore soughtPath is None
-                    #    In ths case, we follow ALL the rabbit holes looking for our next hit, but with forcedContinue turned off
-                    partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, False, excludeLinks)
-                    returnMembers.extend(partialRet)
+            
+            if excludeCluster is not None:
+                #we need to make sure that we don't backtrack, so filter the exclude list
+                memberSet = set(members)
+                excludeSet = set(excludeCluster)
+                memberSet.difference_update(excludeSet)
+                members = list(memberSet)
+            
+            if (oldSplitPath == "*") and (splitPath == ""):
+                #We have a wildcard end effector on the traverse path.  Just return members and be done with it
+                returnMembers = members
+            else:
+                newExcludeLinks = self.getLinkIDs()
+                excludeLinks.extend(newExcludeLinks)
+            
+                for memberEntityID in members:
+                    member = entityRepository.getEntity(memberEntityID)
+                    isSingleton = member.getIsSingleton()
+                    if soughtPath is not None:
+                        #we are searching for a specific template
+                        if ((isMeme == True) and (member.memePath.fullTemplatePath == soughtPath.path.fullTemplatePath)) or\
+                            (member.metaMeme == soughtPath.path.fullTemplatePath):
+                            if len(splitPath) > 0:
+                                #splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = []
+                                partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, False, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                                returnMembers.extend(partialRet)
+                            else:
+                                returnMembers.append(member.uuid)   
+                        if (forcedContinue == True) and (isSingleton == False):
+                            partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                            returnMembers.extend(partialRet)                      
+                    else:
+                        #currentPathFragment is a wildcard.  Therefore soughtPath is None 
+                        #    In ths case, we follow ALL the rabbit holes looking for our next hit, but with forcedContinue turned off
+                        partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, False, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                        returnMembers.extend(partialRet)
         
         except KeyError as e:
-            self.getLinkedEntitiesByTemplateType(unusedOldSplitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly)
+            #self.getLinkedEntitiesByTemplateType(oldSplitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+            pass
         except Exception as e:
             #logQ.put( [logType , logLevel.DEBUG , method , "Failure getting linked entities.  Traceback = %s" %e])
             pass
@@ -3807,39 +3833,55 @@ class addEntityLink(object):
 class destroyEntity(object):
     ''' Two params: entity, drillDown (optional, default True)'''
     def execute(self, params):
+        global entityRepository
+        
         drillDown = True
         if len(params) == 2:
             drillDown = params[1]
         try:
-            entity = entityRepository.getEntity(params[1])
+            entity = entityRepository.getEntity(params[0])
             if entity.depricated != True:
                 entity.entityLock.acquire(True)
                 try:
+                    nearestNeighbors = api.getLinkCounterpartsByType(params[0], "*")
+                    
                     # depricate the entity
                     entity.depricated = True
-                    
-                    #remove all links involving this entity
-                    linkList = self.getLinkIDs()
-                    for linkID in linkList:
-                        #Todo
-                        pass
+
+                    for nearestNeighbor in nearestNeighbors:
+                        # Dirty Hack Alert!
+                        # This is a bit clumsy and wastes clock cycles, trying to remove links that may not even be there.
+                        #  Trying to remove non-existant links raises an exception and we just bury them with a pass.
+                        #  To fix it, we need to seperate the methods in the persistence driver modules into a discovery phase,
+                        #    which determines which links to delete and a seperated link deletion phase.
+                        #  #PossiblePreformanceIssue
+                        try:
+                            api.removeEntityLink(params[0], nearestNeighbor)
+                        except IndexError as e:
+                            pass
+                        except Exception as e:
+                            raise e
+                        
+                        try:
+                            api.removeEntityLink(nearestNeighbor, params[1])
+                        except IndexError as e:
+                            pass
+                        except Exception as e:
+                            raise e
                     
                     if drillDown == True:
                         #Do the same for the children
-                        for memberEntityEntry in entity.memberEntities:
-                            memberEntityID = memberEntityEntry[0]
-                            destroyer = destroyEntity()
-                            destroyer.execute([memberEntityID, True])
-                                        
-                    #delete from DB
-                    #Todo
+                        if hasattr(entity, 'memberEntities'):
+                            for memberEntityEntry in entity.memberEntities:
+                                memberEntityID = memberEntityEntry[0]
+                                destroyer = destroyEntity()
+                                destroyer.execute([memberEntityID, True])
+                    
+                    entity.entityLock.release()
+                    entityRepository.removeEntity(params[0])            
                 except Exception as e:
                     raise e                
-                finally:
-                    entity.entityLock.release()
-                    
-                    #Now that the entity is released, schedule it for removal from the entity repo
-                    #todo
+
 
             else:
                 ex = "Entity %s has been archived and is no longer available" %params[1]
@@ -3847,7 +3889,6 @@ class destroyEntity(object):
         except Exception as e:
             ex = "Function destroyEntity failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
-        return None
 
 
 class getAllEntitiesByTag(object):
@@ -3923,16 +3964,23 @@ class getEntity(object):
         try:
             entity = entityRepository.getEntity(params[0])
             return entity
-        except KeyError as e:
-            singletonTester = getIsMemeSingleton()
-            isSingleton = singletonTester.execute([params[0]])
-            if isSingleton == True:
-                entityFactory = createEntityFromMeme()
-                entityID = entityFactory.execute(params)
-                entity = entityRepository.getEntity(entityID)
-                return entity
-            else:
+        except KeyError as ko:
+            try:
+                singletonTester = getIsMemeSingleton()
+                isSingleton = singletonTester.execute([params[0]])
+                if isSingleton == True:
+                    entityFactory = createEntityFromMeme()
+                    entityID = entityFactory.execute(params)
+                    entity = entityRepository.getEntity(entityID)
+                    return entity
+                else:
+                    raise ko
+            except Exceptions.ScriptError as e:
+                raise Exceptions.NoSuchEntityError()
+            except Exception as e:
                 raise e
+        except Exceptions.ScriptError as e:
+            raise e
         except Exception as e:
             raise e
         
@@ -4086,8 +4134,9 @@ class getLinkCounterpartsByType(object):
                 linkType = None
                 
             returnUniqueValuesOnly = True
+            clusterExcludeList = []
             try:
-                returnUniqueValuesOnly = params[3]
+                clusterExcludeList = params[3]
             except: pass
                 
             if entity.depricated != True:
@@ -4095,11 +4144,11 @@ class getLinkCounterpartsByType(object):
                 try:
                     isMeme = True
                     try:
-                        isMeme = params[3]
-                    except:
-                        pass
+                        #This param will be provided when this call is originating in getHasCounterpartsByType
+                        isMeme = params[4]
+                    except: pass
                     
-                    counterparts = entity.getLinkedEntitiesByTemplateType(params[1], isMeme, linkType, False, [], returnUniqueValuesOnly)
+                    counterparts = entity.getLinkedEntitiesByTemplateType(params[1], isMeme, linkType, False, [], returnUniqueValuesOnly, clusterExcludeList)
                 except Exception as e:
                         raise e                
                 finally:
@@ -6621,6 +6670,9 @@ class API(object):
             params = [entityUUID]
             ent = self._getEntity.execute(params)
             return ent
+        except Exceptions.NoSuchEntityError as e:
+            exception = "getEntity(%s) error %s" %(entityUUID, e)
+            raise Exceptions.NoSuchEntityError(exception)
         except Exception as e:
             exception = "getEntity(%s) error %s" %(entityUUID, e)
             raise Exceptions.ScriptError(exception)      
@@ -6705,7 +6757,7 @@ class API(object):
 
     def getHasCounterpartsByType(self, entityUUID, memePath, linkType = None, isMeme = True):
         try: 
-            params = [entityUUID, memePath, linkType, isMeme]
+            params = [entityUUID, memePath, linkType, False, isMeme]
             hasCounterparts = self._getHasCounterpartsByType.execute(params)
             return hasCounterparts
         except Exception as e:
@@ -6719,9 +6771,13 @@ class API(object):
         
     
     #Todo - this needs to have its params tweaked: linkDirectionTypes.BIDIRECTIONAL, '', None, linkAttributeOperatorTypes.EQUAL    
-    def getCounterpartsByType(self, entityUUID, memePath, linkType = None, isMeme = True):
+    def getCounterpartsByType(self, entityUUID, memePath, linkType = None, isMeme = True, fastSearch = False):
         try: 
-            params = [entityUUID, memePath, linkType, isMeme]
+            if fastSearch == True:
+                excludeClusterList = []
+            else:
+                excludeClusterList = None
+            params = [entityUUID, memePath, linkType, excludeClusterList, isMeme]
             counterparts = self._getLinkCounterpartsByType.execute(params)
             return counterparts
         except Exception as e:
@@ -6822,9 +6878,13 @@ class API(object):
             raise Exceptions.ScriptError(exception)         
         
         
-    def getLinkCounterpartsByType(self, entityUUID, memePath, linkType = None):
+    def getLinkCounterpartsByType(self, entityUUID, memePath, linkType = None, fastSearch = False):
         #try: 
-        params = [entityUUID, memePath, linkType]
+        if fastSearch == True:
+            excludeClusterList = []
+        else:
+            excludeClusterList = None
+        params = [entityUUID, memePath, linkType, excludeClusterList]
         entities = self._getLinkCounterpartsByType.execute(params)
         filteredEntities = filterListDuplicates(entities)
         return filteredEntities

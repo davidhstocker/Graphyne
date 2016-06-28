@@ -909,12 +909,70 @@ class EntityRepository(object):
  
         
 
-    def removeEntity(self):
-        """
-            This method is not yet implemented and we'll cross that bridge when needed.  I the DB gets large and has a large number of depricated entities, we
-            should be able to prune them.
-        """
-        pass
+    def removeEntity(self, uuid):
+        ''' remove entity with specified uuid.  The graph API is responsible for making sure that all links are already removed'''
+        #method = moduleName + '.' +  self.className + '.removeEntity'
+        #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+        
+        try:
+            #A single entity makes its presence known in many, many tables
+            sqlDelLink = sqlSyntax.removeLinks
+            sqlDelEntity = sqlSyntax.removeEntity
+            sqlDelLinkBool = sqlSyntax.removeLinkAttributeBool
+            sqlDelLinkInt = sqlSyntax.removeLinkAttributeInt
+            sqlDelLinkDec = sqlSyntax.removeLinkAttributeDec
+            sqlDelLinkString = sqlSyntax.removeLinkAttributeStr
+            sqlDelLst = sqlSyntax.removeEntityPropertyLists
+            sqlDelStr= sqlSyntax.removeEntityPropertyStrings
+            sqlDelTxt = sqlSyntax.removeEntityPropertyTexts
+            sqlDelDec = sqlSyntax.removeEntityPropertyDecimals
+            sqlDelInt= sqlSyntax.removeEntityPropertyIntegers
+            sqlDelBln = sqlSyntax.removeEntityPropertyBooleans
+        except AttributeError as e:
+            raise Exceptions.UndefinedSQLSyntax("Can't execute sqlSqntax.xxx, as sqlSyntax has not been defined.  %s" %e)
+        
+        try:
+            uuidAsString = getUUIDAsString(uuid)
+            
+            try:
+                #First, remove it from the index
+                del self.indexByID[uuid]
+            except KeyError:
+                #KeyError exceptions get thrown when the uuid is not present in indexByID
+                try:
+                    #let's see if it is because of the type of variable by casting it to a string
+                    stringifiedUUID = getUUIDAsString(uuid)
+                    del self.indexByID[stringifiedUUID]
+                except KeyError as e:
+                    raise e
+                except Exception as e:
+                    raise e
+            
+            #Remove entity references from the database
+            with persistence:
+                cursor = persistence.cursor() 
+                cursor.execute(sqlDelLinkBool, (uuidAsString, )) 
+                cursor.execute(sqlDelLinkInt, (uuidAsString, )) 
+                cursor.execute(sqlDelLinkDec, (uuidAsString, )) 
+                cursor.execute(sqlDelLinkString, (uuidAsString, )) 
+                cursor.execute(sqlDelLst, (uuidAsString, )) 
+                cursor.execute(sqlDelStr, (uuidAsString, )) 
+                cursor.execute(sqlDelTxt, (uuidAsString, )) 
+                cursor.execute(sqlDelDec, (uuidAsString, )) 
+                cursor.execute(sqlDelInt, (uuidAsString, )) 
+                cursor.execute(sqlDelBln, (uuidAsString, )) 
+                cursor.execute(sqlDelLink, (uuidAsString, uuidAsString)) 
+                cursor.execute(sqlDelEntity, (uuidAsString, )) 
+
+            
+        except KeyError:
+            raise Exceptions.NoSuchEntityError("Can't delete entity %s.  Key Error in Entity repository cache.  Traceback =  %s" %(uuid, e))
+        except AttributeError as e:
+            raise Exceptions.NoSuchEntityError("Can't delete entity %s.  Problem executing SQL DELETE FROM.  Traceback =  %s" %(uuid, e))
+        except Exception as e:
+            raise e
+            
+            
     
     #Remove Depricated Methods
     #Depricated
@@ -940,6 +998,7 @@ class EntityRepository(object):
 
 
 
+
 class LinkRepository(object):
     """ A catalog of Entity links 
         
@@ -949,15 +1008,20 @@ class LinkRepository(object):
     global persistence
     def getAllLinks(self, entityUUID):
         try:
-            linkList = self.getAllInboundLinks(entityUUID)
-            outboundList = self.getAllOutboundLinks(entityUUID)
+            linkList = self.getAllInboundLinks(entityUUID, True)
+            outboundList = self.getAllOutboundLinks(entityUUID, True)
             linkList.extend(outboundList)
             return linkList 
         except Exception as e:
             raise e        
             
          
-    def getAllInboundLinks(self, entityUUID): 
+    def getAllInboundLinks(self, entityUUID, wholeTuples = False): 
+        """
+            Get all of the links pointing to the given entity.  If wholeTuples is true, then return the list of 
+            tuples from the SQL select statement on the EntityLinks table.  Otherwise, only the entity UUID 
+            (the first item in the tuple) is returned.
+        """
         try:
             global persistence
             uuisAsString = getUUIDAsString(entityUUID)
@@ -995,12 +1059,21 @@ class LinkRepository(object):
             
             for cursorResRow in rawCursorResult:
                 #cursor.fetchall() returns a list of tuples, but in this case, we're only asking for a single value in the select statement
-                linkList.append(cursorResRow)
+                if wholeTuples == True:
+                    linkUUID = cursorResRow[0]
+                    linkList.append(linkUUID)
+                else:
+                    linkList.append(cursorResRow)
             return linkList 
         except Exception as e:
             raise e
     
-    def getAllOutboundLinks(self, entityUUID):
+    def getAllOutboundLinks(self, entityUUID, wholeTuples = False):
+        """
+            Get all of the links pointing from the given entity.  If wholeTuples is true, then return the list of 
+            tuples from the SQL select statement on the EntityLinks table.  Otherwise, only the entity UUID 
+            (the first item in the tuple) is returned.
+        """
         global persistence
         try:
             linkList = []
@@ -1018,7 +1091,11 @@ class LinkRepository(object):
             rawCursorResult = cursor.fetchall() 
             for cursorResRow in rawCursorResult:
                 #cursor.fetchall() returns a list of tuples, but in this case, we're only asking for a single value in the select statement
-                linkList.append(cursorResRow)
+                if wholeTuples == True:
+                    linkUUID = cursorResRow[0]
+                    linkList.append(linkUUID)
+                else:
+                    linkList.append(cursorResRow)
             return linkList 
         except KeyError as e:
             raise e
@@ -1159,7 +1236,12 @@ class LinkRepository(object):
                                 counterparts.append(link[2]) #The entity where the reference ends
     
             #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
-            return counterparts  
+            #This method needs to return UUID objects
+            counterpartUUIDs = []
+            for counterpart in counterparts:
+                counterpartUUID = uuid.UUID(counterpart)
+                counterpartUUIDs.append(counterpartUUID)
+            return counterpartUUIDs  
         except AttributeError as e:
             raise e
         except Exception as e:
@@ -1497,7 +1579,7 @@ class LinkRepository(object):
         except Exception as e:
             pass
         '''
-        persistence.commit()
+        #persistence.commit()
         #/Debug
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         

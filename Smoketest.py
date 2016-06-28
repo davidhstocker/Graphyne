@@ -1322,7 +1322,6 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if stringArray[2] != "X":
-                #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
                 mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
                                 
                 unusedMountPointsOverview = {}
@@ -1347,14 +1346,12 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
             
             #see if we can get from entityID0 to entityID1 via stringArray[3]
             addLocationCorrect = False
-            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], [}, linkType)
             addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
             if len(addLocationList) > 0:
                 addLocationCorrect = True
                 
             #see if we can get from entityID1 to entityID0 via stringArray[4]
             backTrackCorrect = False
-            #backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
             backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
             if len(backTrackLocationList) > 0:
                 backTrackCorrect = True   
@@ -1421,7 +1418,6 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
             #Attach entityID1 at the mount point specified in stringArray[2]
             rememberMe = {}
             
-            #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
             mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
             for mountPoint in mountPoints:
                 api.addEntityLink(mountPoint, entityID1, {}, int(stringArray[5]))
@@ -1432,16 +1428,13 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
             if stringArray[6] != "X":
                 linkType = int(stringArray[6])
             
-            #see if we can get from entityID0 to entityID1 via stringArray[3]
             addLocationCorrect = False
-            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
             addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
             if len(addLocationList) > 0:
                 addLocationCorrect = True
                 
             #see if we can get from entityID1 to entityID0 via stringArray[4]
             backTrackCorrect = False
-            #backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
             backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
             if len(backTrackLocationList) > 0:
                 backTrackCorrect = True   
@@ -1455,7 +1448,6 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
                 api.removeEntityLink(mountPoint, entityID1)
     
             secondAddLocationCorrect = False
-            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
             addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
                 
             if len(addLocationList) == 0:
@@ -1513,7 +1505,6 @@ def testEntityPhase10(phaseName = 'testEntityPhase10', fName = "Entity_Phase10.a
         try:
             entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
             
-            #trackLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, None)
             trackLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[2], None)
             if len(trackLocationList) > 0:
                 testResult = True
@@ -1687,7 +1678,6 @@ def testImplicitMeme(phaseName = 'testImplicitMeme', fName = "ImplicitMeme.atest
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if (stringArray[2] != '**DIRECT**'):
-                #mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], {}, 1)
                 mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
                 for mountPoint in mountPoints:
                     api.addEntityLink(mountPoint, entityID1)
@@ -1700,14 +1690,12 @@ def testImplicitMeme(phaseName = 'testImplicitMeme', fName = "ImplicitMeme.atest
             
             #see if we can get from entityID0 to entityID1 via stringArray[3]
             addLocationCorrect = False
-            #addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], {}, linkType)
             addLocationList = api.getLinkCounterpartsByType(entityID0, stringArray[3], linkType)
             if len(addLocationList) > 0:
                 addLocationCorrect = True
                 
             #see if we can get from entityID1 to entityID0 via stringArray[4]
             backTrackCorrect = False
-            #backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], {}, linkType)
             backTrackLocationList = api.getLinkCounterpartsByType(entityID1, stringArray[4], linkType)
             if len(backTrackLocationList) > 0:
                 backTrackCorrect = True   
@@ -2301,10 +2289,10 @@ def testSourceSingletonSet(filename):
 
 
 def testGeneric():
+    """
+        Greate a generic meme; one of type Graphyne.Generic.
+    """
     method = moduleName + '.' + 'testGeneric'
-    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
-        
-    method = moduleName + '.' + 'testSourceEnhancementRemove'
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
     resultSet = []
     errata = []
@@ -2334,6 +2322,147 @@ def testGeneric():
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
+
+def testDeleteEntity():
+    """
+        Test Entity Removal.
+        Create 5 entities of type Graphyne.Generic.  
+        Chain them together: E1 >> E2 >> E3 >> E4 >> E5
+        
+        Check that they are functional
+        Traverse from E1 to E5
+        Traverse from E5 to E1
+        
+        Delete E3
+        We should not be able to traverse form E1 to E5
+        We should not be able to traverse form E5 to E1
+        We should not be able to traverse from E2 to E3
+        We should not be able to traverse from E3 to E2
+        We should not be able to traverse from E4 to E3
+        We should not be able to traverse from E3 to E4
+        We should be able to traverse from E1 to E2
+        We should be able to traverse from E2 to E1
+        We should be able to traverse from E4 to E5
+        We should be able to traverse from E5 to E4
+        
+        We should not be able to aquire E3 via getEntity()
+        
+        
+    """
+    method = moduleName + '.' + 'testDeleteEntity'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create 5 entities of type Graphyne.Generic.  Chain them together: E1 >> E2 >> E3 >> E4 >> E5
+    try:
+        testEntityID1 = api.createEntity()
+        testEntityID2 = api.createEntity()
+        testEntityID3 = api.createEntity()
+        testEntityID4 = api.createEntity()
+        testEntityID5 = api.createEntity()
+        api.addEntityLink(testEntityID1, testEntityID2)
+        api.addEntityLink(testEntityID2, testEntityID3)
+        api.addEntityLink(testEntityID3, testEntityID4)
+        api.addEntityLink(testEntityID4, testEntityID5)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creatingin entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #Navitate to end of chain and back
+    try:
+        uuid15 = api.getLinkCounterpartsByType(testEntityID1, "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
+        uuid11 = api.getLinkCounterpartsByType(uuid15[0], "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
+        if (uuid15[0] != testEntityID5) or (uuid11[0] != testEntityID1): 
+            testResult = "False"
+            errorMsg = ('%sShould be able to navigate full chain and back before deleting middle entity, but could not!\n')
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error deleting Entity!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+      
+    #Delete E3
+    try:
+        api.destroyEntity(testEntityID3)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error deleting Entity!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #E3 should no longer be there
+    try:
+        e3 = api.getEntity(testEntityID3)
+        if e3 is not None:
+            testResult = "False"
+            errorMsg = ('Deleted entity still present!')
+            errata.append(errorMsg)
+    except Exceptions.NoSuchEntityError as e:
+        #We expect a NoSuchEntityError here
+        pass
+    except Exception as e:
+        #But we ONLY expect a NoSuchEntityError exception.  Anything else is a problem
+        testResult = "False"
+        errorMsg = ('Unexpected Error while checking for previously deleted entity!  Traceback = %s' % (e) )
+        errata.append(errorMsg)        
+    
+    #But E4 should remain
+    try:
+        e4 = api.getEntity(testEntityID4)
+        if e4 is None:
+            testResult = "False"
+            errorMsg = ('Entity that should not be deleted was!')
+            errata.append(errorMsg)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error while checking to see if entity that was not supposed to be deleted is still present!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #Post delete navigation
+    try:
+        #First hops should work
+        uuid22 = api.getLinkCounterpartsByType(testEntityID1, "Graphyne.Generic")
+        uuid24 = api.getLinkCounterpartsByType(testEntityID5, "Graphyne.Generic")
+        if (len(uuid22) == 0) or (len(uuid24) == 0) : 
+            testResult = "False"
+            errorMsg = ('%sShould be able to navigate between undeleted entities, but can not!\n' %errorMsg)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('%sProblem in spost delete navigation between undeleted entities.  Traceback = %s' %(errorMsg, e))
+
+    
+    try:
+        #This should not
+        uuid25 = api.getLinkCounterpartsByType(testEntityID1, "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
+        uuid21 = api.getLinkCounterpartsByType(testEntityID5, "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
+        if (len(uuid25) > 0) or (len(uuid21) > 0) : 
+            testResult = "False"
+            errorMsg = ('%sShould not be able to navigate full chain and back, but did!\n' %errorMsg)
+    except: pass       
+
+    try:
+        #neither should this
+        nearestNeighbors = api.getLinkCounterpartsByType(testEntityID2, "*")
+        if (testEntityID1 not in nearestNeighbors) or (testEntityID4 in nearestNeighbors) : 
+            testResult = "False"
+            errorMsg = ('%sShould not be able to navigate full chain and back, but did!\n' %errorMsg)
+    except: pass 
+        
+    testcase = "Deletion"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+    
+    
+    
 
 
 ######################
@@ -2862,6 +2991,11 @@ def runTests(css):
     testSetData = testGeneric()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Generic Entity", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #Test Entity Deletion
+    testSetData = testDeleteEntity()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Entity Deletion", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     

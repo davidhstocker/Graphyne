@@ -14,6 +14,7 @@ __status__ = 'Production'
 
 
 class SyntaxDefSQLite(object):
+
     
     #########################
     #Table Clearing
@@ -94,6 +95,23 @@ class SyntaxDefSQLite(object):
     selectGetEntityPropertyTexts = "SELECT * FROM EntityPropertyTexts WHERE entityID=?"    #Returns: [entityID, propName, propVal, restList, memePath]
     selectGetEntityPropertyDecimals = "SELECT * FROM EntityPropertyDecimals WHERE entityID=?" #Returns: [entityID, propName, propVal, restMin, restMax, restList, memePath]
     selectGetEntityPropertyIntegers= "SELECT * FROM EntityPropertyIntegers WHERE entityID=?" #Returns: [entityID, propName, propVal, restMin, restMax, restList, memePath]
+    
+    #These select statements are for deleting entities
+    removeEntityTags = "DELETE FROM EntityTags WHERE entityID=?"
+    removeEntity = "DELETE FROM Entity WHERE entityID=?"
+    removeLinks = "DELETE FROM EntityLink WHERE memberID1=? OR memberID2=?" 
+    removeLinkAttributeBool = "DELETE FROM EntityLinkPropertyBooleans WHERE entityLinkID=?"
+    removeLinkAttributeInt = "DELETE FROM EntityLinkPropertyIntegers WHERE entityLinkID=?"
+    removeLinkAttributeDec = "DELETE FROM EntityLinkPropertyDecimals WHERE entityLinkID=?"
+    removeLinkAttributeStr = "DELETE FROM EntityLinkPropertyStrings WHERE entityLinkID=?"
+    removeEntityPropertyLists = "DELETE FROM EntityPropertyLists WHERE entityID=?"    
+    removeEntityPropertyBooleans = "DELETE FROM EntityPropertyBooleans WHERE entityID=?"
+    removeEntityPropertyStrings = "DELETE FROM EntityPropertyStrings WHERE entityID=?"
+    removeEntityPropertyTexts = "DELETE FROM EntityPropertyTexts WHERE entityID=?"
+    removeEntityPropertyDecimals = "DELETE FROM EntityPropertyDecimals WHERE entityID=?"
+    removeEntityPropertyIntegers= "DELETE FROM EntityPropertyIntegers WHERE entityID=?"
+
+    
     
     #########################
     #     Graph Module
@@ -327,6 +345,21 @@ class SyntaxDefMSSQL(object):
     selectGetEntityPropertyTexts = "SELECT * FROM EntityPropertyTexts WHERE entityID=?"    #Returns: [entityID, propName, propVal, restList, memePath]
     selectGetEntityPropertyDecimals = "SELECT * FROM EntityPropertyDecimals WHERE entityID=?" #Returns: [entityID, propName, propVal, restMin, restMax, restList, memePath]
     selectGetEntityPropertyIntegers= "SELECT * FROM EntityPropertyIntegers WHERE entityID=?" #Returns: [entityID, propName, propVal, restMin, restMax, restList, memePath]
+
+    #These select statements are for deleting entities
+    removeEntityTags = "DELETE FROM EntityTags WHERE entityID=?"
+    removeEntity = "DELETE FROM Entity WHERE entityID=?"
+    removeLinks = "DELETE FROM EntityLink WHERE memberID1=? OR memberID2=?" 
+    removeLinkAttributeBool = "DELETE FROM EntityLinkPropertyBooleans WHERE entityLinkID=?"
+    removeLinkAttributeInt = "DELETE FROM EntityLinkPropertyIntegers WHERE entityLinkID=?"
+    removeLinkAttributeDec = "DELETE FROM EntityLinkPropertyDecimals WHERE entityLinkID=?"
+    removeLinkAttributeStr = "DELETE FROM EntityLinkPropertyStrings WHERE entityLinkID=?"
+    removeEntityPropertyLists = "DELETE FROM EntityPropertyLists WHERE entityID=?"    
+    removeEntityPropertyBooleans = "DELETE FROM EntityPropertyBooleans WHERE entityID=?"
+    removeEntityPropertyStrings = "DELETE FROM EntityPropertyStrings WHERE entityID=?"
+    removeEntityPropertyTexts = "DELETE FROM EntityPropertyTexts WHERE entityID=?"
+    removeEntityPropertyDecimals = "DELETE FROM EntityPropertyDecimals WHERE entityID=?"
+    removeEntityPropertyIntegers = "DELETE FROM EntityPropertyIntegers WHERE entityID=?"
     
     #########################
     #     Graph Module
