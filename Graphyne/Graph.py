@@ -1,6 +1,8 @@
 """
    Graph.py: Core Graph Plumbing for Graphyne.
 """
+from _ast import Str
+from uuid import UUID
 
 __author__ = 'David Stocker'
 __copyright__ = 'Copyright 2016, David Stocker'   
@@ -2806,10 +2808,45 @@ class Entity(object):
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return returnMembers
     
+    
+    
+    
+    def buildClusterMemberMetadata(self, rawCluster):
+        """
+            This is a method for refining the raw entity member data into metadata
+        """
+        clusterMetadata = {}
+        for rawClusterEntry in rawCluster:
+            dictKey = getUUIDAsString(rawClusterEntry[1])
+            clusterMetadata[dictKey] = [rawClusterEntry[2], rawClusterEntry[3]]
+        return clusterMetadata
+    
 
 
-    #Todo - add getCounterparts params
     def getClusterMembers(self, linkTypes = 0, crossSingletons = False, excludeLinks = []):
+        """ 
+            This method wraps getEntityCluster and then returns only the UUIDS of the members of the cluster
+        """
+        #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByTemplateType'
+        #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+        entireCluster = self.getEntityCluster(linkTypes, crossSingletons, excludeLinks)
+        clusterMetaData = self.buildClusterMemberMetadata(entireCluster)
+        
+        #buildClusterMemberMetadata returns the UUIDs as strings, because UUIDs can't be used for indexing dicts.
+        #  This method returns UUID objects however
+        returnMembersStrings = clusterMetaData.keys()
+        returnMembers = []
+        for returnMembersString in returnMembersStrings:
+            idAsUUID = uuid.UUID(returnMembersString)
+            returnMembers.append(idAsUUID)
+        return returnMembers
+    
+    
+    
+    
+    
+    def getEntityCluster(self, linkTypes = 0, crossSingletons = False, excludeLinks = []):
         """ This is a method is a close relative of getLinkedEntitiesByTemplateType.  It is used for finding 
         associated (linked) entities and their meme types.  Like getLinkedEntitiesByTemplateType, it parses the
             link path and follows each step of the path in turn by a recursive call.  
@@ -2820,6 +2857,9 @@ class Entity(object):
             linkTypes - the entity link type
             
             crossSingletons - if this is false, the recursion will stop at any singletons
+            
+            The method id not intended to be called directly, but is instead wrapped by helper functions (getClusterMembers and 
+                getCluster) that refine the results.
         """
         #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByTemplateType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
@@ -2830,13 +2870,14 @@ class Entity(object):
             members = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.BIDIRECTIONAL, [], [], linkTypes, excludeLinks)
             newExcludeLinks = self.getLinkIDs()
             excludeLinks.extend(newExcludeLinks)
+            
         
             for memberEntityID in members:
                 member = entityRepository.getEntity(memberEntityID)
                 isSingleton = member.getIsSingleton()
                 returnMembers.append([self.uuid, member.uuid, member.memePath.fullTemplatePath, member.metaMeme])
                 if (isSingleton == False) or (crossSingletons == True):
-                    partialRet = member.getClusterMembers(linkTypes, crossSingletons, excludeLinks)
+                    partialRet = member.getEntityCluster(linkTypes, crossSingletons, excludeLinks)
                     returnMembers.extend(partialRet)                      
 
         except Exception as e:
@@ -4740,7 +4781,7 @@ class getClusterMembers (object):
             if entity.depricated != True:
                 entity.entityLock.acquire(True)
                 try:
-                    bigList = entity.getClusterMembers(params[1], params[2])
+                    bigList = entity.getClusterMembers(params[1], params[2], [])
                 except Exception as e:
                     raise e                
                 finally:
@@ -6755,9 +6796,13 @@ class API(object):
 
 
 
-    def getHasCounterpartsByType(self, entityUUID, memePath, linkType = None, isMeme = True):
+    def getHasCounterpartsByType(self, entityUUID, memePath, linkType = None, isMeme = True, fastSearch = False):
         try: 
-            params = [entityUUID, memePath, linkType, False, isMeme]
+            if fastSearch == True:
+                excludeClusterList = []
+            else:
+                excludeClusterList = None
+            params = [entityUUID, memePath, linkType, excludeClusterList, isMeme]
             hasCounterparts = self._getHasCounterpartsByType.execute(params)
             return hasCounterparts
         except Exception as e:
@@ -7184,7 +7229,7 @@ class API(object):
             evalResult = self._getClusterMembers.execute(params)
             return evalResult
         except Exception as e:
-            exception = "Get Assembly Network Overview of entity %s failed. traceback = %s" %(entityUUID, e)
+            exception = "Get Cluster Members of entity %s failed. traceback = %s" %(entityUUID, e)
             raise Exceptions.ScriptError(exception)
     
         

@@ -2371,7 +2371,7 @@ def testDeleteEntity():
         api.addEntityLink(testEntityID4, testEntityID5)
     except Exception as e:
         testResult = "False"
-        errorMsg = ('Error creatingin entities!  Traceback = %s' % (e) )
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
         errata.append(errorMsg)
 
     #Navitate to end of chain and back
@@ -2460,8 +2460,319 @@ def testDeleteEntity():
     Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
+
+
+def testSubatomicLinks():
+    """
+        Test creating and traversing subatomic links
+        Create 3 entities of type Graphyne.Generic.
+    """
+    method = moduleName + '.' + 'testSubatomicLinks'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
     
+    #Create 5 entities of type Graphyne.Generic and get the Examples.MemeA4 singleton as well.  
+    #Chain them together: E1 >> E2 >> E3 >> E4 >> Examples.MemeA4 << E5
+    try:
+        testEntityID1 = api.createEntity()
+        testEntityID2 = api.createEntity()
+        testEntityID3 = api.createEntity()
+        api.addEntityLink(testEntityID1, testEntityID2)         #Atomic
+        api.addEntityLink(testEntityID2, testEntityID3, {}, 1)  #Subatomic
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #Atomic Navigation
+    try:
+        uuid12 = api.getLinkCounterpartsByType(testEntityID2, "Graphyne.Generic", 0)
+        if len(uuid12) != 1: 
+            testResult = "False"
+            errorMsg = ('%sError in getLinkCounterpartsByType() chile checking for Atomic links.  Memberlist should return exactly one entry.  Actually returned %s members!\n' %len(uuid12))
+        elif uuid12[0] != testEntityID1: 
+            testResult = "False"
+            errorMsg = ('%sError in getLinkCounterpartsByType() chile checking for Atomic links.  Wrong cluster sibling returned.!\n')
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error traversing atomic link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+      
+    #SubAtomic Navigation
+    try:
+        uuid23 = api.getLinkCounterpartsByType(testEntityID2, "Graphyne.Generic", 1)
+        if len(uuid23) != 1: 
+            testResult = "False"
+            errorMsg = ('%sError in getLinkCounterpartsByType() chile checking for SubAtomic links.  Memberlist should return exactly one entry.  Actually returned %s members!\n' %len(uuid12))
+        elif uuid23[0] != testEntityID3: 
+            testResult = "False"
+            errorMsg = ('%sError in getLinkCounterpartsByType() chile checking for SubAtomic links.  Wrong cluster sibling returned.!\n')
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error traversing subatomic link  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #Universal Navigation
+    try:
+        uuidBoth = api.getLinkCounterpartsByType(testEntityID2, "Graphyne.Generic")
+        if len(uuidBoth) != 2: 
+            testResult = "False"
+            errorMsg = ('%sError in getLinkCounterpartsByType() chile checking for SubAtomic links.  Memberlist should return exactly two entries.  Actually returned %s members!\n' %len(uuid12))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error traversing link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    testcase = "Subatomic Links"
     
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+  
+
+
+def testGetClusterMembers():
+    """
+        Test Getting Clister Members.
+        Create 6 entities of type Graphyne.Generic.  
+        Chain four of them together: E1 >> E2 >> E3 >> E4
+        Connect E4 to a singleton, Examples.MemeA4
+        Connect E5 to Examples.MemeA4
+        Connect E3 to E6 via a subatomic link
+        
+        Check that we can traverse from E1 to E5.
+        Get the cluseter member list of E3 with linktype = None.  It should include E2, E3, E4, E6
+        Get the cluseter member list of E3 with linktype = 0.  It should include E2, E3, E4
+        Get the cluseter member list of E3 with linktype = 1.  It should include E6
+        Get the cluseter member list of E5.  It should be empty
+        
+        memeStructure = script.getClusterMembers(conditionContainer, 1, False)
+        
+        
+    """
+    method = moduleName + '.' + 'testGetClusterMembers'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create 5 entities of type Graphyne.Generic and get the Examples.MemeA4 singleton as well.  
+    #Chain them together: E1 >> E2 >> E3 >> E4 >> Examples.MemeA4 << E5
+    try:
+        testEntityID1 = api.createEntity()
+        testEntityID2 = api.createEntity()
+        testEntityID3 = api.createEntity()
+        testEntityID4 = api.createEntity()
+        testEntityID5 = api.createEntity()
+        testEntityID6 = api.createEntity()
+        theSingleton = Graph.api.createEntityFromMeme("Examples.MemeA4")
+        api.addEntityLink(testEntityID1, testEntityID2)
+        api.addEntityLink(testEntityID2, testEntityID3)
+        api.addEntityLink(testEntityID3, testEntityID4)
+        api.addEntityLink(testEntityID3, testEntityID6, {}, 1)
+        api.addEntityLink(testEntityID4, theSingleton)
+        api.addEntityLink(testEntityID5, theSingleton)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #Navitate to end of chain and back
+    try:
+        uuid15 = api.getLinkCounterpartsByType(testEntityID1, "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Examples.MemeA4::Graphyne.Generic")
+        uuid11 = api.getLinkCounterpartsByType(uuid15[0], "Examples.MemeA4::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
+        if (uuid15[0] != testEntityID5) or (uuid11[0] != testEntityID1): 
+            testResult = "False"
+            errorMsg = ('%sShould be able to navigate full chain and back before measuring cluster membership, but could not!\n')
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error measuring cluster membership!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+      
+    #From E3, atomic
+    try:
+        entityListRaw = api.getClusterMembers(testEntityID3)
+        entityList1 = []
+        for entityUUID in entityListRaw:
+            entityList1.append(entityUUID)
+        if testEntityID1 not in entityList1:
+            testResult = "False"
+            errorMsg = ('%E1 should be in atomic link cluster of E3, but is not!\n' %errorMsg)
+        if testEntityID2 not in entityList1:
+            testResult = "False"
+            errorMsg = ('%E2 should be in atomic link cluster of E3, but is not!\n' %errorMsg)
+        if testEntityID4 not in entityList1:
+            testResult = "False"
+            errorMsg = ('%E4 should be in atomic link cluster of E3, but is not!\n' %errorMsg)  
+        if theSingleton not in entityList1:
+            testResult = "False"
+            errorMsg = ('%Examples.MemeA4 should be in atomic link cluster of E3, but is not!\n' %errorMsg) 
+        if len(entityList1) != 4: 
+            testResult = "False"
+            errorMsg = ('%E3 should have 3 siblings in its atomic link cluster, but it has %s!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E3!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #From E3, subatomic
+    try:
+        entityList2 = api.getClusterMembers(testEntityID3, 1)
+        if testEntityID6 not in entityList2:
+            testResult = "False"
+            errorMsg = ('%E6 should be in subatomic link cluster of E3, but is not!\n' %errorMsg)  
+        if len(entityList2) != 1: 
+            testResult = "False"
+            errorMsg = ('%E3 should have 1 sibling in its atomic link cluster, but it has %s!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E3!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #From E5, atomic
+    try:
+        entityList3 = api.getClusterMembers(testEntityID5)
+        if theSingleton not in entityList3:
+            testResult = "False"
+            errorMsg = ('%Examples.MemeA4 should be in atomic link cluster of E3, but is not!\n' %errorMsg)
+        if len(entityList3) != 1: 
+            testResult = "False"
+            errorMsg = ('%E5 should have 0 siblings in its atomic link cluster, but it has %s!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E5!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #From E5, subatomic
+    try:
+        entityList4 = api.getClusterMembers(testEntityID5)
+        if len(entityList4) != 1: 
+            testResult = "False"
+            errorMsg = ('%E5 should have 1 sibling in its atomic link cluster, but it has %s!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E5!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    testcase = "getClusterMembers()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+
+
+
+def testGetHasCounterpartsByType(phaseName = 'getHasCounterpartsByType', fName = "Entity_Phase7.atest"):
+    ''' 
+        Basically a repeat of Phase 7, but with getHasCounterpartsByType()
+    
+        Create entities from the meme in the first two colums.
+        Add a link between the two at the location on entity in from column 3.
+        Check and see if each is a counterpart as seen from the other using the addresses in columns 4&5 (CheckPath & Backpath)
+            & the filter.  
+        
+        The filter must be the same as the type of link (or None)
+        The check location must be the same as the added loation.
+        
+      
+    '''
+    method = moduleName + '.' + phaseName
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+    results = []
+    lresultSet = []
+    del lresultSet[:]
+        
+    #try:
+    testFileName = os.path.join(testDirPath, fName)
+    readLoc = codecs.open(testFileName, "r", "utf-8")
+    allLines = readLoc.readlines()
+    readLoc.close
+    n = 0
+    
+    for eachReadLine in allLines:
+        errata = []
+        n = n+1
+        stringArray = str.split(eachReadLine)
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
+
+        testResult = False
+        try:
+            entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
+            entityID1 = Graph.api.createEntityFromMeme(stringArray[1])
+            entityID2 = Graph.api.createEntityFromMeme(stringArray[1])
+            
+            #Attach entityID1 at the mount point specified in stringArray[2]
+            if stringArray[2] != "X":
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                                
+                unusedMountPointsOverview = {}
+                for mountPoint in mountPoints:
+                    try:
+                        mpMemeType = api.getEntityMemeType(mountPoint)
+                        unusedMountPointsOverview[mountPoint] = mpMemeType
+                    except Exception as e:
+                        #errorMessage = "debugHelperMemeType warning in Smoketest.testEntityPhase7.  Traceback = %s" %e
+                        #Graph.logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                        raise e
+                
+                for mountPoint in mountPoints:
+                    api.addEntityLink(mountPoint, entityID1, {}, int(stringArray[5]))
+            else:
+                api.addEntityLink(entityID0, entityID1, {}, int(stringArray[5]))
+              
+            backTrackCorrect = False
+            linkType = None
+            if stringArray[6] != "X":
+                linkType = int(stringArray[6])
+              
+            backTrackCorrect = False
+            linkType = None
+            if stringArray[6] != "X":
+                linkType = int(stringArray[6])
+            
+            #see if we can get from entityID0 to entityID1 via stringArray[3]
+            addLocationCorrect = api.getHasCounterpartsByType(entityID0, stringArray[3], linkType)
+                
+            #see if we can get from entityID1 to entityID0 via stringArray[4]
+            backTrackCorrect = api.getHasCounterpartsByType(entityID1, stringArray[4], linkType)
+            
+            #see if we can get from entityID2 to entityID0 via stringArray[4]
+            e3Attached = api.getHasCounterpartsByType(entityID2, stringArray[4], linkType)
+            
+            if (backTrackCorrect == True) and (addLocationCorrect == True) and (e3Attached == False):
+                testResult = True
+                
+        except Exception as e:
+            errorMsg = ('Error!  Traceback = %s' % (e) )
+            errata.append(errorMsg)
+
+        testcase = str(stringArray[0])
+        allTrueResult = str(testResult)
+        expectedResult = stringArray[7]
+        results = [n, testcase, allTrueResult, expectedResult, errata]
+        lresultSet.append(results)
+        
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return lresultSet
+
+
     
 
 
@@ -2996,6 +3307,21 @@ def runTests(css):
     testSetData = testDeleteEntity()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Entity Deletion", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #Atomic and subatomic links
+    testSetData = testSubatomicLinks()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Subatomic Links", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #getting the cluster member list
+    testSetData = testGetClusterMembers()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Cluster Member List", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    testSetData = testGetHasCounterpartsByType()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Has Counterparts by Type", testSetPercentage, copy.deepcopy(testSetData)])   
+    
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
