@@ -1375,6 +1375,99 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
 
 
 
+def testLinkCounterpartsByMetaMemeType(phaseName = 'LinkCounterpartsByMetaMemeType', fName = "LinkCounterpartsByMetaMemeType.atest"):
+    ''' Repeat Phase 7, but traversing with metameme paths, instead of meme paths.
+        LinkCounterpartsByMetaMemeType.atest differs from TestEntityPhase7.atest only in that cols D and E use metameme paths.
+    
+        Create entities from the meme in the first two colums.
+        Add a link between the two at the location on entity in from column 3.
+        Check and see if each is a counterpart as seen from the other using the addresses in columns 4&5 (CheckPath & Backpath)
+            & the filter.  
+        
+        The filter must be the same as the type of link (or None)
+        The check location must be the same as the added loation.
+        
+      
+    '''
+    method = moduleName + '.' + phaseName
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+    results = []
+    lresultSet = []
+    del lresultSet[:]
+        
+    #try:
+    testFileName = os.path.join(testDirPath, fName)
+    readLoc = codecs.open(testFileName, "r", "utf-8")
+    allLines = readLoc.readlines()
+    readLoc.close
+    n = 0
+    
+    for eachReadLine in allLines:
+        errata = []
+        n = n+1
+        stringArray = str.split(eachReadLine)
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
+
+        testResult = False
+        try:
+            entityID0 = Graph.api.createEntityFromMeme(stringArray[0])
+            entityID1 = Graph.api.createEntityFromMeme(stringArray[1])
+            
+            #Attach entityID1 at the mount point specified in stringArray[2]
+            if stringArray[2] != "X":
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                                
+                unusedMountPointsOverview = {}
+                for mountPoint in mountPoints:
+                    try:
+                        mpMemeType = api.getEntityMemeType(mountPoint)
+                        unusedMountPointsOverview[mountPoint] = mpMemeType
+                    except Exception as e:
+                        #errorMessage = "debugHelperMemeType warning in Smoketest.testEntityPhase7.  Traceback = %s" %e
+                        #Graph.logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                        raise e
+                
+                for mountPoint in mountPoints:
+                    api.addEntityLink(mountPoint, entityID1, {}, int(stringArray[5]))
+            else:
+                api.addEntityLink(entityID0, entityID1, {}, int(stringArray[5]))
+              
+            backTrackCorrect = False
+            linkType = None
+            if stringArray[6] != "X":
+                linkType = int(stringArray[6])
+            
+            #see if we can get from entityID0 to entityID1 via stringArray[3]
+            addLocationCorrect = False
+            addLocationList = api.getLinkCounterpartsByMetaMemeType(entityID0, stringArray[3], linkType)
+            if len(addLocationList) > 0:
+                addLocationCorrect = True
+                
+            #see if we can get from entityID1 to entityID0 via stringArray[4]
+            backTrackCorrect = False
+            backTrackLocationList = api.getLinkCounterpartsByMetaMemeType(entityID1, stringArray[4], linkType)
+            if len(backTrackLocationList) > 0:
+                backTrackCorrect = True   
+            
+            if (backTrackCorrect == True) and (addLocationCorrect == True):
+                testResult = True
+                
+        except Exception as e:
+            errorMsg = ('Error!  Traceback = %s' % (e) )
+            errata.append(errorMsg)
+
+        testcase = str(stringArray[0])
+        allTrueResult = str(testResult)
+        expectedResult = stringArray[7]
+        results = [n, testcase, allTrueResult, expectedResult, errata]
+        lresultSet.append(results)
+        
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return lresultSet
+
+
+
 
 def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.atest"):
     ''' A modified phase 7 test with entity link removal after testing.
@@ -2773,6 +2866,42 @@ def testGetHasCounterpartsByType(phaseName = 'getHasCounterpartsByType', fName =
     return lresultSet
 
 
+
+def testGetEntityMetaMemeType():
+    """
+        Greate a generic meme; one of type Graphyne.Generic.
+        Ensure that it's metameme is Graphyne.GenericMetaMeme
+    """
+    method = moduleName + '.' + 'testGetEntityMetaMemeType'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+    resultSet = []
+    errata = []
+    testResult = False
+       
+    expectedResult = "True" 
+    try:
+        testEntityID = api.createEntity()
+        metaMemeType = api.getEntityMetaMemeType(testEntityID)
+        if metaMemeType == "Graphyne.GenericMetaMeme":
+            operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, []]}
+            testResult = "True"
+        else:
+            errorMsg = ('Generic Entity Has metameme type = %s' % (metaMemeType) )
+            operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, []]}
+    except Exception as e:
+        errorMsg = ('Error!  Traceback = %s' % (e) )
+        operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [False, errorMsg]}
+        errata.append(errorMsg)
+        
+    testcase = str(operationResult["metamemeID"])
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
     
 
 
@@ -3189,6 +3318,10 @@ def runTests(css):
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Entity Phase 7", testSetPercentage, copy.deepcopy(testSetData)])
     
+    testSetData = testLinkCounterpartsByMetaMemeType()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Entity Phase 7.1", testSetPercentage, copy.deepcopy(testSetData)])
+    
     testSetData = testEntityPhase2('testEntityPhase8', 'Entity_Phase8.atest')
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Entity Phase 8", testSetPercentage, copy.deepcopy(testSetData)])
@@ -3196,7 +3329,7 @@ def runTests(css):
     testSetData = testEntityPhase2_1('testEntityPhase8_1', 'Entity_Phase8.atest')
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Entity Phase 8.1", testSetPercentage, copy.deepcopy(testSetData)])
-    
+        
     testSetData = testEntityPhase9()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Entity Phase 9", testSetPercentage, copy.deepcopy(testSetData)])
@@ -3322,6 +3455,9 @@ def runTests(css):
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Has Counterparts by Type", testSetPercentage, copy.deepcopy(testSetData)])   
     
+    testSetData = testGetEntityMetaMemeType()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["API method testGetEntityMetaMemeType", testSetPercentage, copy.deepcopy(testSetData)])      
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
