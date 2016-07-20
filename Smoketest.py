@@ -3,6 +3,7 @@
 """
    Smoketest.py: Regression testing utility for Graphyne.  Multiprocessing wrapper for Smokest, allowing multiple simultaneous tests against different persistence types.
 """
+from tkinter.test.runtktests import this_dir_path
 
 __author__ = 'David Stocker'
 __copyright__ = 'Copyright 2016, David Stocker'   
@@ -2902,6 +2903,72 @@ def testGetEntityMetaMemeType():
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
+
+
+
+def testInstallExecutor():
+    """
+        Greate a generic meme; one of type Graphyne.Generic.
+        Ensure that it's metameme is Graphyne.GenericMetaMeme
+    """
+    method = moduleName + '.' + 'testInstallExecutor'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+    resultSet = []
+    errata = []
+    testResult = "True"
+    errorMsg = ""
+       
+    expectedResult = "True" 
+    try:
+        testEntityID = api.createEntity()
+        e2MemeType = api.getEntityMemeType(testEntityID)
+        
+        from Config.Test.TestRepository import InstallPyExecTest as testMod
+        
+        testExec = testMod.TestClass(e2MemeType)
+        api.installPythonExecutor(testEntityID, testExec)
+        
+        #The execute() method of testMod.TestClass hould return the memeID when 
+        returnVal1 = api.evaluateEntity(testEntityID)
+        if returnVal1 != e2MemeType:
+            testResult = "False"
+            errorMsg = ("%Calling TestClass.execute() should return %s, but %s was returned instead!\n" %(errorMsg, e2MemeType, returnVal1))
+        else:
+            operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, errorMsg]} 
+
+        if testResult == "True":
+            returnVal2 = api.evaluateEntity(testEntityID, {"returnMe" : "Hello World"})
+            if returnVal2 != "Hello World":
+                testResult = "False"
+                errorMsg = ("%Calling TestClass.execute() with 'returnMe' in runtime parameter keys should return 'Hello World', but %s was returned instead!\n" %(errorMsg, returnVal2)) 
+            else:
+                operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, []]}
+        
+        if testResult == "True":  
+            try:
+                returnVal3 = api.evaluateEntity(testEntityID, {"thisWontReturnAnything" : "Hello World"})
+                testResult = "False"
+                errorMsg = ("%Calling TestClass.execute() 'thisWontReturnAnything' in runtime parameter keys should return a keyError exception, but %s was returned instead!\n" %(errorMsg, returnVal2)) 
+            except Exceptions.ScriptError as e:
+                #We should have this result
+                operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, errorMsg]}
+
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error!  Traceback = %s' % (e) )
+        operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [False, errorMsg]}
+        errata.append(errorMsg)
+        
+    testcase = str(operationResult["metamemeID"])
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+
     
 
 
@@ -3457,7 +3524,11 @@ def runTests(css):
     
     testSetData = testGetEntityMetaMemeType()
     testSetPercentage = getResultPercentage(testSetData)
-    resultSet.append(["API method testGetEntityMetaMemeType", testSetPercentage, copy.deepcopy(testSetData)])      
+    resultSet.append(["API method testGetEntityMetaMemeType", testSetPercentage, copy.deepcopy(testSetData)])    
+      
+    testSetData = testInstallExecutor()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["API method testInstallExecutor", testSetPercentage, copy.deepcopy(testSetData)])  
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
