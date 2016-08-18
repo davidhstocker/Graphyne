@@ -25,6 +25,7 @@ import os
 import queue
 import functools
 import platform
+import json
 from os.path import expanduser
 from .DatabaseDrivers import SQLDictionary
 from . import Exceptions
@@ -4797,6 +4798,138 @@ class getClusterMembers (object):
             ex = "Function getClusterMembers failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
         return bigList 
+
+
+
+class getCluster(object):
+    ''' Three params - entity UUID, link types, halt on singleton
+    
+        Returns a python dict corresponding to the following JSON example
+        {
+          "nodes": [
+            {"id": "Myriel", "group": 1},
+            {"id": "Napoleon", "group": 1}
+          ],
+          "links": [
+            {"source": "Napoleon", "target": "Myriel", "value": 1},
+            {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8}
+          ]
+        }
+    '''
+    def execute(self, params):
+        nodesDict = {}  
+        nodes = []
+        links = []
+        try:
+            entity = entityRepository.getEntity(params[0])
+            if entity.depricated != True:
+                selfMeme = api.getEntityMemeType(params[0])
+                selfMetaMeme = api.getEntityMetaMemeType(params[0])
+                
+                entityString = getUUIDAsString(params[0])
+                nodeData = {"id": entityString, "meme": selfMeme, "metaMeme": selfMetaMeme}
+                nodesDict[entityString] = nodeData
+                
+                entity.entityLock.acquire(True)
+                try:
+                    #bigList = entity.getClusterMembers(params[1], params[2], [])
+                    entireCluster = entity.getEntityCluster(params[1], params[2], [])
+                    
+                    # Each entry in bigList looks like [start.uuid, end.uuid, member.memePath.fullTemplatePath, member.metaMeme]
+                    for bigListEntry in entireCluster:
+                        sourceID = getUUIDAsString(bigListEntry[0])
+                        targetID = getUUIDAsString(bigListEntry[1])
+                        linkdata ={"source": sourceID, "target": targetID, "value": 1}
+                        links.append(linkdata)
+                        
+                        #We add the node data into a dict, to ensure that each node comes up exactly once
+                        nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3]}
+                        nodesDict[targetID] = nodeData
+                    for nodesDictKey in nodesDict.keys():
+                        nodes.append(nodesDict[nodesDictKey])
+                except Exception as e:
+                    raise e                
+                finally:
+                    entity.entityLock.release()
+            else:
+                ex = "Entity %s has been archived and is no longer available" %params[0]
+                raise Exceptions.ScriptError(ex)
+        except Exceptions.EntityPropertyValueTypeError as e:
+            raise Exceptions.EntityPropertyValueTypeError(e)
+        except Exceptions.EntityPropertyValueOutOfBoundsError as e:
+            raise Exceptions.EntityPropertyValueOutOfBoundsError(e)
+        except Exception as e:
+            ex = "Function getClusterMembers failed.  Traceback = %s" %e
+            raise Exceptions.ScriptError(ex)
+        cluster = {"nodes": nodes, "links": links}
+        return cluster
+    
+    
+    
+    
+class getClusterJSON(object):
+    ''' Four params - entity UUID, link types, halt on singleton
+    
+        Returns a python dict corresponding to the following JSON example
+        {
+          "nodes": [
+            {"id": "Myriel", "group": 1},
+            {"id": "Napoleon", "group": 1}
+          ],
+          "links": [
+            {"source": "Napoleon", "target": "Myriel", "value": 1},
+            {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8}
+          ]
+        }
+    '''
+    def execute(self, params):
+        nodesDict = {}  
+        nodes = []
+        links = []
+        try:
+            entity = entityRepository.getEntity(params[0])
+            if entity.depricated != True:
+                selfMeme = api.getEntityMemeType(params[0])
+                selfMetaMeme = api.getEntityMetaMemeType(params[0])
+                
+                entityString = getUUIDAsString(params[0])
+                nodeData = {"id": entityString, "meme": selfMeme, "metaMeme": selfMetaMeme}
+                nodesDict[entityString] = nodeData
+                
+                entity.entityLock.acquire(True)
+                try:
+                    #bigList = entity.getClusterMembers(params[1], params[2], [])
+                    entireCluster = entity.getEntityCluster(params[1], params[2], [])
+                    
+                    # Each entry in bigList looks like [start.uuid, end.uuid, member.memePath.fullTemplatePath, member.metaMeme]
+                    for bigListEntry in entireCluster:
+                        sourceID = getUUIDAsString(bigListEntry[0])
+                        targetID = getUUIDAsString(bigListEntry[1])
+                        linkdata ={"source": sourceID, "target": targetID, "value": 1}
+                        links.append(linkdata)
+                        
+                        #We add the node data into a dict, to ensure that each node comes up exactly once
+                        nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3]}
+                        nodesDict[targetID] = nodeData
+                    for nodesDictKey in nodesDict.keys():
+                        nodes.append(nodesDict[nodesDictKey])
+                except Exception as e:
+                    raise e                
+                finally:
+                    entity.entityLock.release()
+            else:
+                ex = "Entity %s has been archived and is no longer available" %params[0]
+                raise Exceptions.ScriptError(ex)
+        except Exceptions.EntityPropertyValueTypeError as e:
+            raise Exceptions.EntityPropertyValueTypeError(e)
+        except Exceptions.EntityPropertyValueOutOfBoundsError as e:
+            raise Exceptions.EntityPropertyValueOutOfBoundsError(e)
+        except Exception as e:
+            ex = "Function getClusterMembers failed.  Traceback = %s" %e
+            raise Exceptions.ScriptError(ex)
+        cluster = {"nodes": nodes, "links": links}
+        clusterJSON = json.dumps(cluster)
+        return clusterJSON
     
     
     
@@ -6395,6 +6528,8 @@ class API(object):
         self.scriptDict["installPythonExecutor"] = installPythonExecutor()
         self.scriptDict["getMemeExists"] = getMemeExists()
         self.scriptDict["evaluateEntity"] = evaluateEntity()
+        self.scriptDict["getCluster"] = getCluster()
+        self.scriptDict["getClusterJSON"] = getClusterJSON()
         self.scriptDict["getClusterMembers"] = getClusterMembers()
         self.scriptDict["getChildMemes"] = getChildMemes()
         self.scriptDict["getParentMemes"] = getParentMemes()
@@ -6478,6 +6613,8 @@ class API(object):
             self._setStateEventScript = self.scriptDict["setStateEventScript"]
             self._installPythonExecutor = self.scriptDict["installPythonExecutor"]
             self._evaluateEntity = self.scriptDict["evaluateEntity"]
+            self._getCluster = self.scriptDict["getCluster"]
+            self._getClusterJSON = self.scriptDict["getClusterJSON"]
             self._getClusterMembers = self.scriptDict["getClusterMembers"]
             self._getChildMemes = self.scriptDict["getChildMemes"]
             self._getParentMemes = self.scriptDict["getParentMemes"]
@@ -7162,7 +7299,7 @@ class API(object):
         If it is a fully resolved path that is passed and the entity does not exist yet (i.e. the meme is not a singleton),
             then this method will also force its creation.   
         supressInit determines whether or not to initialize entities that are created for evaluation """    
-    def evaluateEntity(self, entityUUID, runtimeVariables, ActionID = None, Subject = None, Controller = None, supressInit = False):
+    def evaluateEntity(self, entityUUID, runtimeVariables = {}, ActionID = None, Subject = None, Controller = None, supressInit = False):
         try:
             #ToDo - fully resolved path of singleton still broken here
             params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
@@ -7221,6 +7358,29 @@ class API(object):
             except:
                 exception = "Get counterparts of entity %s failed. traceback = %s" %(entityUUID, e)
                 raise Exceptions.ScriptError(exception)
+
+
+    def getCluster(self, entityUUID, linkTypes = 0, crossSingletons = False):
+        try: 
+            params = [entityUUID, linkTypes, crossSingletons]
+            evalResult = self._getCluster.execute(params)
+            return evalResult
+        except Exception as e:
+            exception = "Get Cluster of entity %s failed. traceback = %s" %(entityUUID, e)
+            raise Exceptions.ScriptError(exception)
+        
+        
+    def getClusterJSON(self, entityUUID, linkTypes = 0, crossSingletons = False):
+        """
+            Acts as a wrapper for getCluster() and returns the result as a JSON, instead of as a native Python dict
+        """
+        try: 
+            params = [entityUUID, linkTypes, crossSingletons]
+            evalResult = self._getClusterJSON.execute(params)
+            return evalResult
+        except Exception as e:
+            exception = "Get Cluster JSON of entity %s failed. traceback = %s" %(entityUUID, e)
+            raise Exceptions.ScriptError(exception)
 
         
     def getClusterMembers(self, entityUUID, linkTypes = 0, crossSingletons = False):

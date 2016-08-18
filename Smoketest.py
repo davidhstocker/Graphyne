@@ -2969,6 +2969,157 @@ def testInstallExecutor():
     return resultSet
 
 
+
+
+def testGetCluster():
+    """
+        Test Getting Cluster Dictionary.
+        Create 6 entities of type Graphyne.Generic.  
+        Chain four of them together: E1 >> E2 >> E3 >> E4
+        Connect E4 to a singleton, Examples.MemeA4
+        Connect E5 to Examples.MemeA4
+        Connect E3 to E6 via a subatomic link
+        
+        Check that we can traverse from E1 to E5.
+        Get the cluster member list of E3 with linktype = None.  It should include E2, E3, E4, E6
+        Get the cluster member list of E3 with linktype = 0.  It should include E2, E3, E4
+        Get the cluster member list of E3 with linktype = 1.  It should include E6
+        Get the cluster member list of E5.  It should be empty
+        
+        memeStructure = script.getClusterMembers(conditionContainer, 1, False)
+        
+        
+    """
+    method = moduleName + '.' + 'testGetClusterMembers'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create 5 entities of type Graphyne.Generic and get the Examples.MemeA4 singleton as well.  
+    #Chain them together: E1 >> E2 >> E3 >> E4 >> Examples.MemeA4 << E5
+    try:
+        testEntityID1 = api.createEntity()
+        testEntityID2 = api.createEntity()
+        testEntityID3 = api.createEntity()
+        testEntityID4 = api.createEntity()
+        testEntityID5 = api.createEntity()
+        testEntityID6 = api.createEntity()
+        theSingleton = Graph.api.createEntityFromMeme("Examples.MemeA4")
+        api.addEntityLink(testEntityID1, testEntityID2)
+        api.addEntityLink(testEntityID2, testEntityID3)
+        api.addEntityLink(testEntityID3, testEntityID4)
+        api.addEntityLink(testEntityID3, testEntityID6, {}, 1)
+        api.addEntityLink(testEntityID4, theSingleton)
+        api.addEntityLink(testEntityID5, theSingleton)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #Navitate to end of chain and back
+    try:
+        uuid15 = api.getLinkCounterpartsByType(testEntityID1, "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Examples.MemeA4::Graphyne.Generic")
+        uuid11 = api.getLinkCounterpartsByType(uuid15[0], "Examples.MemeA4::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
+        if (uuid15[0] != testEntityID5) or (uuid11[0] != testEntityID1): 
+            testResult = "False"
+            errorMsg = ('%sShould be able to navigate full chain and back before measuring cluster membership, but could not!\n')
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error measuring cluster membership!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+      
+    #From E3, atomic
+    try:
+        entityListRaw = api.getCluster(testEntityID3)
+        entityClusterJSON1 = api.getClusterJSON(testEntityID3)
+        entityList1 = []
+        for entityNode in entityListRaw["nodes"]:
+            entityList1.append(entityNode['id'])
+        if str(testEntityID1) not in entityList1:
+            testResult = "False"
+            errorMsg = ('%E1 should be in atomic link cluster of E3, but is not!\n' %errorMsg)
+        if str(testEntityID2) not in entityList1:
+            testResult = "False"
+            errorMsg = ('%E2 should be in atomic link cluster of E3, but is not!\n' %errorMsg)
+        if str(testEntityID4) not in entityList1:
+            testResult = "False"
+            errorMsg = ('%E4 should be in atomic link cluster of E3, but is not!\n' %errorMsg)  
+        if str(theSingleton) not in entityList1:
+            testResult = "False"
+            errorMsg = ('%Examples.MemeA4 should be in atomic link cluster of E3, but is not!\n' %errorMsg) 
+        if len(entityList1) != 5: 
+            testResult = "False"
+            errorMsg = ('%E3 should have 5 members in its atomic link cluster - itself, 3 generics and the singleton - in its atomic link cluster, but it has %s members!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E3!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #From E3, subatomic
+    try:
+        entityListRaw = api.getCluster(testEntityID3, 1)
+        entityClusterJSON2 = api.getClusterJSON(testEntityID3, 1)
+        entityList2 = []
+        for entityNode in entityListRaw["nodes"]:
+            entityList2.append(entityNode['id'])
+        if str(testEntityID6) not in entityList2:
+            testResult = "False"
+            errorMsg = ('%E6 should be in subatomic link cluster of E3, but is not!\n' %errorMsg)  
+        if len(entityList2) != 2: 
+            testResult = "False"
+            errorMsg = ('%E3 should have 2 members in its subatomic link cluster - itself and 1 sibling, but it has %s members!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E3!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #From E5, atomic
+    try:
+        entityListRaw = api.getCluster(testEntityID5)
+        entityClusterJSON3 = api.getClusterJSON(testEntityID5)
+        entityList3 = []
+        for entityNode in entityListRaw["nodes"]:
+            entityList3.append(entityNode['id'])
+        if str(theSingleton) not in entityList3:
+            testResult = "False"
+            errorMsg = ('%Examples.MemeA4 should be in atomic link cluster of E5, but is not!\n' %errorMsg)
+        if len(entityList3) != 2: 
+            testResult = "False"
+            errorMsg = ('%E5 should 2 members in its atomic link cluster, itself and the Examples.MemeA4 singleton, but the cluster has %s members!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E5!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #From E5, subatomic
+    try:
+        entityListRaw = api.getCluster(testEntityID5, 1)
+        entityClusterJSON4 = api.getClusterJSON(testEntityID5, 1)
+        entityList4 = []
+        for entityNode in entityListRaw["nodes"]:
+            entityList4.append(entityNode['id'])
+        if len(entityList4) != 1: 
+            testResult = "False"
+            errorMsg = ('%E5 should be alone in its atomic link cluster, but the cluster has %s members!\n' %(errorMsg, len(entityList1)))      
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E5!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    testcase = "getClusterMembers()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+
     
 
 
@@ -3529,6 +3680,11 @@ def runTests(css):
     testSetData = testInstallExecutor()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["API method testInstallExecutor", testSetPercentage, copy.deepcopy(testSetData)])  
+
+    #getting the cluster dictionary
+    testSetData = testGetCluster()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Cluster", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
