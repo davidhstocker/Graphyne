@@ -198,26 +198,58 @@ Graph.api.createEntityFromMeme("Graphyne.Generic")
 
 ## getCluster
 
-Initiates a traverse from a given entity  and returns a subgraph.  This subgraph can be limited to specific link types (atomic or subatomic) and to specific traverse parameters.   Because of this traverse parameter filtering, these subgraph fragments are referred to as clusters.  value to an entity.  If the property does not yet exist on the entity, then it will be created, with the new value.  If the property already exists, it will be updated.  The value will be cast to a Decimal when added.
+Initiates a traverse from a given entity  and returns a subgraph.  This subgraph can be limited to specific link types (atomic or subatomic) and to specific traverse parameters.   Because of this traverse parameter filtering, these subgraph fragments are referred to as clusters.  It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the cluster, their ID, meme and metameme.  “links” has a list of links pairs, from UUID and to UUID.  
 
 #### Parameters
-**entityUUID** - The UUID (as a string) of the graph entity that you want to add the new property to. 
-**name** - The name of the property.
-**value** - The Decimal value, 88.8.  It can also be a string, or float.  It will be cast to a Decimal, if it is not already.
+**entityUUID** - The UUID (as a string) of the graph entity that you want use as the root node for finding the cluster. 
+**linkTypes** - Either 0 (atomic) or 1 (subatomic).  Default is 0.
+**linkAttributes** (default = {} ) - A python dictionary, containing the link attributes to be filtered for.  The keys will become the attribute names and the values will be the attribute values. 
+**crossSingletons** (default **false**) - Whether or not singletons are to be treated as end effectors.  The default is false.  Crossing singleton bridges is considered an option, as there may be times when you want to do this, but it should be done with care as the result sets may be monumentally large.
 
 #### Example
 
-Suppose you want to add a new Decimal property to an entity.  
-The uuid (in string form) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
-The name of the new property will be 'myNewProperty'.
-The value will be 88.8
+This method in action can be best displayed by looking at the testGetCluster() method of Graphyne’s regression test utility, smoketest.py.  To set up te test, five Graphyne.Generic generic entities are created - which we will label **a**, **b**, **c**, **e** and **f** - and the createEntitiyFromMeme method is used on Examples.MemeA4, which is a singleton and will be labeled **d**.  We then chain them together with addEntityLink() to create the image below, which follows the [Graphyne graph diagraming conventions][1].  Note that the link from c to f is subatomic.
+![][image-1]
 
+The first test collects the atomic cluster rooted on **c**.  We use no link attribute filters.
 	'python
-Graph.api.addEntityDecimalProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', '88.8')
+api.getClusterMembers(c)
 	'
-or
+![][image-2]
+
+
+Next, we repeat the last exercise, but allow the cluster to cross singleton bridges.
 	'python
-Graph.api.addEntityDecimalProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 88.8)
+api.getClusterMembers(c)
 	'
+![][image-3]
 
 
+Next, we collect the subatomic cluster rooted on **c**.  We use no link attribute filters.
+	'python
+api.getClusterMembers(c, 1)
+	'
+![][image-4]
+
+
+The atomic cluster rooted on **e**.  We use no link attribute filters.
+	'python
+api.getClusterMembers(e)
+	'
+![][image-5]
+
+
+The subatomic cluster rooted on **e**.  We use no link attribute filters.
+	'python
+api.getClusterMembers(e, 1)
+	'
+![][image-6]
+
+[1]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Cluster%20Visualization.md
+
+[image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_Whole.png
+[image-2]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_CAtomic.png
+[image-3]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_CAtomicCrossSingletonBridge.png
+[image-4]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_CSubAtomic.png
+[image-5]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_EAtomic.png
+[image-6]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_ESubAtomic.png

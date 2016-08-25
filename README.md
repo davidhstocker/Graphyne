@@ -9,20 +9,20 @@ Within 5 statements, you can import the Graphyne library, initialize the graph, 
 
 ## Powerful
 Graphyne is powerful and includes some features that set it apart from other property graphs.  It can:
-- Make full use of Memetic’s schema definitions 
-- Use Memetic’s powerful query traverse language
+- Make full use of [Memetic’s schema definitions][2] 
+- Use Memetic’s powerful query [traverse language][3]
 - Create schema-less (aka Generic) entities, or entities and networks of entities with a single command.
 - Create unidirectional or bidirectional links between entities.
 - Has support for singleton entities.
 - Entities and links can carry attributes.
-- The ability to create private subgraphs of entities, which appear a single entity to the rest of the graph.
+- The ability to create private subgraphs of entities, which appear as a single entity to the rest of the graph.
 - Entities are scriptable.
-- Graphyne includes an eventing mechanism, allowing entity script to be triggered based on events.
+- Graphyne includes an eventing mechanism, allowing entity scripts to be triggered based on events.
 
 
-[An overview of the diagram conventions for Graphyne graphs][2]
+[An overview of the diagram conventions for Graphyne graphs][4]
 
-[The graph API reference][3]
+[The graph API reference][5]
 
 
 # Getting Started
@@ -34,7 +34,7 @@ To install Graphyne, use pip.
 todo
 	'
 
-Graphyne has dependencies on [Memetic][4] and [Pyodbc][5].  The main use of Memetic is to provide the Memetic’s standard schema.  It is possible to run Graphyne graphs without the standard schema however.
+Graphyne has dependencies on [Memetic][6] and [Pyodbc][7].  The main use of Memetic is to provide the Memetic’s standard schema.  It is possible to run Graphyne graphs without the standard schema however.
 
 
 ## The Hello World Graph
@@ -199,7 +199,7 @@ There is an API method for creating a link between two entities and one for dest
 
 ## Traversing a Graph
 
-In Graphyne, there are three commands for traversing a graph.  You already met the first, getLinkCounterparts(), in the intro section above.  This method provides a simple and convenient way of getting the nearest neighbors.  It returns the UUIDS of all entities that are one hop away.  If you need more power and need to traverse along a specific search path, then there are two other methods that you can use.  Both use [Memetics’ path traverse syntax][6].  They are getLinkCounterpartsByType(), which traverses along the graph, using the entities memes to find its way.  getLinkCounterpartsByMetaMemeType() is similar, but uses the metamemes of the entities in the graph.
+In Graphyne, there are three commands for traversing a graph.  You already met the first, getLinkCounterparts(), in the intro section above.  This method provides a simple and convenient way of getting the nearest neighbors.  It returns the UUIDS of all entities that are one hop away.  If you need more power and need to traverse along a specific search path, then there are two other methods that you can use.  Both use [Memetics’ path traverse syntax][8].  They are getLinkCounterpartsByType(), which traverses along the graph, using the entities memes to find its way.  getLinkCounterpartsByMetaMemeType() is similar, but uses the metamemes of the entities in the graph.
 
 Traverse paths for memes and metamemes are similar.  Both following similar parsing and searching algorithms, but so so in different search spaces; the memePath attribute and the metameme attribute of the entities, respectively.  
 
@@ -233,7 +233,7 @@ A cluster can have atomic or subatomic links but only one type.
 
 **Subgraph** - A cluster where all links are subatomic.  Generally speaking, a subgraph is built from a meme that has subatomic child memes.  This means that there is a root node entity that acts as a the public facing member of the subgraph and the other entities in the subgraph are private.  
 
-Subgraphs allow complex structures that have a single, public face.  E.g. we have a subgraph where each entity has a property, *Foo*.  The parent (public facing) entity might have an evaluation script that sums up the total *Foo* values of the subgraph and returns an aggregate *Foo* value.  This functions akin to [OLAP aggregation][7].
+Subgraphs allow complex structures that have a single, public face.  E.g. we have a subgraph where each entity has a property, *Foo*.  The parent (public facing) entity might have an evaluation script that sums up the total *Foo* values of the subgraph and returns an aggregate *Foo* value.  This functions akin to [OLAP aggregation][9].
 
 In the graph shown in the figure below, there are three clusters; one of which is a subgraph.
 
@@ -272,11 +272,11 @@ If we were traversing from one of the entities participating in the subgraph and
 
 ## Repositories
 
-Graphyne calls the folders where [Memetic Schemas][8] are stored Repositories.  When the Graph.startdb() method is started, it can be called with a non empty first parameter.  This parameter, repoLocations, is a list of strings, each pointing to a folder on the local filesystem.  
+Graphyne calls the folders where [Memetic Schemas][10] are stored Repositories.  When the Graph.startdb() method is started, it can be called with a non empty first parameter.  This parameter, repoLocations, is a list of strings, each pointing to a folder on the local filesystem.  
 
 If a Graphyne repo is also a python package (and contains python scripts), it needs a \_\_init\_\_\(\) file.  Memetic repositories need not be in the python path, as they will be added dynamically when Graph.startDB() is started.
 
-Strictly speaking, Memetic allows nested repository folders, creating a hierarchy of template paths.  [The top level is the Package and the child folders contain sub-packages][9].  E.g. you could have a Bar subfolder inside a Foo repository folder and import only the Foo folder.  A meme from another repo would access meme XXX inside of Boo via “Foo.Bar.XXX”.  Right now, Graphyne supports this for templates (memes, metamemes and restrictions), but not for script files.  If a folder contains .py files, it must be at the top of a package tree.  This has been logged as [Issue #15][10].
+Strictly speaking, Memetic allows nested repository folders, creating a hierarchy of template paths.  [The top level is the Package and the child folders contain sub-packages][11].  E.g. you could have a Bar subfolder inside a Foo repository folder and import only the Foo folder.  A meme from another repo would access meme XXX inside of Boo via “Foo.Bar.XXX”.  Right now, Graphyne supports this for templates (memes, metamemes and restrictions), but not for script files.  If a folder contains .py files, it must be at the top of a package tree.  This has been logged as [Issue #15][12].
 
 #### The Default Repository
 Graphyne can use the Memetic package as its default repository.  Memetic has a pip installer and Graphyne has a dependency on it, so it should be installed if you used pip and its repo is stored in the python libraries folder.  If you want to use it, then you don’t need to manually track down this folder.  You can simply set useDefaultSchema (the fourth parameter) to **True** when you call Graph.startDB(); in which case Graphyne will find this folder and add it to the repository list automatically.  
@@ -284,7 +284,7 @@ Graphyne can use the Memetic package as its default repository.  Memetic has a p
 
 ## Implicit Memes
 
-If you are using [implicit memes][11], there are a couple of things that need to be done in order for this to work.  Firstly, there needs to be an SQL table for each meme and secondly, the graph has to be directed to use that database as its persistence.  
+If you are using [implicit memes][13], there are a couple of things that need to be done in order for this to work.  Firstly, there needs to be an SQL table for each meme and secondly, the graph has to be directed to use that database as its persistence.  
 
 
 ## Bootstrap Process
@@ -295,7 +295,7 @@ When Graph.startDB() is executed, this is the bootstrap order:
 3. Metamemes are cataloged, again in no particular order.
 4. Metameme enhancements are merged.  This is the phase where metamemes that extend other metamemes have their ancestor properties added.  
 5. Memes are loaded from XML and the database (if used) into a temporary list.
-6. Implicit memes are fully built up at this point and references defined by database fields are turned into proper subgraphs of meme child references.  E.g. a [back reference][12] from child B to parent A in the metameme declaration and SQL table contents becomes a member meme reference from A to B in the catalog.
+6. Implicit memes are fully built up at this point and references defined by database fields are turned into proper subgraphs of meme child references.  E.g. a [back reference][14] from child B to parent A in the metameme declaration and SQL table contents becomes a member meme reference from A to B in the catalog.
 7. Memes are now validated against their metamemes.  The results are published in //\<userhomedir\>/Graphyne/GraphyneValidationStatus.html.  If the Memetic content is buggy, this is a good place to start working the problem.
 8. Any entities stored in database persistence are now re-instated into the catalog.
 9. Any singleton memes are instantiated, if they were not already re-instantiated from persistence.
@@ -342,17 +342,19 @@ If we want to add event to an entity, we have to consider three things.  Firstly
 
 
 [1]:	https://github.com/davidhstocker/Memetic
-[2]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Cluster%20Visualization.md
-[3]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md
-[4]:	https://github.com/davidhstocker/Memetic
-[5]:	https://pypi.python.org/pypi/pyodbc
-[6]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#traverse-path-syntax
-[7]:	https://en.wikipedia.org/wiki/Aggregate_(data_warehouse)
-[8]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#schemas
-[9]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#entity
-[10]:	https://github.com/davidhstocker/Graphyne/issues/15
-[11]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#implicit-memes
-[12]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#back-references
+[2]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#schemas
+[3]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#traverse-path-syntax
+[4]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Cluster%20Visualization.md
+[5]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md
+[6]:	https://github.com/davidhstocker/Memetic
+[7]:	https://pypi.python.org/pypi/pyodbc
+[8]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#traverse-path-syntax
+[9]:	https://en.wikipedia.org/wiki/Aggregate_(data_warehouse)
+[10]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#schemas
+[11]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#entity
+[12]:	https://github.com/davidhstocker/Graphyne/issues/15
+[13]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#implicit-memes
+[14]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#back-references
 
 [image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ChildMemes.png
 [image-2]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/SingletonBridge.png
