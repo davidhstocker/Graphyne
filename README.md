@@ -325,15 +325,67 @@ If the entity is not an instance of Memetic.DNA.Script, or if it does not have a
 
 ## Memetic.DNA.StateEventScript Memes
 
-Graphyne supports a mechanism for tying scripts to entity life cycle events.  The current list of supported events are:
+Graphyne supports a mechanism for tying scripts to entity life cycle events.  These are defined as restrictions in the Memetic standard schema.  The restriction is *Memetic.StateEventType* and the current list of supported events are:
 **initialize** - triggered when an entity is created.
-**execute** - triggered explicitly, via the evaluateEntity() method.
+**execute** - triggered explicitly, via the [evaluateEntity() method][15].
 **terminate** - triggered when an entity is deprecated or deleted.
 **linkAdd** - triggered when an entity is on either end of a new link.
 **linkRemove** - triggered when a link that joins the entity is removed.
 **propertiesChanged** - triggered whenever the properties of an entity are changed.
 
-If we want to add event to an entity, we have to consider three things.  Firstly, we need to be able to declare which language the script is written in.  Secondly, we need to declare which event it is and lastly, we need the location of the file containing the script.  
+If we want to add event to an entity, we have to consider three things.  Firstly, we need to be able to declare which language the script is written in.  Secondly, we need to declare which event it is and lastly, we need the location of the file containing the script.
+
+### How Graphyne handles state event scripts
+
+When a schema designer wants to add a state event script to a meme, she does so by creating a chain of entities as diagramed in the picture, below.  Firstly, there is a parent meme.  It is the entities of this meme which will eventually be “executable”.  Secondly, there are 0..n child memes that extend *Memetic.DNA.StateEventScript*.  Each of these has a *State* property, with restriction type *Memetic.StateEventType*.  Each *Memetic.DNA.StateEventScript* derived meme has a *Memetic.DNA.Script* derived child meme.  This meme in turn has a *Script* property, which points to a filesystem location.  If the event type is execute, then it can be called at any time, with the **evaluateEntity()** api method.  The others are internal events, tied to the life cycle of an entity.
+
+Todo: Pic1
+
+You can see an example of this in action in Graphyne’s test framework.  In the test repository, there is a module called *TestCaseAppendix*.  It follows this chain of memes pattern.
+
+	'<Meme id="ConditionTrueOrFalse_CScr" metameme="Memetic.Condition.ConditionScript">
+\<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/\>
+\<MemberMeme occurrence="1" memberID="TrueOrFalseSES"/\>
+\</Meme\>
+\<Meme id="TrueOrFalseScript" metameme="Memetic.DNA.Script"\>
+\<MemeProperty name="Script" value="TestCaseAppendix.ConditionTrueOrFalse"/\>
+\<MemeProperty name="Language" value="python"/\>
+\</Meme\>
+\<Meme id="TrueOrFalseSES" metameme="Memetic.DNA.StateEventScript"\>
+\<MemeProperty name="State" value="execute"/\>
+\<MemberMeme occurrence="1" memberID="TrueOrFalseScript" /\>
+\</Meme\>
+	
+
+You can see that ConditionTrueOrFalseCScr has TrueOrFalseSES as a child meme, which in turn has TrueOrFalseScript as a child meme.  We see that the State is “execute”, so we’ll be able to call it with the  **evaluateEntity()** api method.  We also see that the value of *TrueOrFalseSES’s* *Script* property is **TestCaseAppendix.ConditionTrueOrFalse**.  The part before the period separator is the file (within the same repository package) and the trailing part is the class name.  
+
+In the next picture, we can see how the scripts are assembled when the memes are instantiated into entities.  
+
+Todo: Pic2
+
+If a meme has a *Memetic.DNA.StateEventScript* derived child meme, then the graph engine recognizes that the parent has a state event script.  Suppose a meme **A** has a *Memetic.DNA.StateEventScript* derived child meme.  When entity **A’ **is created from **A**, the graph engine:
+Extracts the *State* property value to determine which even it is attached
+It looks for a *Memetic.DNA.Script* derived child meme of the *Memetic.DNA.StateEventScript* meme.  
+The Script property is parsed and a new python object of the class being referenced is created.  (if it has an init event, that is run)
+The new object is then added to **A’** as the appropriate *xxxScript*.  It is a callable object and its *execute() *method is callable.
+The StateEventScript and Script memes are instantiated as entities in the graph,  but they are mostly present for metadata purposes.  The callable objects are installed directly onto the parent meme.
+
+Todo: Pic3
+
+
+Below is a template example for such a script class.  Its init method is expected to take two params; self and a dictionary, containing any runtime parameters.  The runtime parameters are optional when calling evaluateEntity(), as it has an empty dictionary as a default parameter.  When creating the execute() method however, this parameter is mandatory, or a Python **TypeError** will be thrown.  This will surface as a Graphyne **Exceptions.ScriptError **exception, with Python 3 raise… from… nesting information about the **TypeError**.
+
+	' python
+class SomeClassName(object):
+
+def __init__(self, rtParams = None):
+pass   
+
+def execute(self, params):
+return None e
+	'
+
+  
 
 
 
@@ -355,6 +407,7 @@ If we want to add event to an entity, we have to consider three things.  Firstly
 [12]:	https://github.com/davidhstocker/Graphyne/issues/15
 [13]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#implicit-memes
 [14]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#back-references
+[15]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#evaluateEntity
 
 [image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ChildMemes.png
 [image-2]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/SingletonBridge.png
