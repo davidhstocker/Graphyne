@@ -1081,6 +1081,181 @@ def testEntityPhase4_1():
         Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
+
+
+
+
+def testRevertEntity():
+    ''' a repeat of the testEntityPhase4 tests, but using revertEntity'''
+        
+    method = moduleName + '.' + 'testRevertEntity'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+    results = []
+    resultSet = []
+        
+    testFileName = os.path.join(testDirPath, "Entity_Phase4.atest")
+    readLoc = codecs.open(testFileName, "r", "utf-8")
+    allLines = readLoc.readlines()
+    readLoc.close
+    n = 0
+    
+    #First, re-run the 4 tests with revertEntity()
+    for eachReadLine in allLines:
+        errata = []
+        n = n+1
+        stringArray = str.split(eachReadLine)
+        Graph.logQ.put( [logType , logLevel.DEBUG , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
+
+        testResult = True
+        try:
+            entityID = api.createEntityFromMeme(stringArray[0])
+            baseValue = api.getEntityPropertyValue(entityID, stringArray[1])
+            
+            api.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
+            getter = api.getEntityPropertyValue(entityID, stringArray[1])
+            propType = api.getEntityPropertyType(entityID, stringArray[1])
+            
+            #reformat the expected result from unicode string to that which is expected in the property
+            expectedResult = None
+            if propType == "String":
+                expectedResult = stringArray[2]
+            elif propType == "Integer":    
+                expectedResult = int(stringArray[2])
+            elif propType == "Decimal":    
+                expectedResult = decimal.Decimal(stringArray[2])
+            else:    
+                expectedResult = False
+                if str.lower(stringArray[2]) == 'true':
+                    expectedResult = True
+
+            #now compare getter to the reformatted stringArray[2] and see if we have successfully altered the property
+            if getter == expectedResult:
+                api.revertEntity(entityID, False)
+                getter = api.getEntityPropertyValue(entityID, stringArray[1])
+                if getter != baseValue:
+                    testResult = False
+                    
+        except Exceptions.ScriptError:
+            #Some test cases violate restriction constraints and will raise an exception.
+            # This works as intended  
+            testResult = False
+        except Exception as e:
+            errorMsg = ('Error!  Traceback = %s' % (e) )
+            errata.append(errorMsg)
+
+        testcase = str(stringArray[0])
+        allTrueResult = str(testResult)
+        expectedResult = "True"
+        results = [n, testcase, allTrueResult, expectedResult, errata]
+        resultSet.append(results)
+        
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+        
+    #Second, test with a custom property with revertEntity()
+    for eachReadLine in allLines:
+        errata = []
+        n = n+1
+        stringArray = str.split(eachReadLine)
+        Graph.logQ.put( [logType , logLevel.DEBUG , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
+
+        testResult = True
+        try:
+            entityID = api.createEntityFromMeme(stringArray[0])
+            
+            #Create a property named after the current n count and give it the n value
+            currValue = "%s" %n
+            Graph.api.addEntityIntegerProperty(entityID, currValue, currValue) 
+            getter = Graph.api.getEntityHasProperty(entityID, currValue)  
+            if getter != True:
+                testResult = False
+            Graph.api.revertEntity(entityID, currValue)
+            getter = Graph.api.getEntityHasProperty(entityID, currValue) 
+            if getter == True:
+                testResult = False
+
+        except Exceptions.ScriptError:
+            #Some test cases violate restriction constraints and will raise an exception.
+            # This works as intended  
+            testResult = False
+        except Exception as e:
+            errorMsg = ('Error!  Traceback = %s' % (e) )
+            errata.append(errorMsg)
+
+        testcase = str(stringArray[0])
+        allTrueResult = str(testResult)
+        expectedResult = "True"
+        results = [n, testcase, allTrueResult, expectedResult, errata]
+        resultSet.append(results)
+        
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+        
+    #Lastly, rerun test 4 and then add a property and test revertEntity()
+    for eachReadLine in allLines:
+        errata = []
+        n = n+1
+        stringArray = str.split(eachReadLine)
+        Graph.logQ.put( [logType , logLevel.DEBUG , method , "Starting testcase %s, meme %s" %(n, stringArray[0])])
+
+        testResult = True
+        try:
+            entityID = api.createEntityFromMeme(stringArray[0])
+            baseValue = api.getEntityPropertyValue(entityID, stringArray[1])
+            
+            api.setEntityPropertyValue(entityID, stringArray[1], stringArray[2])
+            getter = api.getEntityPropertyValue(entityID, stringArray[1])
+            propType = api.getEntityPropertyType(entityID, stringArray[1])
+            
+            #reformat the expected result from unicode string to that which is expected in the property
+            expectedResult = None
+            if propType == "String":
+                expectedResult = stringArray[2]
+            elif propType == "Integer":    
+                expectedResult = int(stringArray[2])
+            elif propType == "Decimal":    
+                expectedResult = decimal.Decimal(stringArray[2])
+            else:    
+                expectedResult = False
+                if str.lower(stringArray[2]) == 'true':
+                    expectedResult = True
+
+            #Create a property named after the current n count and give it the n value
+            currValue = "%s" %n
+            Graph.api.addEntityIntegerProperty(entityID, currValue, currValue) 
+            getter = Graph.api.getEntityHasProperty(entityID, currValue)  
+            if getter != True:
+                testResult = False
+
+            #now compare getter to the reformatted stringArray[2] and see if we have successfully altered the property
+            if getter == expectedResult:
+                api.revertEntity(entityID, False)
+                getter = api.getEntityPropertyValue(entityID, stringArray[1])
+                if getter != baseValue:
+                    testResult = False
+             
+            #Make sure the custom property is gone       
+            Graph.api.revertEntity(entityID, currValue)
+            getter = Graph.api.getEntityHasProperty(entityID, currValue)
+            getter = Graph.api.revertEntity(entityID, currValue)  
+            if getter == True:
+                testResult = False
+
+        except Exceptions.ScriptError:
+            #Some test cases violate restriction constraints and will raise an exception.
+            # This works as intended  
+            testResult = False
+        except Exception as e:
+            errorMsg = ('Error!  Traceback = %s' % (e) )
+            errata.append(errorMsg)
+
+        testcase = str(stringArray[0])
+        allTrueResult = str(testResult)
+        expectedResult = "True"
+        results = [n, testcase, allTrueResult, expectedResult, errata]
+        resultSet.append(results)
+        
+        Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
     
 
 
@@ -1944,7 +2119,8 @@ def testSourceCreateMeme(filename):
     allLines = readLoc.readlines()
     readLoc.close
     n = 0
-        
+       
+    #Phase 1 -  explicit Metameme and Meme declaration
     for eachReadLine in allLines:
         errata = []
         n = n+1
@@ -1957,7 +2133,7 @@ def testSourceCreateMeme(filename):
         
         testResult = False
         try:
-            operationResult = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            operationResult = api.sourceMemeCreate(memeName, modulePath, metamemePath)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
             operationResult = {"memeID" : "%s.%s" %(modulePath, memeName), "ValidationResults" : [False, errorMsg]}
@@ -1977,6 +2153,53 @@ def testSourceCreateMeme(filename):
         resultSet.append(results)
         
         Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+        
+    #Phase 2 - Default Metameme, default module
+    testResult = False
+    memeName = "DefaultMetamemeMeme"
+    try:
+        operationResult = api.sourceMemeCreate(memeName)
+    except Exception as e:
+        errorMsg = ('Error!  Traceback = %s' % (e) )
+        operationResult = {"memeID" : "%s.%s" %("Graphyne", memeName), "ValidationResults" : [False, errorMsg]}
+        errata.append(errorMsg)
+
+    testcase = str(operationResult["memeID"])
+    validation = operationResult["ValidationResults"]
+    if validation[0] == True:
+        testResult = True
+    else:
+        testResult = False
+        errata = testResult[1]
+    
+    allTrueResult = str(testResult)
+    expectedResult = "True"
+    results = [n, testcase, allTrueResult, expectedResult, errata]
+    resultSet.append(results)
+
+    #Phase 3 - Default Metameme, custom module
+    testResult = False
+    try:
+        operationResult = api.sourceMemeCreate(memeName, "CustomModule")
+    except Exception as e:
+        errorMsg = ('Error!  Traceback = %s' % (e) )
+        operationResult = {"memeID" : "%s.%s" %("Graphyne", memeName), "ValidationResults" : [False, errorMsg]}
+        errata.append(errorMsg)
+
+    testcase = str(operationResult["memeID"])
+    validation = operationResult["ValidationResults"]
+    if validation[0] == True:
+        testResult = True
+    else:
+        testResult = False
+        errata = testResult[1]
+    
+    allTrueResult = str(testResult)
+    expectedResult = "True"
+    results = [n, testcase, allTrueResult, expectedResult, errata]
+    resultSet.append(results)
+
+    
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
@@ -2009,7 +2232,7 @@ def testSourceProperty(filename):
         
         testResult = "False"
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
             operationResult = api.sourceMemePropertySet(sourceMeme["memeID"], propName, propValueStr)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
@@ -2062,7 +2285,7 @@ def testSourcePropertyRemove(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
             unusedAddProp = api.sourceMemePropertySet(sourceMeme["memeID"], propName, propValueStr)
             operationResult = api.sourceMemePropertyRemove(sourceMeme["memeID"], propName)
             
@@ -2122,8 +2345,8 @@ def testSourceMember(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = api.sourceMemeCreate(memberModulePath, memberMemeName, memberMetamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(memberMemeName, memberModulePath, memberMetamemePath)
             operationResult = api.sourceMemeMemberAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"], occurrence)
             validation = operationResult["ValidationResults"]
             if validation[0] == True:
@@ -2178,8 +2401,8 @@ def testSourceMemberRemove(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = api.sourceMemeCreate(memberModulePath, memberMemeName, memberMetamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(memberMemeName, memberModulePath, memberMetamemePath)
             unusedAdd = api.sourceMemeMemberAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"], occurrence)
             operationResult = api.sourceMemeMemberRemove(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             validation = operationResult["ValidationResults"]
@@ -2234,8 +2457,8 @@ def testSourceEnhancement(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = api.sourceMemeCreate(enhancedModulePath, enhancedMemeName, enhancedMetamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(enhancedMemeName, enhancedModulePath, enhancedMetamemePath)
             operationResult = api.sourceMemeEnhancementAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             validation = operationResult["ValidationResults"]
             if validation[0] == True:
@@ -2255,6 +2478,63 @@ def testSourceEnhancement(filename):
         resultSet.append(results)
         
         Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+        
+    #Part 2 - Create two generic memes and use one to enhance the other
+    # Create the two memes
+    # Add a property to each
+    # Create entities from the two memes
+    # Check to ensure that they have the peoper properties
+    # Use one meme to enhanece the other.
+    # Create a new entity.
+    # Test that it has all properties
+    
+    part2AllTrue = True
+    # Create the two memes
+    enhancingMeme = api.sourceMemeCreate("Enhancing")
+    enhancedMeme = api.sourceMemeCreate("Enhanced")
+    testcase = "Generic enhancing Generic"
+    try:
+        # Add a property to each
+        api.sourceMemePropertySet(enhancingMeme["memeID"], "A", "A")
+        api.sourceMemePropertySet(enhancedMeme["memeID"], "B", "B")
+        
+        # Create entities from the two memes
+        entityA = api.createEntityFromMeme(enhancingMeme["memeID"])
+        entityB = api.createEntityFromMeme(enhancedMeme["memeID"])
+        
+        # Check to ensure that they have the peoper properties
+        entityAhasA = Graph.api.getEntityHasProperty(entityA, "A")
+        entityBhasA = Graph.api.getEntityHasProperty(entityB, "A")
+        entityAhasB = Graph.api.getEntityHasProperty(entityA, "B")
+        entityBhasB = Graph.api.getEntityHasProperty(entityB, "B")
+        if entityAhasA == False:
+            part2AllTrue = False
+        if entityBhasA == True:
+            part2AllTrue = False
+        if entityAhasB == True:
+            part2AllTrue = False
+        if entityBhasB == False:
+            part2AllTrue = False
+        
+        # Use one meme to enhanece the other.
+        unusedReturn = api.sourceMemeEnhancementAdd(enhancingMeme["memeID"], enhancedMeme["memeID"])
+        
+        # Test that it has all properties
+        entityAB = api.createEntityFromMeme(enhancedMeme["memeID"])
+        entityABhasA = Graph.api.getEntityHasProperty(entityAB, "A")
+        entityABhasB = Graph.api.getEntityHasProperty(entityAB, "B")
+        if entityABhasA == False:
+            part2AllTrue = False
+        if entityABhasB == False:
+            part2AllTrue = False
+            
+        part2AllTrue = str(part2AllTrue)
+        results = [n, testcase, part2AllTrue, "True", []]
+        resultSet.append(results)
+    except Exception as e:
+        results = [n, testcase, "False", "True", []]
+        resultSet.append(results)
+    
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
@@ -2291,8 +2571,8 @@ def testSourceEnhancementRemove(filename):
         
         testResult = str(False)
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
-            sourceMemberMeme = api.sourceMemeCreate(enhancedModulePath, enhancedMemeName, enhancedMetamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
+            sourceMemberMeme = api.sourceMemeCreate(enhancedMemeName, enhancedModulePath, enhancedMetamemePath)
             unusedAddEnhancement = api.sourceMemeEnhancementAdd(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             operationResult = api.sourceMemeEnhancementRemove(sourceMeme["memeID"], sourceMemberMeme["memeID"])
             validation = operationResult["ValidationResults"]
@@ -2312,6 +2592,77 @@ def testSourceEnhancementRemove(filename):
         resultSet.append(results)
         
         Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(n)])
+        
+    #Part 2 - Create two generic memes and use one to enhance the other
+    # Create the two memes
+    # Add a property to each
+    # Create entities from the two memes
+    # Check to ensure that they have the peoper properties
+    # Use one meme to enhanece the other.
+    # Create a new entity.
+    # Test that it has all properties
+    # Remove the enhancement
+    # Create a new entity and test that the enhancing property is not there
+    
+    part2AllTrue = True
+    # Create the two memes
+    enhancingMeme = api.sourceMemeCreate("Enhancing")
+    enhancedMeme = api.sourceMemeCreate("Enhanced")
+    testcase = "Generic enhancing Generic"
+    try:
+        # Add a property to each
+        api.sourceMemePropertySet(enhancingMeme["memeID"], "A", "A")
+        api.sourceMemePropertySet(enhancedMeme["memeID"], "B", "B")
+        
+        # Create entities from the two memes
+        entityA = api.createEntityFromMeme(enhancingMeme["memeID"])
+        entityB = api.createEntityFromMeme(enhancedMeme["memeID"])
+        
+        # Check to ensure that they have the peoper properties
+        entityAhasA = Graph.api.getEntityHasProperty(entityA, "A")
+        entityBhasA = Graph.api.getEntityHasProperty(entityB, "A")
+        entityAhasB = Graph.api.getEntityHasProperty(entityA, "B")
+        entityBhasB = Graph.api.getEntityHasProperty(entityB, "B")
+        if entityAhasA == False:
+            part2AllTrue = False
+        if entityBhasA == True:
+            part2AllTrue = False
+        if entityAhasB == True:
+            part2AllTrue = False
+        if entityBhasB == False:
+            part2AllTrue = False
+        
+        # Use one meme to enhanece the other.
+        unusedReturn = api.sourceMemeEnhancementAdd(enhancingMeme["memeID"], enhancedMeme["memeID"])
+        
+        # Test that it has all properties
+        entityAB = api.createEntityFromMeme(enhancedMeme["memeID"])
+        entityABhasA = Graph.api.getEntityHasProperty(entityAB, "A")
+        entityABhasB = Graph.api.getEntityHasProperty(entityAB, "B")
+        if entityABhasA == False:
+            part2AllTrue = False
+        if entityABhasB == False:
+            part2AllTrue = False
+            
+        # Remove the enhancement
+        unusedReturn = api.sourceMemeEnhancementRemove(enhancingMeme["memeID"], enhancedMeme["memeID"])
+        
+        # Create a new entity and test that the enhancing property is not there
+        entityABRemoved = api.createEntityFromMeme(enhancedMeme["memeID"])
+        entityABRemovedHasA = Graph.api.getEntityHasProperty(entityABRemoved, "A")
+        entityABRemovedHasB = Graph.api.getEntityHasProperty(entityABRemoved, "B")
+        if entityABRemovedHasA == True:
+            part2AllTrue = False
+        if entityABRemovedHasB == False:
+            part2AllTrue = False
+            
+        part2AllTrue = str(part2AllTrue)
+        results = [n, testcase, part2AllTrue, "True", []]
+        resultSet.append(results)
+    except Exception as e:
+        results = [n, testcase, "False", "True", []]
+        resultSet.append(results)
+        
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
@@ -2347,7 +2698,7 @@ def testSourceSingletonSet(filename):
         afterRemoval = False
         operationResult = {}
         try:
-            sourceMeme = api.sourceMemeCreate(modulePath, memeName, metamemePath)
+            sourceMeme = api.sourceMemeCreate(memeName, modulePath, metamemePath)
             
             setAsSingleton = api.sourceMemeSetSingleton(sourceMeme["memeID"], True)
             afterSingleton = api.getIsMemeSingleton(sourceMeme["memeID"])
@@ -3022,9 +3373,9 @@ def testGetCluster():
 
     #Navitate to end of chain and back
     try:
-        uuid15 = api.getLinkCounterpartsByType(testEntityID1, "Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Examples.MemeA4::Graphyne.Generic")
-        uuid11 = api.getLinkCounterpartsByType(uuid15[0], "Examples.MemeA4::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic::Graphyne.Generic")
-        if (uuid15[0] != testEntityID5) or (uuid11[0] != testEntityID1): 
+        uuid15 = api.getLinkCounterpartsByType(testEntityID1, ">>Graphyne.Generic>>Graphyne.Generic>>Graphyne.Generic>>Examples.MemeA4<<Graphyne.Generic", None, True)
+        uuid11 = api.getLinkCounterpartsByType(uuid15[0], "Examples.MemeA4<<Graphyne.Generic<<Graphyne.Generic<<Graphyne.Generic<<Graphyne.Generic", None, True)
+        if (testEntityID5 not in uuid15) or (testEntityID1 not in uuid11): 
             testResult = "False"
             errorMsg = ('%sShould be able to navigate full chain and back before measuring cluster membership, but could not!\n')
     except Exception as e:
@@ -3119,8 +3470,7 @@ def testGetCluster():
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
-
-    
+   
 
 
 ######################
@@ -3685,6 +4035,11 @@ def runTests(css):
     testSetData = testGetCluster()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Cluster", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #testRevertEntity
+    testSetData = testRevertEntity()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["API Method revertEntity", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     

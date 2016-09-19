@@ -501,7 +501,7 @@ class EnhancementIndex(object):
                     newList.append(enhancement)
                 else:
                     found = True
-            self.enhancementLists[newList]
+            self.enhancementLists[enhancedPath] = newList
             if found == True:
                 logQ.put( [logType , logLevel.INFO , method , "Template %s has had its enhancement from %s severed." %(enhancedPath, enhancingPath)])        
             else:
@@ -743,7 +743,9 @@ class MetaMeme(object):
             #logQ.put( [logType , logLevel.DEBUG , method , "Metameme %s templateProperty %s found: %s" %(propertyName, propertyName, returnProp.__dict__)])
             pass
         else:
-            logQ.put( [logType , logLevel.WARNING , method , "Metameme %s property %s not found" %(self.path.fullTemplatePath, propertyName)])
+            errorMessage = "Metameme %s property %s not found" %(self.path.fullTemplatePath, propertyName)
+            logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+            raise Exceptions.MetaMemePropertyNotDefinedError(errorMessage)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return returnProp
 
@@ -1593,7 +1595,12 @@ class SourceMeme(object):
     
     #memberMemes, properties, enhances, tags, isSingleton, invalidProps = []):
 
-    def setProperty(self, propName, propValueStr):
+    def setProperty(self, propName, propValueStr, propType = "string"):
+        """
+            Changes a meme property value.
+            If the property is being added to a Generic Meme, then a PropertyDefinition is dynamically generated.
+            string, list, integer, boolean, decimal
+        """
         method = moduleName + '.' +  self.className + '.setProperty'
         try:
             metaMemeProperty = self.metaMeme.getProperty(propName)
@@ -1610,13 +1617,33 @@ class SourceMeme(object):
         except Exceptions.MemePropertyValueError as e:
             logQ.put( [logType , logLevel.WARNING , method , e]) 
             self.invalidProps[propName] = e  
-            raise e             
+            raise e   
+        except Exceptions.MetaMemePropertyNotDefinedError as e:  
+            if self.metaMeme.path.fullTemplatePath == "Graphyne.GenericMetaMeme":
+                #Generic memes are allowed to add properties not in the metameme
+                validPropTypes = ['string', 'list', 'integer', 'boolean', 'decimal']
+                if propType not in validPropTypes:
+                    errorMessage = "False property type %s" %propType
+                    raise  Exceptions.MemePropertyValueTypeError(errorMessage)
+                else:
+                    dynamicProperty = PropertyDefinition(propName, propType, None, None, [], False)
+                    templateProperty = Property(dynamicProperty, propValueStr)
+                    self.properties[propName] = templateProperty
+            else:
+                propError = "Meme %s has property %s, but it is not a property of parent metameme %s.  Traceback = %s" % (self.path.fullTemplatePath, propName, self.metaMeme.path.fullTemplatePath, e)
+                logQ.put( [logType , logLevel.WARNING , method , propError])
+                self.invalidProps[propName] = propError
+                
+                tb = sys.exc_info()[2]
+                raise Exceptions.MemePropertyValidationError(propError).with_traceback(tb)        
         except Exception as e:
             #OOPS!  Meme has a property that is not in the metameme
-            propError = "Meme %s has property %s, but it is not a property of parent metameme %s.  Traceback = %s" % (self.path.fullTemplatePath, propName, self.metaMeme.path.fullTemplatePath, e)
+            propError = "Unknown problem with Meme %s and property %s, from parent metameme %s.  Traceback = %s" % (self.path.fullTemplatePath, propName, self.metaMeme.path.fullTemplatePath, e)
             logQ.put( [logType , logLevel.WARNING , method , propError])
             self.invalidProps[propName] = propError
-            raise Exceptions.MemePropertyValueError(propError)
+            
+            tb = sys.exc_info()[2]
+            raise Exceptions.MemePropertyValidationError(propError).with_traceback(tb)
 
     def removeProperty(self, propName):
         method = moduleName + '.' +  self.className + '.removeProperty'
@@ -1832,6 +1859,7 @@ class SourceMeme(object):
         method = moduleName + '.' +  self.className + '.addEnhancement'
         try:
             self.enhances[memeID] = memeID
+            enhancementIndex.addEnhancement(self.path.fullTemplatePath, memeID)
             return True 
         except Exception as e:
             exceptionMsg = "Problem adding enhancement %s to meme %s.  Traceback = %s" %(memeID, self.path.fullTemplatePath, e)
@@ -1842,6 +1870,7 @@ class SourceMeme(object):
         method = moduleName + '.' +  self.className + '.removeEnhancement'
         try:
             del self.enhances[memeID]
+            enhancementIndex.removeEnhancement(self.path.fullTemplatePath, memeID)
         except:
             exceptionMsg = "Meme %s does not enhance %s" %(self.path.fullTemplatePath, memeID)
             logQ.put( [logType , logLevel.WARNING , method , exceptionMsg])
@@ -3538,11 +3567,11 @@ class Entity(object):
                 elif state == "terminate":    
                     self.terminateScript = function   
                 elif state == "linkAdd":    
-                    self.terminateScript = function 
+                    self.linkAdd = function 
                 elif state == "linkRemove":    
-                    self.terminateScript = function 
+                    self.linkRemove = function 
                 elif state == "propertiesChanged":    
-                    self.terminateScript = function    
+                    self.propertiesChanged = function    
             except Exception:
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
@@ -3601,7 +3630,7 @@ class Entity(object):
 ########################
 
 class createEntityFromMeme(object):
-    #evaluateEntity params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
+    #createEntityFromMeme params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
     #five params: memePath, ActionID = None, Subject = None, Controller = None, supressInit = False
     def execute(self, params):
         try:
@@ -4291,22 +4320,6 @@ class getLinkCounterpartsByTag(object):
 
 
 
-#Todo - add support for the getCounterparts parameters
-class getLinkCounterparts(object):
-    def execute(self, params):
-        ''' Two params: entity, linkType = 0'''
-        linkType = None
-        try:
-            if (params[1] == 0) or (params[1] == 1) or (params[1] == 2):
-                linkType = params[1]
-        except:
-            pass
-        counterparts = linkRepository.getCounterparts(params[0], linkDirectionTypes.BIDIRECTIONAL, [], [], linkType)
-        return counterparts
-
-
-    
-
 class getAreEntitiesLinked(object):
     #getAreEntitiesLinked(self, uuid):
     ''' Two params: entity, memePath'''
@@ -4579,11 +4592,48 @@ class evaluateEntity(object):
             else:
                 ex = "%s Entity %s is depricated" %(entity.memePath, uuidVal)
                 raise Exceptions.ScriptError(ex)
+        except TypeError as e:
+            raise Exceptions.ScriptError("Function evaluateEntity failed") from e
+        except AttributeError as e:
+            em = "Entity %s has no execute script!"  %params[0]
+            raise Exceptions.ScriptError(em) from e
         except Exception as e:
-            ex = "Function evaluateEntity failed.  Traceback = %s" %e
-            raise Exceptions.ScriptError(ex)
+            raise Exceptions.ScriptError("Function evaluateEntity failed") from e
         return returnVal
 
+
+
+
+class revertEntity(object):
+    """ Reset property values to their original values as defined in the parent meme(s)
+           and removes custom properties.
+    Two params: entity, drilldown (optional)'''"""
+    # revertPropertyValues(self, drillDown = False)
+    def execute(self, params):
+        drillDown = False
+        try:
+            if len(params) == 2:
+                drillDown = params[1]
+        except: pass
+        
+        try:
+            entity = entityRepository.getEntity(params[0])
+            if entity.depricated != True:
+                entity.entityLock.acquire(True)
+                try:
+                    entity.revertPropertyValues(drillDown)
+                    entity.removeAllCustomProperties(drillDown)
+                except Exception as e:
+                    raise e                
+                finally:
+                    entity.entityLock.release()
+            else:
+                ex = "Entity %s has been archived and is no longer available" %params[0]
+                raise Exceptions.ScriptError(ex)
+        except Exception as e:
+            ex = "Function addEntityDecimalProperty failed.  Traceback = %s" %e
+            raise Exceptions.ScriptError(ex)
+        return None
     
     
     
@@ -5543,7 +5593,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
             logQ.put( [logType , logLevel.ERROR , method , "Error while loading metamemes from file %s.  Traceback = %s" %(toBeIndexed, e)])
     #Before Continuing, create a Generic Metameme
     gPath = TemplatePath("Graphyne", "GenericMetaMeme")
-    gmetaMeme = MetaMeme(gPath, False, [], [], {}, {}, False)
+    gmetaMeme = MetaMeme(gPath, False, [], ["Graphyne.GenericMetaMeme"], {}, {}, False)
     metamemes.append(gmetaMeme)
 
     #Before we can load the memes, we have to catalog the metamemes
@@ -6513,7 +6563,6 @@ class API(object):
         self.scriptDict["getIsEntityTaxonomyGeneralization"] = getIsEntityTaxonomyGeneralization()
         self.scriptDict["getIsEntityTaxonomySpecialization"] = getIsEntityTaxonomySpecialization()
         self.scriptDict["getLinkCounterpartsByType"] = getLinkCounterpartsByType()
-        self.scriptDict["getLinkCounterparts"] = getLinkCounterparts()
         self.scriptDict["instantiateEntity"] = instantiateEntity()
         self.scriptDict["removeEntityLink"] = removeEntityLink()
         self.scriptDict["removeAllCounterpartsOfType"] = removeAllCounterpartsOfType()
@@ -6522,6 +6571,7 @@ class API(object):
         self.scriptDict["removeEntityTaxonomy"] = removeEntityTaxonomy()
         self.scriptDict["removeAllCustomPropertiesFromEntity"] = removeAllCustomPropertiesFromEntity()
         self.scriptDict["revertEntityPropertyValues"] = revertEntityPropertyValues()
+        self.scriptDict["revertEntity"] = revertEntity()
         self.scriptDict["setEntityPropertyValue"] = setEntityPropertyValue()
         self.scriptDict["getIsMemeSingleton"] = getIsMemeSingleton()
         self.scriptDict["setStateEventScript"] = setStateEventScript()
@@ -6590,7 +6640,7 @@ class API(object):
             self._getLinkCounterpartsByMetaMemeType = self.scriptDict["getLinkCounterpartsByMetaMemeType"]
             self._getHasCounterpartsByType = self.scriptDict["getHasCounterpartsByType"]
             self._getHasCounterpartsByMetaMemeType = self.scriptDict["getHasCounterpartsByMetaMemeType"]
-            self._getLinkCounterparts = self.scriptDict["getLinkCounterparts"]
+            #self._getLinkCounterparts = self.scriptDict["getLinkCounterparts"]
             self._getLinkCounterpartsByType = self.scriptDict["getLinkCounterpartsByType"]
             self._getLinkCounterpartsByTag = self.scriptDict["getLinkCounterpartsByTag"]
             self._getHasCounterpartsByTag = self.scriptDict["getHasCounterpartsByTag"]
@@ -6609,6 +6659,7 @@ class API(object):
             self._removeEntityProperty = self.scriptDict["removeEntityProperty"]
             self._removeEntityTaxonomy = self.scriptDict["removeEntityTaxonomy"]
             self._revertEntityPropertyValues = self.scriptDict["revertEntityPropertyValues"]
+            self._revertEntity = self.scriptDict["revertEntity"]
             self._setEntityPropertyValue = self.scriptDict["setEntityPropertyValue"]
             self._setStateEventScript = self.scriptDict["setStateEventScript"]
             self._installPythonExecutor = self.scriptDict["installPythonExecutor"]
@@ -7113,11 +7164,12 @@ class API(object):
         
             
             
-    def getLinkCounterparts(self, entityUUID):
+    def getLinkCounterparts(self, entityUUID, linkType = None):
         try: 
-            params = [entityUUID]
-            entity = self._getLinkCounterparts.execute(params)
-            return entity
+            params = [entityUUID, "*", linkType, []]
+            entities = self._getLinkCounterpartsByType.execute(params)
+            filteredEntities = filterListDuplicates(entities)
+            return filteredEntities
         except Exception as e:
             exception = None
             try:
@@ -7238,6 +7290,22 @@ class API(object):
             raise Exceptions.ScriptError(exception)
         
         
+
+    def revertEntity(self, entityUUID, drilldown = False):
+        try: 
+            params = [entityUUID, drilldown]
+            unusedMemeExists = self._revertEntity.execute(params)
+        except Exception as e:
+            exception = None
+            try:
+                entity = self.getEntity(entityUUID)
+                exception = "Action on %s entity: revertEntity(%s, %s) traceback = %s" %(entity.memePath.fullTemplatePath, entityUUID, drilldown, e)
+            except:
+                exception = "Action on entity of unknown type: revertEntity(%s, %s) .  Possible reason is that entity is not in repository.  traceback = %s" %(entityUUID, drilldown, e)
+            raise Exceptions.ScriptError(exception)
+
+
+
             
     def revertEntityPropertyValues(self, entityUUID, drilldown = False):
         try: 
@@ -7490,7 +7558,7 @@ class API(object):
             raise Exceptions.ScriptError(exception)
         
         
-    def sourceMemeCreate(self, modulePath, memeName, metamemePath):
+    def sourceMemeCreate(self, memeName, modulePath = "Graphyne", metamemePath = "Graphyne.GenericMetaMeme"):
         try: 
             params = [modulePath, memeName, metamemePath]
             evalResult = self._sourceMemeCreate.execute(params)
@@ -7499,9 +7567,9 @@ class API(object):
             raise e  
         
         
-    def sourceMemePropertySet(self, fullTemplatePath, propName, propValueStr):
+    def sourceMemePropertySet(self, fullTemplatePath, propName, propValueStr, propType = "string"):
         try: 
-            params = [fullTemplatePath, propName, propValueStr]
+            params = [fullTemplatePath, propName, propValueStr, propType]
             evalResult = self._sourceMemePropertySet.execute(params)
             return evalResult
         except Exceptions.ScriptError as e:
@@ -7518,7 +7586,8 @@ class API(object):
         
         
     def sourceMemeMemberAdd(self, fullTemplatePath, memberID, occurrence):
-        try: 
+        try:
+            occurrence = str(occurrence) #Make sure to cast it to string, so that we can handle it as int or string.
             params = [fullTemplatePath, memberID, occurrence]
             evalResult = self._sourceMemeMemberAdd.execute(params)
             return evalResult
@@ -7535,18 +7604,18 @@ class API(object):
             raise e 
         
         
-    def sourceMemeEnhancementAdd(self, fullTemplatePath, memeID):
+    def sourceMemeEnhancementAdd(self, sourceMemeID, targetMemeID):
         try: 
-            params = [fullTemplatePath, memeID]
+            params = [sourceMemeID, targetMemeID]
             evalResult = self._sourceMemeEnhancementAdd.execute(params)
             return evalResult
         except Exceptions.ScriptError as e:
             raise e
         
         
-    def sourceMemeEnhancementRemove(self, fullTemplatePath, memeID):
+    def sourceMemeEnhancementRemove(self, sourceMemeID, targetMemeID):
         try: 
-            params = [fullTemplatePath, memeID]
+            params = [sourceMemeID, targetMemeID]
             evalResult = self._sourceMemeEnhancementRemove.execute(params)
             return evalResult
         except Exceptions.ScriptError as e:

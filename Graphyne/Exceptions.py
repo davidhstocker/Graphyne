@@ -59,6 +59,9 @@ class UndefinedUUIDError(ValueError):
 class TemplatePathError(ValueError):
     pass
 
+class MetaMemePropertyNotDefinedError(ValueError):
+    """A given metameme does not have a property that its memes claims that it has"""
+
 class MemePropertyValidationError(ValueError):
     """A meme has an invalid property"""
     pass
@@ -106,6 +109,10 @@ class EntityMemberDuplicateError(ValueError):
 
 class EntityMemberMissingError(ValueError):
     """An entity may not have a unique member more than 1x"""
+    pass
+
+class EntityInitializationError(ValueError):
+    """An entity can't initialize"""
     pass
 
 class UnknownLinkError(ValueError):
@@ -226,10 +233,5 @@ class UtilityError(Exception):
     """ Generic Problem Exception in the testing utility suite """
     pass
 
-def usage():
-    print(__doc__)
 
-    
-def main():
-    pass
     

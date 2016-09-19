@@ -389,7 +389,7 @@ This method has two positional parameters.
 
 The following tests whether the property *foo* is in entity **x**.
 	'python
-myEntity = Graph.api. getEntityHasProperty(x, “foo”)
+myEntity = Graph.api.getEntityHasProperty(x, “foo”)
 	'
 
 
@@ -417,7 +417,7 @@ The full template path of the meme, as a string.
 
 The following gets the meme path of entity **x**.
 	'python
-myEntity = Graph.api. getEntityMemeType(x)
+myEntity = Graph.api.getEntityMemeType(x)
 	'
 
 
@@ -451,7 +451,7 @@ If the property is not present, an empty string is returned.  If the entity is n
 
 Presuming that we have a property “a” on entity x, the following returns its type.
 	'python
-thePropertyType = Graph.api. getEntityPropertyType(x, “a”)
+thePropertyType = Graph.api.getEntityPropertyType(x, “a”)
 	'
 
 
@@ -480,7 +480,7 @@ If the property is not present, an *None* is returned.  If the entity is not pre
 
 Presuming that we have a property “a” on entity x, the following returns its value.
 	'python
-thePropertyValue = Graph.api. getEntityPropertyValue(x, “a”)
+thePropertyValue = Graph.api.getEntityPropertyValue(x, “a”)
 	'
 
 
@@ -509,7 +509,7 @@ If the entity is not present, an *ScriptError* exception is returned.
 
 Determines whether or not entity **x** is a singleton..
 	'python
-isSingleton = Graph.api. getIsEntitySingleton(x)
+isSingleton = Graph.api.getIsEntitySingleton(x)
 	'
 
 
@@ -537,7 +537,7 @@ If the meme is not present, an *ScriptError* exception is returned.
 
 Determines whether or not meme **”SomeMeme”** is a singleton.
 	'python
-isSingleton = Graph.api. getIsMemeSingleton(“SomeMeme”)
+isSingleton = Graph.api.getIsMemeSingleton(“SomeMeme”)
 	'
 
 
@@ -562,17 +562,17 @@ A list of entity uuids at the traverse terminus.  If nothing is there, or if it 
 
 Gets all of the nearest neighbors of entity x (using its uuid), regardless of link type.
 	'python
-entityUUIDList = Graph.api. getLinkCounterparts(x)
+entityUUIDList = Graph.api.getLinkCounterparts(x)
 	'
 
 Gets all of the nearest neighbors of entity x (using its uuid) with atomic links.
 	'python
-entityUUIDList = Graph.api. getLinkCounterparts(x, 0)
+entityUUIDList = Graph.api.sgetLinkCounterparts(x, 0)
 	'
 
 Gets all of the nearest neighbors of entity x (using its uuid) in the same subgraph (with subatomic links).
 	'python
-entityUUIDList = Graph.api. getLinkCounterparts(x, 1)
+entityUUIDList = Graph.api.getLinkCounterparts(x, 1)
 	'
 
 
@@ -617,75 +617,75 @@ The following examples all use the example a-b-c-d-e graph shown above and start
 
 The following returns a list containing b’s uuid, regardless of link type (atomic or subatomic)
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “b”)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”)
 	'
 
 The following returns a list containing b’s uuid, regardless of link type (atomic or subatomic), because a single asterisk wildcard  (“\*”) always selects nearest neighbors, one hop away.  In fact, getLinkCounterparts() wraps getLinkCounterpartsByType() and executes it with a single wildcard traverse string.
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “\*”)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\*”)
 	'
 
 The following returns an empty list, because there is no x in the graph.
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “b”)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”)
 	'
 
 
 The following returns a list containing b’s uuid, because it has an atomic link.
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “b”, 0)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”, 0)
 	'
 
 The following returns an empty list, because it has an atomic link, but we are restricting our search to a subgraph.
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “b”, 1)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”, 1)
 	'
 
 The following returns a list containing b’s uuid, regardless of link type (atomic or subatomic), because the link runs from a to b.
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “\>\>b”)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\>\>b”)
 	'
 
 The following returns an empty list, because the link runs from a to b and we are searching for a link from b to a.
 	'python
-entityUUIDList = Graph.api. getLinkCounterpartsByType(a, “\<\<b”)
+entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\<\<b”)
 	'
 
 The following returns a list containing e’s uuid, regardless of link type (atomic or subatomic), and regardless of direction.
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “b::e”)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “b::e”)
 	'
 
 The following returns a list containing e’s uuid, regardless of link type (atomic or subatomic), because the link runs from b to e.
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “b\>\>e”)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>e”)
 	'
 
 The following returns an empty list, regardless of link type (atomic or subatomic), because the link runs from b to e.
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “b\<\<e”)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\<\<e”)
 	'
 
 The following returns a list containing e’s uuid, regardless of link type (atomic or subatomic), because we follow the path in the picture.
 ![][image-11]
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”)
 	'
 
 The following returns an empty list, because although we are traversing all atomic links and the links are in the correct direction we have a fastSearch termination the second time we try to cross b.
 ![][image-12]
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”, 0, True)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”, 0, True)
 	'
 
 The following returns a list containing e, because we have a single wildcard
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “\*\>\>e”)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\>\>e”)
 	'
 
 The following returns a list containing e, because we have a double wildcard
 	'python
-isSingleton = Graph.api. getLinkCounterpartsByType(a, “\*\*\>\>e”)
+isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\*\>\>e”)
 	'
 
 
@@ -694,7 +694,7 @@ isSingleton = Graph.api. getLinkCounterpartsByType(a, “\*\*\>\>e”)
 
 ## removeAllCustomPropertiesFromEntity
 
-Removes all properties on an entity that were not defined in its meme.  This is not a full reset, as properties that were defined in the meme are left untouched, even if they were changed.  
+Removes all properties on an entity that were not defined in its meme.  This is not a full reset, as properties that were defined in the meme are left untouched, even if they were changed.  To reset the properties to their meme defined values, you need to use [revertEntityPropertyValues()][6].  
 
 #### Parameters
 
@@ -711,7 +711,7 @@ nothing is returned from this method.
 
 Given an entity with uuid x, the following removes all properties not defined in the meme.
 	'python
-Graph.api. removeAllCustomPropertiesFromEntity(x)
+Graph.api.removeAllCustomPropertiesFromEntity(x)
 	'
 
 
@@ -777,7 +777,7 @@ Graph.api.removeEntityProperty(x, “toBeRemoved”)
 
 ## revertEntityPropertyValues
 
-Reverts all entities defined in an entity’s meme to their original values, as defined in the meme.  It does not affect custom properties on the entity, that were not originally part of the meme definition.  
+Reverts all entities defined in an entity’s meme to their original values, as defined in the meme.  It does not affect custom properties on the entity, that were not originally part of the meme definition.  To do that, you need to use [removeAllCustomPropertiesFromEntity()][7].  
 
 #### Parameters
 
@@ -823,7 +823,250 @@ nothing is returned from this method.
 
 Adds (or updates) a property named “myProp” and a string value of “Hello World” on and entity with uuid x.
 	'python
-Graph.api.setEntityPropertyValue(x, “myProp”, )
+Graph.api.setEntityPropertyValue(x, “myProp”)
+	'
+
+
+
+---- 
+
+
+## sourceMemeCreate
+
+This method allows programmatic, live creation of memes at runtime (as opposed to being written in xml beforehand).  It creates an empty meme in the template repository, with the given metameme and meme parameters.  
+
+#### Parameters
+This method has three positional parameters.
+
+**memeName** - The name of the newly created meme.
+**modulePath** (default = *\<defaultModule\>*) - Every meme exists within a module.  If no module name is given with this command, then the current default module will be used.  This is “*Graphyne*”, unless it has been changed.
+**metamemePath** (default = “*Graphyne.GenericMetaMeme*”) - If no specific metameme is given then the default metameme for free entity creation,  “*Graphyne.GenericMetaMeme*”, is used. 
+
+#### Returns
+
+This method returns a dict, with the following format:
+	{
+	'ValidationResults': \[<boolean>, <failurelist>\], 
+	'memeID': <modulePath.memeName>
+	}
+
+The **ValidationResults** key and corresponding value is the results of meme validation against its parent metameme.  This method triggers a meme cataloging operation in the template repository and new memes are always validated against their metameme.  New, blank memes are always valid, because they’ve not yet had anything added that could make them invalid, vis-à-vis their parent metameme.  The value **[True, []]** should be expected.
+
+The **memeID** key contains the concatenated template path of the new meme.
+
+
+#### Examples
+
+Creates a meme named “HelloWorld” in the default module (“Graphyne” in this example), using the metameme “Graphyne.GenericMetaMeme”.
+	'python
+memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”)
+	'
+
+Creates a meme named “HelloWorld” in a module named “HelloModule”, using the metameme “Graphyne.GenericMetaMeme”.
+	'python
+memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”, “HelloModule”)
+	'
+
+Creates a meme named “HelloWorld” in a module named “HelloModule”, using the metameme “HelloModule.HelloMetameme”.
+	'python
+memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”, “HelloModule”, “HelloModule.HelloMetameme”)
+	'
+
+
+
+---- 
+
+
+## sourceMemeEnhancementAdd
+
+This method creates a Memetic enhance relationship between two memes.  This is an api counterpart to the MemeEnhancements element, when defining memes statically via xml. The usual memetic enhancement rules must be followed, but generic memes may enhance other generic memes, as the metameme Graphyne.GenericMetaMeme enhances itself.  
+
+#### Parameters
+
+This method has two positional parameters.
+
+**sourceMemeID** - The source meme full template path.
+**targetMemeID** - The target meme full template path.  
+
+#### Returns
+
+A list, containing validation results.  The meme will be validated when the property is added and the properties will be checked against the metameme.  If the validation results of the enhanced meme turns up invalid, then the meme is not updated; unless the meme’s metameme is Graphyne.GenericMetaMeme. in this case, the result list is always invalid and can be ignored, but the meme is created anyway.  The validation results are only relevant for memes not using a generic metameme.
+
+#### Example
+
+Presuming that we have a meme “Graphyne.EnhancingMeme” and meme “Graphyne.EnhancedMeme”, the following will use *enhancing* to enhance *enhanced*.
+	'python
+valList = api.sourceMemeEnhancementAdd(“Graphyne.EnhancingMeme”, “Graphyne.EnhancedMeme”)
+	'
+
+
+
+---- 
+
+
+## sourceMemeEnhancementRemove
+
+This method removes an existing Memetic enhance relationship between two memes.    
+
+#### Parameters
+
+This method has two positional parameters.
+
+**sourceMemeID** - The source meme full template path.
+**targetMemeID** - The target meme full template path.  
+
+#### Returns
+
+A list, containing validation results.  As with sourceMemeEnhancementAdd , the meme will be validated when the property is added and the properties will be checked against the metameme.  
+
+
+#### Example
+
+Presuming that we have a meme “Graphyne.EnhancingMeme” and meme “Graphyne.EnhancedMeme”, the following will use *enhancing* to enhance *enhanced*.
+	'python
+valList = api.sourceMemeEnhancementRemove(“Graphyne.EnhancingMeme”, “Graphyne.EnhancedMeme”)
+	'
+
+
+
+---- 
+
+
+## sourceMemeMemberAdd
+
+This method attaches a meme as a member meme of another.  This is an api counterpart to the MemberMeme element, when defining memes statically via xml.  
+
+#### Parameters
+
+This method has three positional parameters.
+
+**fullTemplatePath** - The full template path of the meme.
+**memberID** - The full template path of the meme being added as a member.  
+**occurrence** - The occurrence count of the member meme.  
+
+#### Returns
+
+A list, containing validation results.  When memes are manipulated via API, they are validated afterwards..  
+
+
+#### Example
+
+Presuming that we have a meme “Graphyne.ParentMeme” and meme “Graphyne.MemberMeme”, the following will add * Graphyne.MemberMeme* as a member of * Graphyne.MemberMeme*.
+	'python
+valList = api.sourceMemeMemberAdd(“Graphyne.ParentMeme”, “Graphyne.MemberMeme”, 1)
+	'
+
+
+
+---- 
+
+
+## sourceMemeMemberRemove
+
+This method removes a meme from being a member meme of another.    
+
+#### Parameters
+
+This method has two positional parameters.
+
+**fullTemplatePath** - The full template path of the meme.
+**memberID** - The full template path of the meme being removed as a member.  
+
+#### Returns
+
+A list, containing validation results.  When memes are manipulated via API, they are validated afterwards..  
+
+
+#### Example
+
+Presuming that we have a meme “Graphyne.ParentMeme” and member meme “Graphyne.MemberMeme”, the following will remove *Graphyne.MemberMeme* as a member of * Graphyne.MemberMeme*.
+	'python
+valList = api.sourceMemeMemberRemove(“Graphyne.ParentMeme”, “Graphyne.MemberMeme”, 1)
+	'
+
+
+
+---- 
+
+
+## sourceMemePropertyRemove
+
+This method removes a property from a meme.
+  
+
+#### Parameters
+
+This method has four positional parameters.
+
+**fullTemplatePath** - The full template path of the meme.
+**propName** - Name of the property to be added or updates.
+**propValue** - The value to be set on the property.
+
+#### Returns
+
+A list, containing validation results.  When memes are manipulated via API, they are validated afterwards.
+
+
+#### Example
+
+Presuming that we have a meme “Graphyne.CustomMeme”, the following will remove an integer property called “hello”, if it exists..
+	'python
+valList = api.sourceMemePropertyRemove(“Graphyne.CustomMeme”, “hello”)
+	'
+
+
+
+---- 
+
+
+## sourceMemePropertySet
+
+This method sets a default value on a meme property, creating it if it is not already present.  
+
+#### Parameters
+This method has four positional parameters.
+
+**fullTemplatePath** - The full template path of the meme.
+**propName** - Name of the property to be added or updates.
+**propValue** - The value to be set on the property.
+**propType** (default = ‘string’) - The type of the property; one of 'string', 'list', 'integer', 'boolean' or 'decimal'
+
+#### Returns
+A list, containing validation results.  When memes are manipulated via API, they are validated afterwards.
+
+
+#### Example
+Presuming that we have a meme “Graphyne.CustomMeme”, the following will create an integer property called “hello”, with a value of 2.
+	'python
+valList = api.sourceMemePropertySet(“Graphyne.CustomMeme”, “hello”, 2, 'integer')
+	'
+
+
+
+---- 
+
+
+## sourceMemeSetSingleton
+
+This method sets the singleton property of a meme.
+  
+
+#### Parameters
+This method has two positional parameters.
+
+**fullTemplatePath** - The full template path of the meme.
+**isSingleton** - True or False.  If true, then the meme will be set to singleton status.
+
+
+#### Returns
+A list, containing validation results.  When memes are manipulated via API, they are validated afterwards.
+
+
+#### Example
+
+Presuming that we have a meme “Graphyne.CustomMeme”, the following will set it to become a singleton.
+	'python
+valList = api.sourceMemeSetSingleton(“Graphyne.CustomMeme”, True)
 	'
 
 [1]:	https://github.com/davidhstocker/Graphyne#memeticdnastateeventscript-memes
@@ -831,6 +1074,8 @@ Graph.api.setEntityPropertyValue(x, “myProp”, )
 [3]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#getcluster
 [4]:	https://d3js.org/
 [5]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#getcluster
+[6]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#revertentitypropertyvalues
+[7]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#removeallcustompropertiesfromentity
 
 [image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_Whole.png
 [image-2]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_CAtomic.png
