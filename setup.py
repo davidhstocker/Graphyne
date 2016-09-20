@@ -14,6 +14,9 @@ setup(
   author_email = 'mrdave991@gmail.com',
   url = 'https://github.com/davidhstocker/Graphyne',
   download_url = 'https://github.com/davidhstocker/Graphyne/tarball/1.0', 
-  keywords = ['graph', 'propertygraph', 'property graph', 'graphdatabase', 'graph database'], # arbitrary keywords
+  keywords = ['graph', 'propertygraph', 'property graph', 'graphdatabase', 'graph database'],
+  install_requires=[
+          'memetic',
+      ],
   classifiers = [],
 )
