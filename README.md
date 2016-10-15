@@ -33,7 +33,7 @@ To install Graphyne, use pip.
 ```
 pip install graphyne
 ```
-`
+
 Graphyne has dependencies on [Memetic][6] and [Pyodbc][7].  The main use of Memetic is to provide the Memetic’s standard schema.  It is possible to run Graphyne graphs without the standard schema however.
 
 
@@ -48,17 +48,17 @@ Or if you prefer to use a shorthand alias,
 ```python
 import Graphyne.Graph as Graph
 ```
-`
+
 You can start the graph, but entering the following command (example uses the alias, Graph):
 ```python
 Graph.startDB()
 ```
-`
+
 To start the graph using SQLite and a file named ‘MyDatabase.sqlite’ as the persistence, start the graph with the following setup:
 ```python
 Graph.startDB([], ’sqlite’, ‘MyDatabase.sqlite’)
 ```
-`
+
 ## Your First Graph
 
 Now that the graph is running, let’s create a simple graph.  It will have two entities and they will be linked.
@@ -69,7 +69,7 @@ node1 = Graph.api.createEntity()
 node2 = Graph.api.createEntity()
 Graph.api.addEntityLink(node1, node2)
 ``` 
-`
+
 The entities node1 and node2 have been created and are linked.  The return value of createEntity is a UUID, which is all we need to refer to a particular entity.  We can verify that they are linked by traversing from node1 to node2, using the getLinkCounterparts() method.
 ```python
 counterpartList = Graph.api.getLinkCounterparts()
