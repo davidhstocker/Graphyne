@@ -22,10 +22,11 @@ Suppose you want to add a new boolean property to an entity.
 - The uuid (in string form) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
 - The name of the new property will be 'myNewProperty'.
 - The value will be True
-	'python
-Graph.api.addEntityBooleanProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', True)
-	'
 
+```python
+`Graph.api.addEntityBooleanProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', True)
+```
+`
 
 ---- 
 
@@ -48,14 +49,14 @@ Suppose you want to add a new Decimal property to an entity.
 The uuid (in string form) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
 The name of the new property will be 'myNewProperty'.
 The value will be 88.8
-	'python
-Graph.api.addEntityDecimalProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', '88.8')
-	'
-or
-	'python
-Graph.api.addEntityDecimalProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 88.8)
-	'
-
+```python
+`Graph.api.addEntityDecimalProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', '88.8')
+```
+`or
+```python
+`Graph.api.addEntityDecimalProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 88.8)
+```
+`
 
 ---- 
 
@@ -78,14 +79,14 @@ Suppose you want to add a new Integer property to an entity.
 The uuid (in string form) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
 The name of the new property will be 'myNewProperty'.
 The value will be 88
-	'python
-Graph.api.addEntityIntegerProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', '88')
-	'
- or 
-	'python
-Graph.api.addEntityIntegerProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 88)
-	'
-
+```python
+`Graph.api.addEntityIntegerProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', '88')
+```
+` or 
+```python
+`Graph.api.addEntityIntegerProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 88)
+```
+`
 
 ---- 
 
@@ -111,28 +112,28 @@ Suppose you want to add a link between two entities.
 - The uuid (in string form) of the target entity (where the link is originating from) is 'b49f34bc-769f-4bff-9815-1c28222da555'.
 - There are no link attributes.
 - The link type is atomic.
-	'python
-Graph.api.addEntityLink('a38f34bc-769f-4bff-9815-1c28222da555', 'b49f34bc-769f-4bff-9815-1c28222da555')
-	'
-
+```python
+`Graph.api.addEntityLink('a38f34bc-769f-4bff-9815-1c28222da555', 'b49f34bc-769f-4bff-9815-1c28222da555')
+```
+`
 In the second example, we'll add link attributes.
 - The uuid (in string form) of the source entity (where the link is originating from) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
 - The uuid (in string form) of the target entity (where the link is originating from) is 'b49f34bc-769f-4bff-9815-1c28222da555'.
 - There are two link attributes.  "textValue" = "Hello World" and "attribCount" = 2
 - The link type is still atomic.
-	'python
-Graph.api.addEntityLink('a38f34bc-769f-4bff-9815-1c28222da555', 'b49f34bc-769f-4bff-9815-1c28222da555', {"textValue" : "Hello World", "attribCount" : 2})
-	'
-
+```python
+`Graph.api.addEntityLink('a38f34bc-769f-4bff-9815-1c28222da555', 'b49f34bc-769f-4bff-9815-1c28222da555', {"textValue" : "Hello World", "attribCount" : 2})
+```
+`
 In the third example, we'll add make the link subatomic.
 - The uuid (in string form) of the source entity (where the link is originating from) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
 - The uuid (in string form) of the target entity (where the link is originating from) is 'b49f34bc-769f-4bff-9815-1c28222da555'.
 - There are two link attributes.  "textValue" = "Hello World" and "attribCount" = 2
 - The link type is subatomic.
-	'python
-Graph.api.addEntityLink('a38f34bc-769f-4bff-9815-1c28222da555', 'b49f34bc-769f-4bff-9815-1c28222da555', {"textValue" : "Hello World", "attribCount" : 2}, 1)
-	'
- 
+```python
+`Graph.api.addEntityLink('a38f34bc-769f-4bff-9815-1c28222da555', 'b49f34bc-769f-4bff-9815-1c28222da555', {"textValue" : "Hello World", "attribCount" : 2}, 1)
+```
+` 
 
 
 ---- 
@@ -156,10 +157,10 @@ Suppose you want to add a new String property to an entity.
 The uuid (in string form) is 'a38f34bc-769f-4bff-9815-1c28222da555'.
 The name of the new property will be 'myNewProperty'.
 The value will be 'Hello World'
-	'python
-Graph.api.addEntityStringProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 'Hello World')
-	'
-
+```python
+`Graph.api.addEntityStringProperty('a38f34bc-769f-4bff-9815-1c28222da555', 'myNewProperty', 'Hello World')
+```
+`
 
 
 ---- 
@@ -178,10 +179,10 @@ The uuid (as string) of the newly created entity.
 
 #### Example
 
-	'python
-Graph.api.createEntity()
-	'
-
+```python
+`Graph.api.createEntity()
+```
+`
 
 
 ---- 
@@ -203,10 +204,10 @@ The uuid (as string) of the newly created entity.
 
 If you wanted to create an Entity of type Graphyne.Generic (the type of Entity created by createEntity()), but explicitly declare the meme.
 
-	'python
-Graph.api.createEntityFromMeme("Graphyne.Generic")
-	'
-
+```python
+`Graph.api.createEntityFromMeme("Graphyne.Generic")
+```
+`
 
 
 ---- 
@@ -230,16 +231,16 @@ State event script execute() methods are expected to return something, or they w
 #### Example
 
 If you had an entity, **X**, that had an execute state event script and you wanted to execute it and had no parameters.
-	'python
-evalResults = Graph.api.evaluateEntity(X)
-	'
-
+```python
+`evalResults = Graph.api.evaluateEntity(X)
+```
+`
 
 If you had an entity, **X**, that had an execute state event script and you wanted to execute it and had parameters contained in a dictionary, called **rtParams**.
-	'python
-evalResults = Graph.api.evaluateEntity(X, rtParams)
-	'
-
+```python
+`evalResults = Graph.api.evaluateEntity(X, rtParams)
+```
+`
 If you had an entity, **X**, that had **no** execute state event script and you tried to execute it, a Graphyne Exceptions.ScriptError exception would be raised, with a nested AttributeError exception.
 
 
@@ -266,34 +267,34 @@ This method in action can be best displayed by looking at the testGetCluster() m
 ![][image-1]
 
 The first test collects the atomic cluster rooted on **c**.  We use no link attribute filters.
-	'python
-api.getClusterMembers(c)
-	'
-![][image-2]
+```python
+`api.getClusterMembers(c)
+```
+`![][image-2]
 
 Next, we repeat the last exercise, but allow the cluster to cross singleton bridges.
-	'python
-api.getClusterMembers(c)
-	'
-![][image-3]
+```python
+`api.getClusterMembers(c)
+```
+`![][image-3]
 
 Next, we collect the subatomic cluster rooted on **c**.  We use no link attribute filters.
-	'python
-api.getClusterMembers(c, 1)
-	'
-![][image-4]
+```python
+`api.getClusterMembers(c, 1)
+```
+`![][image-4]
 
 The atomic cluster rooted on **e**.  We use no link attribute filters.
-	'python
-api.getClusterMembers(e)
-	'
-![][image-5]
+```python
+`api.getClusterMembers(e)
+```
+`![][image-5]
 
 The subatomic cluster rooted on **e**.  We use no link attribute filters.
-	'python
-api.getClusterMembers(e, 1)
-	'
-![][image-6]
+```python
+`api.getClusterMembers(e, 1)
+```
+`![][image-6]
 
 
 
@@ -334,10 +335,10 @@ The *Graph.Entity* object whose *id* property matches the *entityUUID* parameter
 #### Example
 
 If you wanted to create an Entity of type Graphyne.Generic (the type of Entity created by createEntity()), but explicitly declare the meme.
-	'python
-myEntity = Graph.api.getEntity(entityUUID)
-	'
-
+```python
+`myEntity = Graph.api.getEntity(entityUUID)
+```
+`
 
 
 ---- 
@@ -360,10 +361,10 @@ The *Graph.Entity* object whose *id* property matches the *entityUUID* parameter
 #### Example
 
 If you wanted to create an Entity of type Graphyne.Generic (the type of Entity created by createEntity()), but explicitly declare the meme.
-	'python
-myEntity = Graph.api.getEntity(entityUUID)
-	'
-
+```python
+`myEntity = Graph.api.getEntity(entityUUID)
+```
+`
 
 
 
@@ -388,10 +389,10 @@ This method has two positional parameters.
 #### Example
 
 The following tests whether the property *foo* is in entity **x**.
-	'python
-myEntity = Graph.api.getEntityHasProperty(x, “foo”)
-	'
-
+```python
+`myEntity = Graph.api.getEntityHasProperty(x, “foo”)
+```
+`
 
 
 ---- 
@@ -416,10 +417,10 @@ The full template path of the meme, as a string.
 #### Example
 
 The following gets the meme path of entity **x**.
-	'python
-myEntity = Graph.api.getEntityMemeType(x)
-	'
-
+```python
+`myEntity = Graph.api.getEntityMemeType(x)
+```
+`
 
 
 ---- 
@@ -450,10 +451,10 @@ If the property is not present, an empty string is returned.  If the entity is n
 #### Example
 
 Presuming that we have a property “a” on entity x, the following returns its type.
-	'python
-thePropertyType = Graph.api.getEntityPropertyType(x, “a”)
-	'
-
+```python
+`thePropertyType = Graph.api.getEntityPropertyType(x, “a”)
+```
+`
 
 
 ---- 
@@ -479,10 +480,10 @@ If the property is not present, an *None* is returned.  If the entity is not pre
 #### Example
 
 Presuming that we have a property “a” on entity x, the following returns its value.
-	'python
-thePropertyValue = Graph.api.getEntityPropertyValue(x, “a”)
-	'
-
+```python
+`thePropertyValue = Graph.api.getEntityPropertyValue(x, “a”)
+```
+`
 
 
 ---- 
@@ -508,10 +509,10 @@ If the entity is not present, an *ScriptError* exception is returned.
 #### Example
 
 Determines whether or not entity **x** is a singleton..
-	'python
-isSingleton = Graph.api.getIsEntitySingleton(x)
-	'
-
+```python
+`isSingleton = Graph.api.getIsEntitySingleton(x)
+```
+`
 
 
 ---- 
@@ -536,10 +537,10 @@ If the meme is not present, an *ScriptError* exception is returned.
 #### Example
 
 Determines whether or not meme **”SomeMeme”** is a singleton.
-	'python
-isSingleton = Graph.api.getIsMemeSingleton(“SomeMeme”)
-	'
-
+```python
+`isSingleton = Graph.api.getIsMemeSingleton(“SomeMeme”)
+```
+`
 
 
 ---- 
@@ -561,20 +562,20 @@ A list of entity uuids at the traverse terminus.  If nothing is there, or if it 
 #### Examples
 
 Gets all of the nearest neighbors of entity x (using its uuid), regardless of link type.
-	'python
-entityUUIDList = Graph.api.getLinkCounterparts(x)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterparts(x)
+```
+`
 Gets all of the nearest neighbors of entity x (using its uuid) with atomic links.
-	'python
-entityUUIDList = Graph.api.sgetLinkCounterparts(x, 0)
-	'
-
+```python
+`entityUUIDList = Graph.api.sgetLinkCounterparts(x, 0)
+```
+`
 Gets all of the nearest neighbors of entity x (using its uuid) in the same subgraph (with subatomic links).
-	'python
-entityUUIDList = Graph.api.getLinkCounterparts(x, 1)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterparts(x, 1)
+```
+`
 
 ---- 
 
@@ -616,78 +617,78 @@ The following examples all use the example a-b-c-d-e graph shown above and start
 ![][image-10]
 
 The following returns a list containing b’s uuid, regardless of link type (atomic or subatomic)
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”)
+```
+`
 The following returns a list containing b’s uuid, regardless of link type (atomic or subatomic), because a single asterisk wildcard  (“\*”) always selects nearest neighbors, one hop away.  In fact, getLinkCounterparts() wraps getLinkCounterpartsByType() and executes it with a single wildcard traverse string.
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\*”)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\*”)
+```
+`
 The following returns an empty list, because there is no x in the graph.
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”)
+```
+`
 
 The following returns a list containing b’s uuid, because it has an atomic link.
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”, 0)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”, 0)
+```
+`
 The following returns an empty list, because it has an atomic link, but we are restricting our search to a subgraph.
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”, 1)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “b”, 1)
+```
+`
 The following returns a list containing b’s uuid, regardless of link type (atomic or subatomic), because the link runs from a to b.
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\>\>b”)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\>\>b”)
+```
+`
 The following returns an empty list, because the link runs from a to b and we are searching for a link from b to a.
-	'python
-entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\<\<b”)
-	'
-
+```python
+`entityUUIDList = Graph.api.getLinkCounterpartsByType(a, “\<\<b”)
+```
+`
 The following returns a list containing e’s uuid, regardless of link type (atomic or subatomic), and regardless of direction.
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “b::e”)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “b::e”)
+```
+`
 The following returns a list containing e’s uuid, regardless of link type (atomic or subatomic), because the link runs from b to e.
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>e”)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>e”)
+```
+`
 The following returns an empty list, regardless of link type (atomic or subatomic), because the link runs from b to e.
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\<\<e”)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\<\<e”)
+```
+`
 The following returns a list containing e’s uuid, regardless of link type (atomic or subatomic), because we follow the path in the picture.
 ![][image-11]
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”)
+```
+`
 The following returns an empty list, because although we are traversing all atomic links and the links are in the correct direction we have a fastSearch termination the second time we try to cross b.
 ![][image-12]
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”, 0, True)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “b\>\>c\>\>d\>\>b\>\>e”, 0, True)
+```
+`
 The following returns a list containing e, because we have a single wildcard
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\>\>e”)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\>\>e”)
+```
+`
 The following returns a list containing e, because we have a double wildcard
-	'python
-isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\*\>\>e”)
-	'
-
+```python
+`isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\*\>\>e”)
+```
+`
 
 ---- 
 
@@ -710,10 +711,10 @@ nothing is returned from this method.
 #### Example
 
 Given an entity with uuid x, the following removes all properties not defined in the meme.
-	'python
-Graph.api.removeAllCustomPropertiesFromEntity(x)
-	'
-
+```python
+`Graph.api.removeAllCustomPropertiesFromEntity(x)
+```
+`
 
 
 ---- 
@@ -738,10 +739,10 @@ nothing is returned from this method.
 #### Example
 
 Given two entities with uuids x and y, the following removes all links originating on the entity with uuid x and ending on the entity with uuid y.
-	'python
-Graph.api.removeEntityLink(x, y)
-	'
-
+```python
+`Graph.api.removeEntityLink(x, y)
+```
+`
 
 
 ---- 
@@ -766,10 +767,10 @@ nothing is returned from this method.
 #### Example
 
 Given an entity with uuid x and property “toBeRemoved”, the following removes “toBeRemoved”,.
-	'python
-Graph.api.removeEntityProperty(x, “toBeRemoved”)
-	'
-
+```python
+`Graph.api.removeEntityProperty(x, “toBeRemoved”)
+```
+`
 
 
 ---- 
@@ -793,10 +794,10 @@ nothing is returned from this method.
 #### Example
 
 Given an entity with uuid x and property “toBeRemoved”, the following removes “toBeRemoved”,.
-	'python
-Graph.api.revertEntityPropertyValues(x)
-	'
-
+```python
+`Graph.api.revertEntityPropertyValues(x)
+```
+`
 
 
 ---- 
@@ -822,10 +823,10 @@ nothing is returned from this method.
 #### Example
 
 Adds (or updates) a property named “myProp” and a string value of “Hello World” on and entity with uuid x.
-	'python
-Graph.api.setEntityPropertyValue(x, “myProp”)
-	'
-
+```python
+`Graph.api.setEntityPropertyValue(x, “myProp”)
+```
+`
 
 
 ---- 
@@ -846,9 +847,9 @@ This method has three positional parameters.
 
 This method returns a dict, with the following format:
 	{
-	'ValidationResults': \[<boolean>, <failurelist>\], 
-	'memeID': <modulePath.memeName>
-	}
+```ValidationResults': \[<boolean>, <failurelist>\], 
+````memeID': <modulePath.memeName>
+`	}
 
 The **ValidationResults** key and corresponding value is the results of meme validation against its parent metameme.  This method triggers a meme cataloging operation in the template repository and new memes are always validated against their metameme.  New, blank memes are always valid, because they’ve not yet had anything added that could make them invalid, vis-à-vis their parent metameme.  The value **[True, []]** should be expected.
 
@@ -858,20 +859,20 @@ The **memeID** key contains the concatenated template path of the new meme.
 #### Examples
 
 Creates a meme named “HelloWorld” in the default module (“Graphyne” in this example), using the metameme “Graphyne.GenericMetaMeme”.
-	'python
-memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”)
-	'
-
+```python
+`memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”)
+```
+`
 Creates a meme named “HelloWorld” in a module named “HelloModule”, using the metameme “Graphyne.GenericMetaMeme”.
-	'python
-memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”, “HelloModule”)
-	'
-
+```python
+`memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”, “HelloModule”)
+```
+`
 Creates a meme named “HelloWorld” in a module named “HelloModule”, using the metameme “HelloModule.HelloMetameme”.
-	'python
-memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”, “HelloModule”, “HelloModule.HelloMetameme”)
-	'
-
+```python
+`memeCreationResults = Graph.api.sourceMemeCreate(“HelloWorld”, “HelloModule”, “HelloModule.HelloMetameme”)
+```
+`
 
 
 ---- 
@@ -895,10 +896,10 @@ A list, containing validation results.  The meme will be validated when the prop
 #### Example
 
 Presuming that we have a meme “Graphyne.EnhancingMeme” and meme “Graphyne.EnhancedMeme”, the following will use *enhancing* to enhance *enhanced*.
-	'python
-valList = api.sourceMemeEnhancementAdd(“Graphyne.EnhancingMeme”, “Graphyne.EnhancedMeme”)
-	'
-
+```python
+`valList = api.sourceMemeEnhancementAdd(“Graphyne.EnhancingMeme”, “Graphyne.EnhancedMeme”)
+```
+`
 
 
 ---- 
@@ -906,7 +907,7 @@ valList = api.sourceMemeEnhancementAdd(“Graphyne.EnhancingMeme”, “Graphyne
 
 ## sourceMemeEnhancementRemove
 
-This method removes an existing Memetic enhance relationship between two memes.    
+This method removes an existing Memetic enhance relationship between two memes.  
 
 #### Parameters
 
@@ -923,10 +924,10 @@ A list, containing validation results.  As with sourceMemeEnhancementAdd , the m
 #### Example
 
 Presuming that we have a meme “Graphyne.EnhancingMeme” and meme “Graphyne.EnhancedMeme”, the following will use *enhancing* to enhance *enhanced*.
-	'python
-valList = api.sourceMemeEnhancementRemove(“Graphyne.EnhancingMeme”, “Graphyne.EnhancedMeme”)
-	'
-
+```python
+`valList = api.sourceMemeEnhancementRemove(“Graphyne.EnhancingMeme”, “Graphyne.EnhancedMeme”)
+```
+`
 
 
 ---- 
@@ -952,10 +953,10 @@ A list, containing validation results.  When memes are manipulated via API, they
 #### Example
 
 Presuming that we have a meme “Graphyne.ParentMeme” and meme “Graphyne.MemberMeme”, the following will add * Graphyne.MemberMeme* as a member of * Graphyne.MemberMeme*.
-	'python
-valList = api.sourceMemeMemberAdd(“Graphyne.ParentMeme”, “Graphyne.MemberMeme”, 1)
-	'
-
+```python
+`valList = api.sourceMemeMemberAdd(“Graphyne.ParentMeme”, “Graphyne.MemberMeme”, 1)
+```
+`
 
 
 ---- 
@@ -963,7 +964,7 @@ valList = api.sourceMemeMemberAdd(“Graphyne.ParentMeme”, “Graphyne.MemberM
 
 ## sourceMemeMemberRemove
 
-This method removes a meme from being a member meme of another.    
+This method removes a meme from being a member meme of another.  
 
 #### Parameters
 
@@ -980,10 +981,10 @@ A list, containing validation results.  When memes are manipulated via API, they
 #### Example
 
 Presuming that we have a meme “Graphyne.ParentMeme” and member meme “Graphyne.MemberMeme”, the following will remove *Graphyne.MemberMeme* as a member of * Graphyne.MemberMeme*.
-	'python
-valList = api.sourceMemeMemberRemove(“Graphyne.ParentMeme”, “Graphyne.MemberMeme”, 1)
-	'
-
+```python
+`valList = api.sourceMemeMemberRemove(“Graphyne.ParentMeme”, “Graphyne.MemberMeme”, 1)
+```
+`
 
 
 ---- 
@@ -1010,10 +1011,10 @@ A list, containing validation results.  When memes are manipulated via API, they
 #### Example
 
 Presuming that we have a meme “Graphyne.CustomMeme”, the following will remove an integer property called “hello”, if it exists..
-	'python
-valList = api.sourceMemePropertyRemove(“Graphyne.CustomMeme”, “hello”)
-	'
-
+```python
+`valList = api.sourceMemePropertyRemove(“Graphyne.CustomMeme”, “hello”)
+```
+`
 
 
 ---- 
@@ -1037,10 +1038,10 @@ A list, containing validation results.  When memes are manipulated via API, they
 
 #### Example
 Presuming that we have a meme “Graphyne.CustomMeme”, the following will create an integer property called “hello”, with a value of 2.
-	'python
-valList = api.sourceMemePropertySet(“Graphyne.CustomMeme”, “hello”, 2, 'integer')
-	'
-
+```python
+`valList = api.sourceMemePropertySet(“Graphyne.CustomMeme”, “hello”, 2, 'integer')
+```
+`
 
 
 ---- 
@@ -1065,9 +1066,10 @@ A list, containing validation results.  When memes are manipulated via API, they
 #### Example
 
 Presuming that we have a meme “Graphyne.CustomMeme”, the following will set it to become a singleton.
-	'python
-valList = api.sourceMemeSetSingleton(“Graphyne.CustomMeme”, True)
-	'
+```python
+`valList = api.sourceMemeSetSingleton(“Graphyne.CustomMeme”, True)
+```
+`
 
 [1]:	https://github.com/davidhstocker/Graphyne#memeticdnastateeventscript-memes
 [2]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Cluster%20Visualization.md

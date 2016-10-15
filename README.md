@@ -30,51 +30,51 @@ Graphyne is powerful and includes some features that set it apart from other pro
 ## Installing
 
 To install Graphyne, use pip.
-	''
-todo
-	''
-
+```'
+`todo
+```'
+`
 Graphyne has dependencies on [Memetic][6] and [Pyodbc][7].  The main use of Memetic is to provide the Memetic’s standard schema.  It is possible to run Graphyne graphs without the standard schema however.
 
 
 ## The Hello World Graph
 In order to use the graph in your projects, you will have to import and initialize it.  There are several modules within the Graphyne package, but the one of real interest is Graph.
 
-	'python
-import Graphyne.Graph
-	''
-
+```python
+`import Graphyne.Graph
+```'
+`
 Or if you prefer to use a shorthand alias,
-	'python
-import Graphyne.Graph as Graph
-	''
-
+```python
+`import Graphyne.Graph as Graph
+```'
+`
 You can start the graph, but entering the following command (example uses the alias, Graph):
-	'python
-Graph.startDB()
-	'
-
+```python
+`Graph.startDB()
+```
+`
 To start the graph using SQLite and a file named ‘MyDatabase.sqlite’ as the persistence, start the graph with the following setup:
-	'python
-Graph.startDB([], ’sqlite’, ‘MyDatabase.sqlite’)
-	'
-
+```python
+`Graph.startDB([], ’sqlite’, ‘MyDatabase.sqlite’)
+```
+`
 ## Your First Graph
 
 Now that the graph is running, let’s create a simple graph.  It will have two entities and they will be linked.
 
 Create entities and Link them:
-	' python
-node1 = Graph.api.createEntity()
+``` python
+`node1 = Graph.api.createEntity()
 node2 = Graph.api.createEntity()
 Graph.api.addEntityLink(node1, node2)
-	' 
-
+``` 
+`
 The entities node1 and node2 have been created and are linked.  The return value of createEntity is a UUID, which is all we need to refer to a particular entity.  We can verify that they are linked by traversing from node1 to node2, using the getLinkCounterparts() method.
-	'python
-counterpartList = Graph.api.getLinkCounterparts()
-	'
-counterpartList will contain a list of stings, with the UUIDs of node1’s nearest neighbors.  That list will have a single entry, the UUID of node2. 
+```python
+`counterpartList = Graph.api.getLinkCounterparts()
+```
+`counterpartList will contain a list of stings, with the UUIDs of node1’s nearest neighbors.  That list will have a single entry, the UUID of node2. 
 
 
 
@@ -134,8 +134,8 @@ This module uses an SQL database to manage the entity repository and links betwe
 
 If the the tables that Graphyne uses for persistence don’t already exist in the database, then they will be created on startup.  Here is the SQLlite flavored DB schema:
 
-	'
-"CREATE TABLE Entity(entityID NVARCHAR(38) NOT NULL, depricated INT NOT NULL, memePath NVARCHAR(100) NOT NULL, metaMeme NVARCHAR(100) NOT NULL, masterEntityID NVARCHAR(38) NOT NULL, PRIMARY KEY (entityID))"
+```
+`"CREATE TABLE Entity(entityID NVARCHAR(38) NOT NULL, depricated INT NOT NULL, memePath NVARCHAR(100) NOT NULL, metaMeme NVARCHAR(100) NOT NULL, masterEntityID NVARCHAR(38) NOT NULL, PRIMARY KEY (entityID))"
 "CREATE TABLE EntityTags(entityID NVARCHAR(38) NOT NULL, tag NVARCHAR(100) NOT NULL, FOREIGN KEY(entityID) REFERENCES Entity(entityID))"
 "CREATE TABLE EntityPropertyLists(entityID NVARCHAR(38) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal NVARCHAR(1000) NOT NULL, memePath NVARCHAR(100), FOREIGN KEY(entityID) REFERENCES Entity(entityID))"
 "CREATE TABLE EntityPropertyBooleans(entityID NVARCHAR(38) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal INT NOT NULL, memePath NVARCHAR(100), FOREIGN KEY(entityID) REFERENCES Entity(entityID))"
@@ -150,8 +150,8 @@ If the the tables that Graphyne uses for persistence don’t already exist in th
 "CREATE TABLE EntityLinkPropertyDecimals(entityLinkID NVARCHAR(39) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal DECIMAL(15,5) NOT NULL, FOREIGN KEY(entityLinkID) REFERENCES EntityLink(entityLinkID))"
 "CREATE TABLE EntityLinkPropertyIntegers(entityLinkID NVARCHAR(39) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal INT NOT NULL,  FOREIGN KEY(entityLinkID) REFERENCES EntityLink(entityLinkID))"
 
-	'
-
+```
+`
 
 # Memetic in Graphyne
 
@@ -162,8 +162,8 @@ Graphyne was built around Memetic and this section discusses the details of how 
 For our examples, we’ll import Graphyne.Graph as Graph.  
     'python
 import Graphyne.Graph as Graph
-	'
-
+```
+`
 This module has an attribute called api, which we can use to access the graph’s methods.  Using **Graph.api **is less verbose that always writing **Graphyne.Graph.api**.
 
 
@@ -172,13 +172,13 @@ This module has an attribute called api, which we can use to access the graph’
 There are two ways of creating entities in Graphyne.  The first method creates a generic entity, which does not require any schema,.  You have already been exposed to this api method, the createEntity().  This creates an entity of meme type *Graphyne.Generic,* which is just an empty entity with no properties.  You can use this method to create entities whenever you don’t want to bother with creating a schema, or just need a spontaneous, ad hoc entity.  This method creates the entity, indexes it in the entity repository and returns the UUID of the entity, with which it can be referenced later in other api methods.  This uuid is returned in string form, rather than as a standard python library uuid object.  
     'python
 entityUUID = Graph.api.createEntity()
-	'
-
+```
+`
 The second method for creating entities is createEntityFromMeme().  With this method, you are creating an entity from a specific meme from the catalog of available memes in your schema.  E.g. we can create a *Graphyne.Generic* entity using createEntityFromMeme(), which will create exactly the same kind of meme as createEntity().
-	'python
-entityUUID = Graph.api.createEntityFromMeme(‘Graphyne.Generic’)
-	'
-
+```python
+`entityUUID = Graph.api.createEntityFromMeme(‘Graphyne.Generic’)
+```
+`
 There are a couple things to note when creating entities with createEntityFromMeme().  Firstly, if the meme in question has child memes in its definition, then entities for those memes will be created.  In the picture below, we have a meme (in dark blue), which we want to create.  That meme has three child memes in its definition and one of those three in turn has child memes.  Not only would an entity be created from our dark blue meme, but also child and grandchild entities would be created from their respective memes and all the entities would be linked in order (links originating with “parent” entities and ending at “child” entities)
 
 ![][image-1]
@@ -311,16 +311,16 @@ Graphyne supports a special Memetic metameme for scripts.  The Memetic.DNA.Scrip
 
 Below is the Script metameme.  Note that currently, only Python (3) is supported as a language.  The Script metameme is designed to be language agnostic, to potentially allow other scripting languages to be used if implemented.
 
-	'
-\<MetaMeme id="Script" singleton="true"\>
+```
+`\<MetaMeme id="Script" singleton="true"\>
 \<MetaMemeProperty name="Script" type="string"/\>
 \<MetaMemeProperty name="Language" 
 type="string" 
 constrained="true" 
 restriction="ScriptLanguage"/\>
 \</MetaMeme\>
-	'
-
+```
+`
 If the entity is not an instance of Memetic.DNA.Script, or if it does not have a valid script element that points to a valid python file, then Graph.evaluateEntity() will raise an Exceptions.ScriptError exception.  
 
 
@@ -344,8 +344,8 @@ Todo: Pic1
 
 You can see an example of this in action in Graphyne’s test framework.  In the test repository, there is a module called *TestCaseAppendix*.  It follows this chain of memes pattern.
 
-	'<Meme id="ConditionTrueOrFalse_CScr" metameme="Memetic.Condition.ConditionScript">
-\<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/\>
+```<Meme id="ConditionTrueOrFalseCScr" metameme="Memetic.Condition.ConditionScript">
+`\<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/\>
 \<MemberMeme occurrence="1" memberID="TrueOrFalseSES"/\>
 \</Meme\>
 \<Meme id="TrueOrFalseScript" metameme="Memetic.DNA.Script"\>
@@ -376,16 +376,16 @@ Todo: Pic3
 
 Below is a template example for such a script class.  Its init method is expected to take two params; self and a dictionary, containing any runtime parameters.  The runtime parameters are optional when calling evaluateEntity(), as it has an empty dictionary as a default parameter.  When creating the execute() method however, this parameter is mandatory, or a Python **TypeError** will be thrown.  This will surface as a Graphyne **Exceptions.ScriptError **exception, with Python 3 raise… from… nesting information about the **TypeError**.
 
-	' python
-class SomeClassName(object):
+``` python
+`class SomeClassName(object):
 
 def __init__(self, rtParams = None):
 pass  
 
 def execute(self, params):
 return None e
-	'
-
+```
+`
   
 
 
