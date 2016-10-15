@@ -30,23 +30,24 @@ Graphyne is powerful and includes some features that set it apart from other pro
 ## Installing
 
 To install Graphyne, use pip.
-	'
+	''
 todo
-	'
+	''
 
 Graphyne has dependencies on [Memetic][6] and [Pyodbc][7].  The main use of Memetic is to provide the Memetic’s standard schema.  It is possible to run Graphyne graphs without the standard schema however.
 
 
 ## The Hello World Graph
-In order to use the graph in your projects, you will have to import and initialize it.  There are several modules within the Graphyne package, but the one of real interest is Graph.  
-    'python
+In order to use the graph in your projects, you will have to import and initialize it.  There are several modules within the Graphyne package, but the one of real interest is Graph.
+
+	'python
 import Graphyne.Graph
-	'
+	''
 
 Or if you prefer to use a shorthand alias,
 	'python
 import Graphyne.Graph as Graph
-	'
+	''
 
 You can start the graph, but entering the following command (example uses the alias, Graph):
 	'python
@@ -355,7 +356,7 @@ You can see an example of this in action in Graphyne’s test framework.  In the
 \<MemeProperty name="State" value="execute"/\>
 \<MemberMeme occurrence="1" memberID="TrueOrFalseScript" /\>
 \</Meme\>
-	
+ 
 
 You can see that ConditionTrueOrFalseCScr has TrueOrFalseSES as a child meme, which in turn has TrueOrFalseScript as a child meme.  We see that the State is “execute”, so we’ll be able to call it with the  **evaluateEntity()** api method.  We also see that the value of *TrueOrFalseSES’s* *Script* property is **TestCaseAppendix.ConditionTrueOrFalse**.  The part before the period separator is the file (within the same repository package) and the trailing part is the class name.  
 
@@ -379,7 +380,7 @@ Below is a template example for such a script class.  Its init method is expecte
 class SomeClassName(object):
 
 def __init__(self, rtParams = None):
-pass   
+pass  
 
 def execute(self, params):
 return None e
