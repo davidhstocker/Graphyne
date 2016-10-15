@@ -30,9 +30,9 @@ Graphyne is powerful and includes some features that set it apart from other pro
 ## Installing
 
 To install Graphyne, use pip.
-```'
-`todo
-```'
+```
+pip install graphyne
+```
 `
 Graphyne has dependencies on [Memetic][6] and [Pyodbc][7].  The main use of Memetic is to provide the Memetic’s standard schema.  It is possible to run Graphyne graphs without the standard schema however.
 
@@ -41,22 +41,22 @@ Graphyne has dependencies on [Memetic][6] and [Pyodbc][7].  The main use of Meme
 In order to use the graph in your projects, you will have to import and initialize it.  There are several modules within the Graphyne package, but the one of real interest is Graph.
 
 ```python
-`import Graphyne.Graph
-```'
-`
+import Graphyne.Graph
+```
+
 Or if you prefer to use a shorthand alias,
 ```python
-`import Graphyne.Graph as Graph
-```'
+import Graphyne.Graph as Graph
+```
 `
 You can start the graph, but entering the following command (example uses the alias, Graph):
 ```python
-`Graph.startDB()
+Graph.startDB()
 ```
 `
 To start the graph using SQLite and a file named ‘MyDatabase.sqlite’ as the persistence, start the graph with the following setup:
 ```python
-`Graph.startDB([], ’sqlite’, ‘MyDatabase.sqlite’)
+Graph.startDB([], ’sqlite’, ‘MyDatabase.sqlite’)
 ```
 `
 ## Your First Graph
@@ -64,17 +64,18 @@ To start the graph using SQLite and a file named ‘MyDatabase.sqlite’ as the 
 Now that the graph is running, let’s create a simple graph.  It will have two entities and they will be linked.
 
 Create entities and Link them:
-``` python
-`node1 = Graph.api.createEntity()
+```python
+node1 = Graph.api.createEntity()
 node2 = Graph.api.createEntity()
 Graph.api.addEntityLink(node1, node2)
 ``` 
 `
 The entities node1 and node2 have been created and are linked.  The return value of createEntity is a UUID, which is all we need to refer to a particular entity.  We can verify that they are linked by traversing from node1 to node2, using the getLinkCounterparts() method.
 ```python
-`counterpartList = Graph.api.getLinkCounterparts()
+counterpartList = Graph.api.getLinkCounterparts()
 ```
-`counterpartList will contain a list of stings, with the UUIDs of node1’s nearest neighbors.  That list will have a single entry, the UUID of node2. 
+
+counterpartList will contain a list of stings, with the UUIDs of node1’s nearest neighbors.  That list will have a single entry, the UUID of node2. 
 
 
 
@@ -135,7 +136,7 @@ This module uses an SQL database to manage the entity repository and links betwe
 If the the tables that Graphyne uses for persistence don’t already exist in the database, then they will be created on startup.  Here is the SQLlite flavored DB schema:
 
 ```
-`"CREATE TABLE Entity(entityID NVARCHAR(38) NOT NULL, depricated INT NOT NULL, memePath NVARCHAR(100) NOT NULL, metaMeme NVARCHAR(100) NOT NULL, masterEntityID NVARCHAR(38) NOT NULL, PRIMARY KEY (entityID))"
+"CREATE TABLE Entity(entityID NVARCHAR(38) NOT NULL, depricated INT NOT NULL, memePath NVARCHAR(100) NOT NULL, metaMeme NVARCHAR(100) NOT NULL, masterEntityID NVARCHAR(38) NOT NULL, PRIMARY KEY (entityID))"
 "CREATE TABLE EntityTags(entityID NVARCHAR(38) NOT NULL, tag NVARCHAR(100) NOT NULL, FOREIGN KEY(entityID) REFERENCES Entity(entityID))"
 "CREATE TABLE EntityPropertyLists(entityID NVARCHAR(38) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal NVARCHAR(1000) NOT NULL, memePath NVARCHAR(100), FOREIGN KEY(entityID) REFERENCES Entity(entityID))"
 "CREATE TABLE EntityPropertyBooleans(entityID NVARCHAR(38) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal INT NOT NULL, memePath NVARCHAR(100), FOREIGN KEY(entityID) REFERENCES Entity(entityID))"
@@ -151,7 +152,6 @@ If the the tables that Graphyne uses for persistence don’t already exist in th
 "CREATE TABLE EntityLinkPropertyIntegers(entityLinkID NVARCHAR(39) NOT NULL, propName NVARCHAR(100) NOT NULL, propVal INT NOT NULL,  FOREIGN KEY(entityLinkID) REFERENCES EntityLink(entityLinkID))"
 
 ```
-`
 
 # Memetic in Graphyne
 
@@ -160,25 +160,26 @@ Graphyne was built around Memetic and this section discusses the details of how 
 ### Short note on nomenclature
 
 For our examples, we’ll import Graphyne.Graph as Graph.  
-    'python
+```python
 import Graphyne.Graph as Graph
 ```
-`
 This module has an attribute called api, which we can use to access the graph’s methods.  Using **Graph.api **is less verbose that always writing **Graphyne.Graph.api**.
 
 
 ## Creating Entities
 
 There are two ways of creating entities in Graphyne.  The first method creates a generic entity, which does not require any schema,.  You have already been exposed to this api method, the createEntity().  This creates an entity of meme type *Graphyne.Generic,* which is just an empty entity with no properties.  You can use this method to create entities whenever you don’t want to bother with creating a schema, or just need a spontaneous, ad hoc entity.  This method creates the entity, indexes it in the entity repository and returns the UUID of the entity, with which it can be referenced later in other api methods.  This uuid is returned in string form, rather than as a standard python library uuid object.  
-    'python
+
+```python
 entityUUID = Graph.api.createEntity()
 ```
-`
+
 The second method for creating entities is createEntityFromMeme().  With this method, you are creating an entity from a specific meme from the catalog of available memes in your schema.  E.g. we can create a *Graphyne.Generic* entity using createEntityFromMeme(), which will create exactly the same kind of meme as createEntity().
+
 ```python
-`entityUUID = Graph.api.createEntityFromMeme(‘Graphyne.Generic’)
+entityUUID = Graph.api.createEntityFromMeme(‘Graphyne.Generic’)
 ```
-`
+
 There are a couple things to note when creating entities with createEntityFromMeme().  Firstly, if the meme in question has child memes in its definition, then entities for those memes will be created.  In the picture below, we have a meme (in dark blue), which we want to create.  That meme has three child memes in its definition and one of those three in turn has child memes.  Not only would an entity be created from our dark blue meme, but also child and grandchild entities would be created from their respective memes and all the entities would be linked in order (links originating with “parent” entities and ending at “child” entities)
 
 ![][image-1]
@@ -312,15 +313,15 @@ Graphyne supports a special Memetic metameme for scripts.  The Memetic.DNA.Scrip
 Below is the Script metameme.  Note that currently, only Python (3) is supported as a language.  The Script metameme is designed to be language agnostic, to potentially allow other scripting languages to be used if implemented.
 
 ```
-`\<MetaMeme id="Script" singleton="true"\>
-\<MetaMemeProperty name="Script" type="string"/\>
-\<MetaMemeProperty name="Language" 
+<MetaMeme id="Script" singleton="true">
+<MetaMemeProperty name="Script" type="string"/>
+<MetaMemeProperty name="Language" 
 type="string" 
 constrained="true" 
-restriction="ScriptLanguage"/\>
-\</MetaMeme\>
+restriction="ScriptLanguage"/>
+</MetaMeme>
 ```
-`
+
 If the entity is not an instance of Memetic.DNA.Script, or if it does not have a valid script element that points to a valid python file, then Graph.evaluateEntity() will raise an Exceptions.ScriptError exception.  
 
 
@@ -340,29 +341,30 @@ If we want to add event to an entity, we have to consider three things.  Firstly
 
 When a schema designer wants to add a state event script to a meme, she does so by creating a chain of entities as diagramed in the picture, below.  Firstly, there is a parent meme.  It is the entities of this meme which will eventually be “executable”.  Secondly, there are 0..n child memes that extend *Memetic.DNA.StateEventScript*.  Each of these has a *State* property, with restriction type *Memetic.StateEventType*.  Each *Memetic.DNA.StateEventScript* derived meme has a *Memetic.DNA.Script* derived child meme.  This meme in turn has a *Script* property, which points to a filesystem location.  If the event type is execute, then it can be called at any time, with the **evaluateEntity()** api method.  The others are internal events, tied to the life cycle of an entity.
 
-Todo: Pic1
+![][image-12]
 
 You can see an example of this in action in Graphyne’s test framework.  In the test repository, there is a module called *TestCaseAppendix*.  It follows this chain of memes pattern.
 
-```<Meme id="ConditionTrueOrFalseCScr" metameme="Memetic.Condition.ConditionScript">
-`\<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/\>
-\<MemberMeme occurrence="1" memberID="TrueOrFalseSES"/\>
-\</Meme\>
-\<Meme id="TrueOrFalseScript" metameme="Memetic.DNA.Script"\>
-\<MemeProperty name="Script" value="TestCaseAppendix.ConditionTrueOrFalse"/\>
-\<MemeProperty name="Language" value="python"/\>
-\</Meme\>
-\<Meme id="TrueOrFalseSES" metameme="Memetic.DNA.StateEventScript"\>
-\<MemeProperty name="State" value="execute"/\>
-\<MemberMeme occurrence="1" memberID="TrueOrFalseScript" /\>
-\</Meme\>
- 
+```
+<Meme id="ConditionTrueOrFalse_CScr" metameme="Memetic.Condition.ConditionScript"\>
+<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/\>
+<MemberMeme occurrence="1" memberID="TrueOrFalseSES"/\>
+</Meme\>
+<Meme id="TrueOrFalseScript" metameme="Memetic.DNA.Script"\>
+<MemeProperty name="Script" value="TestCaseAppendix.ConditionTrueOrFalse"/\>
+<MemeProperty name="Language" value="python"/\>
+</Meme\>
+<Meme id="TrueOrFalseSES" metameme="Memetic.DNA.StateEventScript"\>
+<MemeProperty name="State" value="execute"/\>
+<MemberMeme occurrence="1" memberID="TrueOrFalseScript" /\>
+</Meme\>
+```
 
 You can see that ConditionTrueOrFalseCScr has TrueOrFalseSES as a child meme, which in turn has TrueOrFalseScript as a child meme.  We see that the State is “execute”, so we’ll be able to call it with the  **evaluateEntity()** api method.  We also see that the value of *TrueOrFalseSES’s* *Script* property is **TestCaseAppendix.ConditionTrueOrFalse**.  The part before the period separator is the file (within the same repository package) and the trailing part is the class name.  
 
 In the next picture, we can see how the scripts are assembled when the memes are instantiated into entities.  
 
-Todo: Pic2
+![][image-13]
 
 If a meme has a *Memetic.DNA.StateEventScript* derived child meme, then the graph engine recognizes that the parent has a state event script.  Suppose a meme **A** has a *Memetic.DNA.StateEventScript* derived child meme.  When entity **A’ **is created from **A**, the graph engine:
 Extracts the *State* property value to determine which even it is attached
@@ -371,13 +373,12 @@ The Script property is parsed and a new python object of the class being referen
 The new object is then added to **A’** as the appropriate *xxxScript*.  It is a callable object and its *execute() *method is callable.
 The StateEventScript and Script memes are instantiated as entities in the graph,  but they are mostly present for metadata purposes.  The callable objects are installed directly onto the parent meme.
 
-Todo: Pic3
-
+![][image-14]
 
 Below is a template example for such a script class.  Its init method is expected to take two params; self and a dictionary, containing any runtime parameters.  The runtime parameters are optional when calling evaluateEntity(), as it has an empty dictionary as a default parameter.  When creating the execute() method however, this parameter is mandatory, or a Python **TypeError** will be thrown.  This will surface as a Graphyne **Exceptions.ScriptError **exception, with Python 3 raise… from… nesting information about the **TypeError**.
 
-``` python
-`class SomeClassName(object):
+```python
+class SomeClassName(object):
 
 def __init__(self, rtParams = None):
 pass  
@@ -385,7 +386,7 @@ pass
 def execute(self, params):
 return None e
 ```
-`
+
   
 
 
@@ -421,3 +422,6 @@ return None e
 [image-9]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/SubGraphAll.png
 [image-10]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/SubGraphAtomic.png
 [image-11]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/SubGraphSubAtomic.png
+[image-12]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ExecScript_Schema.png
+[image-13]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ExecScript_Bootstrap.png
+[image-14]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ExecScript_SESLive.png
