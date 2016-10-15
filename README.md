@@ -68,7 +68,7 @@ Create entities and Link them:
 node1 = Graph.api.createEntity()
 node2 = Graph.api.createEntity()
 Graph.api.addEntityLink(node1, node2)
-``` 
+```
 
 The entities node1 and node2 have been created and are linked.  The return value of createEntity is a UUID, which is all we need to refer to a particular entity.  We can verify that they are linked by traversing from node1 to node2, using the getLinkCounterparts() method.
 ```python
