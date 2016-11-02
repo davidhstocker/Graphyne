@@ -18,6 +18,29 @@ import threading
 
 moduleName = 'Scripting'
 
+
+class StateEventScript(threading.Thread):
+    """
+        The base class for property change state event scripts.
+    """
+    
+    className = "Echo"
+    
+    def __init__(self):
+        self.entityLock = threading.RLock()
+        
+    def setState(self, propertyID):
+        self.propertyID = propertyID
+        
+    def execute(self, params):
+        """
+            Override this method to implement the execute
+        """
+        return None
+    
+    
+
+
 class API(threading.Thread):
 
     def __init__(self):

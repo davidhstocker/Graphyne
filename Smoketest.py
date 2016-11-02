@@ -631,7 +631,7 @@ def testEntityPhase2(testPhase = 'testEntityPhase2', fileName = 'Entity_Phase2.a
             if getter == expectedResult:
                 testResult = True
 
-        except Exceptions.ScriptError:
+        except Exceptions.ScriptError as e:
             #Some test cases violate restriction constraints and will raise an exception.
             # This works as intended  
             testResult = False
@@ -802,7 +802,7 @@ def testEntityPhase3():
             if getter == False:
                 step3Result = True
 
-        except Exceptions.ScriptError:
+        except Exceptions.ScriptError as e:
             #Some test cases violate restriction constraints and will raise an exception.
             # This works as intended  
             testResult = False
@@ -3470,6 +3470,95 @@ def testGetCluster():
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
+
+
+
+def testPropertyChangeEvent():
+    """
+        Create an entity from PropertyChangeEvent.PropChangeTest. 
+            It starts with:
+            propA = 11  ( has an event script.  Returns a hash "<oldVal> <newVal>" )
+            propB = xyz ( has an event script.  Returns the entiry UUID)
+            propC = abc ( no SES)
+        
+        1 - Alter its prop A to an allowed value.  Verify the value of the return.
+        2 - Alter its prop A a second time (to an allowed value) and verify.
+        3 - Alter prop B and check that the returned UUID is correct.
+        4 - Alter prop C to a disallowed value.  Verify that return is None
+    """
+    method = moduleName + '.' + 'testPropertyChangeEvent'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create 5 entities of type Graphyne.Generic and get the Examples.MemeA4 singleton as well.  
+    #Chain them together: E1 >> E2 >> E3 >> E4 >> Examples.MemeA4 << E5
+    try:
+        theEntity = Graph.api.createEntityFromMeme("PropertyChangeEvent.PropChangeTest")
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #Alter its prop A to an allowed value.  Verify the value of the return.
+    try:
+        expectedReturnValue = "11 12"
+        returnValue = api.setEntityPropertyValue(theEntity, "propA", 12)
+        if returnValue != expectedReturnValue: 
+            testResult = "False"
+            errorMsg = ('%sSetting the value of propA from 11 to 12 should return "%s" in the return value of the property change event.  "%s returned" !\n' %(errorMsg, expectedReturnValue, returnValue))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error setting value of propA!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+      
+    #Alter its prop A a second time (to an allowed value) and verify.
+    try:
+        expectedReturnValue = "12 15"
+        returnValue = api.setEntityPropertyValue(theEntity, "propA", 15)
+        if returnValue != expectedReturnValue: 
+            testResult = "False"
+            errorMsg = ('%sSetting the value of propA from 12 to 15 should return "%s" in the return value of the property change event.  "%s returned" !\n' %(errorMsg, expectedReturnValue, returnValue))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error setting value of propA!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #Alter prop B and check that the returned UUID is correct.
+    try:
+        returnValue = api.setEntityPropertyValue(theEntity, "propB", 'abc')
+        if returnValue != str(theEntity): 
+            testResult = "False"
+            errorMsg = ('%sSetting the value of propB should return "%s" in the return value of the property change event.  "%s returned" !\n' %(errorMsg, theEntity, returnValue))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error setting value of propA!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #Alter prop C to a disallowed value.  Verify that return is None
+    try:
+        returnValue = api.setEntityPropertyValue(theEntity, "propC", 'xyz')
+        if returnValue != None: 
+            testResult = "False"
+            errorMsg = ('%sSetting the value of propB should return "%s" in the return value of the property change event.  "%s returned" !\n' %(errorMsg, None, returnValue))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error setting value of propA!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    testcase = "propertyChangeEvent()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
    
 
 
@@ -4040,6 +4129,12 @@ def runTests(css):
     testSetData = testRevertEntity()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["API Method revertEntity", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #testPropertyChangeEvent
+    
+    testSetData = testPropertyChangeEvent()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Property Change Event", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     

@@ -2436,6 +2436,7 @@ class Entity(object):
         self.metaMeme = parentMeme.metaMeme
         self.tags = []
         self.properties = {}
+        self.propertyChangeEvents = {}
         self.isInitialized = False
         self.initScript = None
         self.execScript = None
@@ -2493,6 +2494,7 @@ class Entity(object):
                     #/debug
                     newprop = EntityProperty(propertyTuple[0], propertyTuple[1], propertyTuple[2], propertyTuple[3], propertyTuple[4], propertyTuple[5], propertyTuple[6], propertyTuple[7])
                     self.properties[propertyTuple[0]] = newprop
+                    self.propertyChangeEvents[propertyTuple[0]] = None
         except Exception as e:
             raise e
             
@@ -2554,24 +2556,22 @@ class Entity(object):
             
         for sesEntityUUID in sesEntities:
             sesEntity = entityRepository.getEntity(sesEntityUUID)
+            propertyID = None
             try:
                 state = sesEntity.getPropertyValue('State')
+                try:
+                    propertyID = sesEntity.getPropertyValue('PropertyID')
+                except Exception as e:
+                    pass #getPropertyValue() throws an exception if the property is not present.  Ignore this exception
                 scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Memetic.DNA.Script', linkTypes.SUBATOMIC)
                 for scriptEntityUUID in scriptEntities:
                     scriptEntity = entityRepository.getEntity(scriptEntityUUID)
                     scriptLocation = scriptEntity.getPropertyValue('Script')
                     scriptLanguage = scriptEntity.getPropertyValue('Language')
-                    self.setStateEventScript(scriptLocation, scriptLanguage, state)
+                    self.setStateEventScript(scriptLocation, scriptLanguage, state, propertyID)
+            except Exceptions.StateEventScriptInitError as e:
+                raise e
             except Exception as e:
-                #debug aid
-                state = sesEntity.getPropertyValue(u'State')
-                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType(u'Memetic.DNA.Script', linkTypes.SUBATOMIC)
-                for scriptEntityUUID in scriptEntities:
-                    scriptEntity = entityRepository.getEntity(scriptEntityUUID)
-                    scriptLocation = scriptEntity.getPropertyValue(u'Script')
-                    scriptLanguage = scriptEntity.getPropertyValue(u'Language')
-                    self.setStateEventScript(scriptLocation, scriptLanguage, state)
-                    
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
                 errorID = str(fullerror[0])
@@ -2657,7 +2657,6 @@ class Entity(object):
                         self.addListProperty(memeProperty.name, memeProperty.value, memeProperty.constrained, memeProperty.restMin, memeProperty.restMax, memeProperty.restList, parentMeme.path)
                     else:
                         self.addStringProperty(memeProperty.name, memeProperty.value, memeProperty.constrained, memeProperty.restMin, memeProperty.restMax, memeProperty.restList, parentMeme.path)
-                    
                 except Exception as e:
                     errprMsg = "Unable to create property %s on %s entity %s.  Traceback = %s" %(memeProperty.name,parentMeme.path.fullTemplatePath, self.uuid, e)
                     logQ.put( [logType , logLevel.WARNING , method , errprMsg])
@@ -2726,6 +2725,8 @@ class Entity(object):
                 deleteList.append(propertyKey)
         for delPath in deleteList:
             del self.properties[delPath]
+            if delPath in self.propertyChangeEvents:
+                del self.propertyChangeEvents[delPath]
             
         if drillDown == True:
             links = linkRepository.getCounterparts(self.uuid)
@@ -3462,7 +3463,7 @@ class Entity(object):
             targetEntityIDList = self.getLinkedEntitiesByMemeType(splitPropPath[0], None, None)
             for targetEntityID in targetEntityIDList:
                 targetEntity = entityRepository.getEntity(targetEntityID)
-                targetEntity.setPropertyValue(splitPropPath[2], value)
+                unusedReturn = targetEntity.setPropertyValue(splitPropPath[2], value)
         else:
             if self.getHasProperty(fullPropPath) != True:
                 self.addStringProperty(fullPropPath, value)
@@ -3534,21 +3535,36 @@ class Entity(object):
             # if we can cast the value and no exceptions have been raised due to constraints,
             #    then go ahead and set the value
             # If it is not a list, then property.value will have a length of 0 or 1, depending on whether it has a value or not
+            oldValue = copy.copy(templateProperty.value)  #When firing propertyChanged events, we pass both the old and new values
+            params = {'oldVal' : oldValue}
+            returnValue = None
             if templateProperty.propertyType == entityPropTypes.List:
                 templateProperty.value = proposedNewValue
+                params['newVal'] = proposedNewValue
+                if fullPropPath in self.propertyChangeEvents:
+                    ses = self.propertyChangeEvents[fullPropPath]
+                    returnValue = ses.execute([self.uuid, params])
+                    unusedCatch = "me"
             else:
                 try:
                     templateProperty.value = proposedNewValue[0]
-                except:
+                    params['newVal'] = proposedNewValue[0]
+                    if fullPropPath in self.propertyChangeEvents:
+                        ses = self.propertyChangeEvents[fullPropPath]
+                        returnValue = ses.execute([self.uuid, params])
+                        unusedCatch = "me"
+                except Exception as e:
                     templateProperty.value = []
+            return returnValue
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         
 
-    def setStateEventScript(self, scriptLocation, scriptLanguage = "python", state = "execute"):
+    def setStateEventScript(self, scriptLocation, scriptLanguage = "python", state = "execute", propertyID = None):
         """ Set the state event callable object on self.
         scriptLocation = The classpath of the callable object
         scriptLanguage = at the moment, only Python is supported
         Sate = One of the valid values for the restriction Memetic.StateEventType 
+        propertyID = If the state is propertyChanged, then the property ID should be passed.
         """
         method = moduleName + '.' +  self.className + '.setStateEventScript'
         logQ.put( [logType , logLevel.DEBUG , method , "entering"])
@@ -3570,8 +3586,13 @@ class Entity(object):
                     self.linkAdd = function 
                 elif state == "linkRemove":    
                     self.linkRemove = function 
-                elif state == "propertiesChanged":    
-                    self.propertiesChanged = function    
+                elif state == "propertyChanged":    
+                    if propertyID is not None:
+                        function.setState(propertyID)
+                        self.propertyChangeEvents[propertyID] = function  
+                    else:
+                        errorMessage = "%s entity unable to initialize propertyChanged state event script %s.%s, as no property has been assigned."  %(self.memePath, mName, cName)
+                        raise Exceptions.StateEventScriptInitError(errorMessage)
             except Exception:
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
@@ -3643,6 +3664,8 @@ class createEntityFromMeme(object):
                 #todo - wtf?  params[4]?
                 if params[4] == False:
                     entity.initialize()
+            except Exceptions.StateEventScriptInitError as e:
+                raise e
             except Exception as e:
                 ex = "Unable to init entity %s of type %s.  Traceback = %s" %(entityID, entity.memePath.fullTemplatePath, e)
                 #debug
@@ -4671,12 +4694,13 @@ class revertEntityPropertyValues(object):
 class setEntityPropertyValue(object):
     ''' Three params: entity, name, value'''
     def execute(self, params):
+        returnValue = None
         try:
             entity = entityRepository.getEntity(params[0])
             if entity.depricated != True:
                 entity.entityLock.acquire(True)
                 try:
-                    entity.setPropertyValue(params[1], params[2])
+                    returnValue = entity.setPropertyValue(params[1], params[2])
                 except Exception as e:
                     raise e                
                 finally:
@@ -4691,7 +4715,7 @@ class setEntityPropertyValue(object):
         except Exception as e:
             ex = "Function addEntityDecimalProperty failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
-        return None
+        return returnValue
     
     
     
@@ -5570,7 +5594,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
 
         
     #Repeat for metamemes
-    for packagePath in objectMap.keys():
+    for packagePath in objectMap.keys(): 
         try:
             fileData = objectMap[packagePath]
             for fileStream in fileData.keys():
@@ -5729,6 +5753,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                 toBeIndexed = [fileStream, codepage, packagePath]                
             #logQ.put( [logType , logLevel.DEBUG , method , "making pass %s on meme load queue" %(nth)])
             #logQ.put( [logType , logLevel.DEBUG , method , "Trying to pop item from meme queue %s" %self.mLoadQ])
+            
             logQ.put( [logType , logLevel.INFO, method , "Loading memes from module %s" %(toBeIndexed[2])])
             if len(toBeIndexed) > 2:
                 try:
@@ -6811,6 +6836,13 @@ class API(object):
             params = [memePath, ActionID, Subject, Controller, supressInit]
             entity = self._createEntityFromMeme.execute(params)
             return entity
+        except Exceptions.StateEventScriptInitError as e:
+            #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+            fullerror = sys.exc_info()
+            tb = sys.exc_info()[2]
+            exception = "createEntityFromMeme(%s, %s, %s, %s) traceback = %s" %(memePath, ActionID, Subject, Controller, e)
+            logQ.put( [logType , logLevel.WARNING , "createEntityFromMeme" , exception])
+            raise Exceptions.ScriptError(exception).with_traceback(tb)
         except Exception as e:
             exception = "createEntityFromMeme(%s, %s, %s, %s) traceback = %s" %(memePath, ActionID, Subject, Controller, e)
             raise Exceptions.ScriptError(exception)  
@@ -7325,7 +7357,8 @@ class API(object):
     def setEntityPropertyValue(self, entityUUID, propertyName, propertyValue):
         try: 
             params = [entityUUID, propertyName, propertyValue]
-            unusedMemeExists = self._setEntityPropertyValue.execute(params)
+            returnValue = self._setEntityPropertyValue.execute(params)
+            return returnValue
         except Exception as e:
             exception = None
             try:
