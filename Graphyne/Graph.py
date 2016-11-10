@@ -2084,6 +2084,7 @@ class Meme(object):
                                     membersValid = False
                                     errorReport.append(exception)
                                     errorReport.append(memberValidRep[1])
+                                    
                                 except Exception as e:
                                     exception = "Meme %s is invalid!  Traceback = %e" %(self.path.fullTemplatePath, e)
                                     logQ.put( [logType , logLevel.WARNING , method , exception])
@@ -2122,9 +2123,10 @@ class Meme(object):
                 if propertyValid != True:
                     propertiesValid = False
                 for propertyError in templateProperty.propError:
+                    logMessage = "Meme Validation Error in %s.  %s" %(self.path.fullTemplatePath, propertyError)
                     propertiesValid = False
                     propertyErrors.append(propertyError)
-                    logQ.put( [logType , logLevel.WARNING , method , propertyError])
+                    logQ.put( [logType , logLevel.WARNING , method , logMessage])
             
             #A meme designer might have created a meme with an "orphaned" property;  one for which no metameme prop definition exists
             #    Such properties generate an exception at load time and fail to create a property.
@@ -3539,7 +3541,7 @@ class Entity(object):
             params = {'oldVal' : oldValue}
             returnValue = None
             if templateProperty.propertyType == entityPropTypes.List:
-                templateProperty.value = proposedNewValue
+
                 params['newVal'] = proposedNewValue
                 if fullPropPath in self.propertyChangeEvents:
                     ses = self.propertyChangeEvents[fullPropPath]
@@ -3895,6 +3897,8 @@ class addEntityLink(object):
     ''' Three params: entityUUID1, entityUUID2, linkAttributes = {}, linkType = linkTypes.ATOMIC'''
     #ToDo: add paremeter dict as param[3]
     def execute(self, params):
+        method = moduleName + '.' +  'addEntityLink' + '.execute'
+        returnArray = []
         try:
             entity0 = entityRepository.getEntity(params[0])
             entity1 = entityRepository.getEntity(params[1])
@@ -3903,6 +3907,45 @@ class addEntityLink(object):
                 entity1.entityLock.acquire(True)
                 try:
                     linkRepository.catalogLink(params[0], params[1], params[3], params[2])
+                    
+                    #Fire Link Event for both entity0 and entity1, if one exists
+                    linkParams = {"sourceEntityID" : params[0], "targetEntityID" : params[1], "membershipType" : params[3], "linkAttributes": params[2]}
+                    if hasattr(entity0, 'linkAdd'):
+                        try:
+                            sesScriptReturn = entity0.linkAdd.execute([params[0], linkParams])
+                            returnArray.append(sesScriptReturn)
+                        except Exception as e:
+                            scriptLoc = getScriptLocation(params[0], "linkAdd")
+                            fullerror = sys.exc_info()
+                            errorID = str(fullerror[0])
+                            errorMsg = str(fullerror[1])
+                            tb = sys.exc_info()[2]
+                            errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkAdd event."  %(entity0.memePath.fullTemplatePath, scriptLoc)
+                            errorMessage = "%s  Entity is source.  Membership type = %s.  linkAttributes = %s" %(errorMessage, params[3], params[2])
+                            errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                            logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                            raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
+                    else:
+                        returnArray.append(None)
+                    if hasattr(entity1, 'linkAdd'):
+                        try:
+                            sesScriptReturn = entity1.linkAdd.execute([params[1], linkParams])
+                            returnArray.append(sesScriptReturn)
+                        except Exception as e:
+                            scriptLoc = getScriptLocation(params[1], "linkAdd")
+                            fullerror = sys.exc_info()
+                            errorID = str(fullerror[0])
+                            errorMsg = str(fullerror[1])
+                            tb = sys.exc_info()[2]
+                            errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkAdd event."  %(entity0.memePath.fullTemplatePath, scriptLoc)
+                            errorMessage = "%s  Entity is target.  Membership type = %s.  linkAttributes = %s" %(errorMessage, params[3], params[2])
+                            errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                            logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                            raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
+                    else:
+                        returnArray.append(None) 
+                except Exceptions.EventScriptFailure as e:
+                    raise e      
                 except Exception as e:
                     raise e                
                 finally:
@@ -3921,7 +3964,8 @@ class addEntityLink(object):
         except Exception as e:
             ex = "Function addEntityLink failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
-        return None
+        return returnArray
+    
 
 
 class destroyEntity(object):
@@ -4498,12 +4542,55 @@ class removeAllCustomPropertiesFromEntity(object):
 class removeEntityLink(object):
     """ Two params: MemberUUID1, MemberUUID2"""
     def execute(self, params):
+        method = moduleName + '.' +  'addEntityLink' + '.execute'
+        returnArray = []
         try:
             linkRepository.removeLink(params[0], params[1])
+            
+            #Fire Link Event for both entity0 and entity1, if one exists
+            entity0 = entityRepository.getEntity(params[0])
+            entity1 = entityRepository.getEntity(params[1])
+            linkParams = {"sourceEntityID" : params[0], "targetEntityID" : params[1]}
+            if hasattr(entity0, 'linkRemove'):
+                try:
+                    sesScriptReturn = entity0.linkRemove.execute([params[0], linkParams])
+                    returnArray.append(sesScriptReturn)
+                except Exception as e:
+                    scriptLoc = getScriptLocation(params[0], "linkRemove")
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkRemove event."  %(entity0.memePath.fullTemplatePath, scriptLoc)
+                    errorMessage = "%s  Entity is source." %(errorMessage)
+                    errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                    logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                    raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
+            else:
+                returnArray.append(None)
+            if hasattr(entity1, 'linkRemove'):
+                try:
+                    sesScriptReturn = entity1.linkRemove.execute([params[1], linkParams])
+                    returnArray.append(sesScriptReturn)
+                except Exception as e:
+                    scriptLoc = getScriptLocation(params[1], "linkRemove")
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkRemove event."  %(entity0.memePath.fullTemplatePath, scriptLoc)
+                    errorMessage = "%s  Entity is target." %(errorMessage)
+                    errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                    logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                    raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
+            else:
+                returnArray.append(None)
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except Exception as e:
             ex = "Function removeMemberEntity failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
-        return None
+        return returnArray
 
 
 #Todo - add parameterization for link
@@ -6545,6 +6632,45 @@ def filterListDuplicates(listToFilter):
     return list(keys.keys())
 
 
+#A helper method for finding the location of an entity State Event Script, when something went wrong.
+def getScriptLocation(self, entityID, eventType, propID = None):
+    """
+        This method is called whenever a State Event Script throws an exception.  It's purpose is to find the filesystem location of the script that thre the exception.
+        This is useful for tracking down bugs in SES scripts.  When entities are intiialized, the SES script classes are initialized and added directly to the Entities as
+        callable objects.  This gives a performance boost, as we can skip the graph traverses; tracking down the child SES entity and then the script entity.  SES scripts
+        are defined at design time and remain static for the lifetime of an entity.  As the entity is 'compiled', when there is an exception taised by an SES script, we 
+        have to make graph traverses to assemble the information that the graph designer will need to licate the offending script and troubleshoot what happened.
+        
+        entityID = The UUID of the entity whose SES script raised the exception.
+        eventType = Which of that entity's registered SES events raised the exception.
+        propID = If the event is the property changed event, then this should be filled with a string value, the entity property associated with the SES event.  If this is
+        any other kind of event, then this property will be None.
+        
+        
+    """                   
+    scriptLoc = None
+    try:
+        #find the location of the script
+        theEntity = entityRepository.getEntity(entityID)
+        sesEntities = theEntity.getLinkedEntitiesByMetaMemeType('Memetic.DNA.StateEventScript', linkTypes.SUBATOMIC)
+        for sesEntityUUID in sesEntities:
+            sesEntity = entityRepository.getEntity(sesEntityUUID)
+            state = sesEntity.getPropertyValue('State')
+            if state == eventType:
+                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Memetic.DNA.Script', linkTypes.SUBATOMIC)
+                for scriptEntityUUID in scriptEntities:
+                    scriptEntity = entityRepository.getEntity(scriptEntityUUID)
+                    scriptLoc = scriptEntity.getPropertyValue('Script')
+        return scriptLoc
+    except Exception:
+        fullerror = sys.exc_info()
+        errorID = str(fullerror[0])
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        raise Exceptions.EventScriptFailure("%s event van't be associated with event script.  Nested Traceback %s: %s" %(eventType, errorID, errorMsg)).with_traceback(tb)
+
+        
+
 #def runscript(script):
 #    pass
     
@@ -6818,7 +6944,8 @@ class API(object):
     def addEntityLink(self, entityUUID1, entityUUID2, linkAttributes = {}, linkType = 0):
         try: 
             params = [entityUUID1, entityUUID2, linkAttributes, linkType]
-            entity = self._addEntityLink.execute(params)
+            returnArray = self._addEntityLink.execute(params)
+            return returnArray
         except Exception as e:
             exception = None
             try:
@@ -7240,7 +7367,8 @@ class API(object):
     def removeEntityLink(self, entityUUID, memberUUID):
         try: 
             params = [entityUUID, memberUUID]
-            unusedMemeExists = self._removeEntityLink.execute(params)
+            returnArray = self._removeEntityLink.execute(params)
+            return returnArray
         except Exception as e:
             exception = None
             try:

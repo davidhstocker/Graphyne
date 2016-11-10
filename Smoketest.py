@@ -3559,6 +3559,162 @@ def testPropertyChangeEvent():
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
+
+
+def testLinkEvent():
+    """
+        Create two entities from LinkEvent.LinkChangeTest. 
+        Greate three generic entities
+        
+        1 - Link the a LinkEvent.LinkChangeTest entitiy with a generic one, with LinkChangeTest as the source
+        2 - Break the link
+        3 - Link the two with LinkChangeTest as the target
+        
+        4 - Link the two generics
+        5 - Break the link
+        
+        Create two generic entities
+        
+        6 - Link the twoLinkEvent.LinkChangeTest entities
+        7 - Break the link
+    """
+    method = moduleName + '.' + 'testPropertyChangeEvent'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create two entities from LinkEvent.LinkChangeTest. 
+    #Greate three generic entities
+    try:
+        linkChangeTest0 = Graph.api.createEntityFromMeme("LinkEvent.LinkChangeTest")
+        linkChangeTest1 = Graph.api.createEntityFromMeme("LinkEvent.LinkChangeTest")
+        genEntity0 = Graph.api.createEntity()
+        genEntity1 = Graph.api.createEntity()
+        genEntity2 = Graph.api.createEntity()
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #1 - Link the a LinkEvent.LinkChangeTest entitiy with a generic one, with LinkChangeTest as the source
+    try:
+        expectedReturnValue10 = "Added %s as link source for %s" %(linkChangeTest0, genEntity0)
+        returnArray = api.addEntityLink(linkChangeTest0, genEntity0)
+        if returnArray[0] != expectedReturnValue10: 
+            testResult = "False"
+            errorMsg = '%sAdding link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue10, returnArray[0])
+        if returnArray[1] is not None: 
+            testResult = "False"
+            errorMsg = '%sAdding link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error adding link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #2 - Break the link
+    try:
+        expectedReturnValue20 = "Removed %s as link source for %s" %(linkChangeTest0, genEntity0)
+        returnArray = api.removeEntityLink(linkChangeTest0, genEntity0)
+        if returnArray[0] != expectedReturnValue20: 
+            testResult = "False"
+            errorMsg = '%sRemoving link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue20, returnArray[0])
+        if returnArray[1] is not None: 
+            testResult = "False"
+            errorMsg = '%sRemoving link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error removing link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #3 - Link the two with LinkChangeTest as the target
+    try:
+        expectedReturnValue30 = "Added %s as link target for %s" %(linkChangeTest0, genEntity0)
+        returnArray = api.addEntityLink(genEntity0, linkChangeTest0)
+        if returnArray[1] != expectedReturnValue30: 
+            testResult = "False"
+            errorMsg = '%sAdding link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue30, returnArray[0])
+        if returnArray[0] is not None: 
+            testResult = "False"
+            errorMsg = '%sAdding link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error adding link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #4 - Link two generics
+    try:
+        returnArray = api.addEntityLink(genEntity1, genEntity2)
+        if returnArray[0] is not None: 
+            testResult = "False"
+            errorMsg = '%sAdding link to generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[0])
+        if returnArray[1] is not None: 
+            testResult = "False"
+            errorMsg = '%sAdding link to generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error adding link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+        
+    #5 - Break the link
+    try:
+        returnArray = api.removeEntityLink(genEntity1, genEntity1)
+        if returnArray[0] is not None: 
+            testResult = "False"
+            errorMsg = '%Removing link from generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[0])
+        if returnArray[1] is not None: 
+            testResult = "False"
+            errorMsg = '%Removing link from generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error removing link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #6 - Link the twoLinkEvent.LinkChangeTest entities
+    try:
+        expectedReturnValue60 = "Added %s as link source for %s" %(linkChangeTest0, linkChangeTest1)
+        expectedReturnValue61 = "Added %s as link target for %s" %(linkChangeTest1, linkChangeTest0)
+        returnArray = api.addEntityLink(linkChangeTest0, linkChangeTest1)
+        if returnArray[0] != expectedReturnValue60: 
+            testResult = "False"
+            errorMsg = '%sAdding link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue60, returnArray[0])
+        if returnArray[1] != expectedReturnValue61: 
+            testResult = "False"
+            errorMsg = '%sAdding link to LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue61, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error adding link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    #6 - remove the link
+    try:
+        expectedReturnValue70 = "Removed %s as link source for %s" %(linkChangeTest0, linkChangeTest1)
+        expectedReturnValue71 = "Removed %s as link target for %s" %(linkChangeTest1, linkChangeTest0)
+        returnArray = api.removeEntityLink(linkChangeTest0, linkChangeTest1)
+        if returnArray[0] != expectedReturnValue70: 
+            testResult = "False"
+            errorMsg = '%Removing link from LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue70, returnArray[0])
+        if returnArray[1] != expectedReturnValue71: 
+            testResult = "False"
+            errorMsg = '%sRemoving link from LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue71, returnArray[1])
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error removing link!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    testcase = "testLinkEvent()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
    
 
 
@@ -4131,10 +4287,14 @@ def runTests(css):
     resultSet.append(["API Method revertEntity", testSetPercentage, copy.deepcopy(testSetData)])
     
     #testPropertyChangeEvent
-    
     testSetData = testPropertyChangeEvent()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Property Change Event", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #testLinkEvent
+    testSetData = testLinkEvent()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Link Event", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
