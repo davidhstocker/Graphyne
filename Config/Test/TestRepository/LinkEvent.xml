@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2016-10-20</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfPropertyRestriction>
+		<PropertyRestriction id="PropA_Restriction">
+			<RestrictionMinMaxInteger restrictionMin="10"/>
+			<RestrictionMinMaxInteger restrictionMax="20"/>
+		</PropertyRestriction>
+	</ListOfPropertyRestriction>
+	<ListOfMetaMeme>
+		<MetaMeme id="LinkChangeMM">	
+			<MemberMetaMeme reference="Memetic.DNA.StateEventScript"/>
+		</MetaMeme>
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<Meme id="LinkChangeTest" metameme="LinkChangeMM">
+			<MemberMeme occurrence="1" memberID="LinkEvent.LinkChangeAddedSES" />
+			<MemberMeme occurrence="1" memberID="LinkEvent.LinkChangeRemovedSES" />
+		</Meme>
+		
+		<Meme id="LinkAddedScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="LinkEvent.LinkAdded"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="LinkChangeAddedSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkAdd"/>
+			<MemberMeme occurrence="1" memberID="LinkEvent.LinkAddedScript" />
+		</Meme>	
+		
+		
+		<Meme id="LinkRemovedScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="LinkEvent.LinkRemoved"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="LinkChangeRemovedSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkRemove"/>
+			<MemberMeme occurrence="1" memberID="LinkEvent.LinkRemovedScript" />
+		</Meme>	
+	</ListOfMeme>
+	
+	
+</RMLModule>
+
+

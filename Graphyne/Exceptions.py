@@ -36,6 +36,10 @@ class EnhancementError(ValueError):
     pass
 
 
+class EventScriptFailure(ValueError):
+    pass
+
+
 class XMLSchemavalidationError(ValueError):
     pass
 

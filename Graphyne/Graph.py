@@ -3453,7 +3453,7 @@ class Entity(object):
         """ Sets the value of an existing property.
         Cast the proposed value to the correct type.  If that can't be done, raise an exception
         If the property does not exist, create it as a string instead of failing """
-        #method = moduleName + '.' +  self.className + '.setPropertyValue'
+        method = moduleName + '.' +  self.className + '.setPropertyValue'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
         
         
@@ -3541,12 +3541,28 @@ class Entity(object):
             params = {'oldVal' : oldValue}
             returnValue = None
             if templateProperty.propertyType == entityPropTypes.List:
-
-                params['newVal'] = proposedNewValue
-                if fullPropPath in self.propertyChangeEvents:
-                    ses = self.propertyChangeEvents[fullPropPath]
-                    returnValue = ses.execute([self.uuid, params])
-                    unusedCatch = "me"
+                try:
+                    params['newVal'] = proposedNewValue
+                    if fullPropPath in self.propertyChangeEvents:
+                        ses = self.propertyChangeEvents[fullPropPath]
+                        returnValue = ses.execute([self.uuid, params])
+                        unusedCatch = "me"
+                except Exception as e:
+                    templateProperty.value = []
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    try:
+                        scriptLoc = getScriptLocation(params[0], "propertyChanged")
+                    except Exception as e:
+                        innerFullerror = sys.exc_info()
+                        innerErrorMsg = str(innerFullerror[1])
+                        scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg                       
+                    errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during propertyChanged event."  %(self.memePath.fullTemplatePath, scriptLoc)
+                    errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                    logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                    raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
             else:
                 try:
                     templateProperty.value = proposedNewValue[0]
@@ -3557,6 +3573,20 @@ class Entity(object):
                         unusedCatch = "me"
                 except Exception as e:
                     templateProperty.value = []
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    try:
+                        scriptLoc = getScriptLocation(params[0], "propertyChanged")
+                    except Exception as e:
+                        innerFullerror = sys.exc_info()
+                        innerErrorMsg = str(innerFullerror[1])
+                        scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg                         
+                    errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during propertyChanged event."  %(self.memePath.fullTemplatePath, scriptLoc)
+                    errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                    logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                    raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
             return returnValue
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         
@@ -3915,11 +3945,16 @@ class addEntityLink(object):
                             sesScriptReturn = entity0.linkAdd.execute([params[0], linkParams])
                             returnArray.append(sesScriptReturn)
                         except Exception as e:
-                            scriptLoc = getScriptLocation(params[0], "linkAdd")
                             fullerror = sys.exc_info()
                             errorID = str(fullerror[0])
                             errorMsg = str(fullerror[1])
                             tb = sys.exc_info()[2]
+                            try:
+                                scriptLoc = getScriptLocation(params[0], "linkAdd")
+                            except Exception as e:
+                                innerFullerror = sys.exc_info()
+                                innerErrorMsg = str(innerFullerror[1])
+                                scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg 
                             errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkAdd event."  %(entity0.memePath.fullTemplatePath, scriptLoc)
                             errorMessage = "%s  Entity is source.  Membership type = %s.  linkAttributes = %s" %(errorMessage, params[3], params[2])
                             errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
@@ -3932,11 +3967,16 @@ class addEntityLink(object):
                             sesScriptReturn = entity1.linkAdd.execute([params[1], linkParams])
                             returnArray.append(sesScriptReturn)
                         except Exception as e:
-                            scriptLoc = getScriptLocation(params[1], "linkAdd")
                             fullerror = sys.exc_info()
                             errorID = str(fullerror[0])
                             errorMsg = str(fullerror[1])
                             tb = sys.exc_info()[2]
+                            try:
+                                scriptLoc = getScriptLocation(params[1], "linkAdd")
+                            except Exception as e:
+                                innerFullerror = sys.exc_info()
+                                innerErrorMsg = str(innerFullerror[1])
+                                scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg 
                             errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkAdd event."  %(entity0.memePath.fullTemplatePath, scriptLoc)
                             errorMessage = "%s  Entity is target.  Membership type = %s.  linkAttributes = %s" %(errorMessage, params[3], params[2])
                             errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
@@ -3960,7 +4000,8 @@ class addEntityLink(object):
             else:
                 ex = "Reference target entity %s has been archived and is no longer available" %params[1]
                 raise Exceptions.EntityLinkFailureError(ex)
-        
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except Exception as e:
             ex = "Function addEntityLink failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
@@ -4556,7 +4597,12 @@ class removeEntityLink(object):
                     sesScriptReturn = entity0.linkRemove.execute([params[0], linkParams])
                     returnArray.append(sesScriptReturn)
                 except Exception as e:
-                    scriptLoc = getScriptLocation(params[0], "linkRemove")
+                    try:
+                        scriptLoc = getScriptLocation(params[0], "linkRemove")
+                    except Exception as e:
+                        innerFullerror = sys.exc_info()
+                        innerErrorMsg = str(innerFullerror[1])
+                        scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg 
                     fullerror = sys.exc_info()
                     errorID = str(fullerror[0])
                     errorMsg = str(fullerror[1])
@@ -4573,7 +4619,12 @@ class removeEntityLink(object):
                     sesScriptReturn = entity1.linkRemove.execute([params[1], linkParams])
                     returnArray.append(sesScriptReturn)
                 except Exception as e:
-                    scriptLoc = getScriptLocation(params[1], "linkRemove")
+                    try:
+                        scriptLoc = getScriptLocation(params[1], "linkRemove")
+                    except Exception as e:
+                        innerFullerror = sys.exc_info()
+                        innerErrorMsg = str(innerFullerror[1])
+                        scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg 
                     fullerror = sys.exc_info()
                     errorID = str(fullerror[0])
                     errorMsg = str(fullerror[1])
@@ -4690,9 +4741,24 @@ class evaluateEntity(object):
                     #entity.entityLock.acquire(True)
                     entity.execScript.entityLock.acquire(True)
                     try:
+                        #Do proper exception handling
                         returnVal = entity.execScript.execute(params)
                     except Exception as e:
-                        raise e                
+                        fullerror = sys.exc_info()
+                        errorID = str(fullerror[0])
+                        errorMsg = str(fullerror[1])
+                        tb = sys.exc_info()[2]
+                        try:
+                            scriptLoc = getScriptLocation(params[1], "execScript")
+                        except Exception as e:
+                            innerFullerror = sys.exc_info()
+                            innerErrorMsg = str(innerFullerror[1])
+                            scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg
+                        errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkRemove event."  %(entity.memePath.fullTemplatePath, scriptLoc)
+                        errorMessage = "%s  Entity is target." %(errorMessage)
+                        errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                        logQ.put( [logType , logLevel.WARNING , "Graph.EvaluateEntity.execute" , errorMessage])
+                        raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)                
                     finally:
                         entity.execScript.entityLock.release()
                         #entity.entityLock.release()
@@ -4702,6 +4768,8 @@ class evaluateEntity(object):
             else:
                 ex = "%s Entity %s is depricated" %(entity.memePath, uuidVal)
                 raise Exceptions.ScriptError(ex)
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except TypeError as e:
             raise Exceptions.ScriptError("Function evaluateEntity failed") from e
         except AttributeError as e:
@@ -4788,6 +4856,8 @@ class setEntityPropertyValue(object):
                 entity.entityLock.acquire(True)
                 try:
                     returnValue = entity.setPropertyValue(params[1], params[2])
+                except Exceptions.EventScriptFailure as e:
+                    raise e
                 except Exception as e:
                     raise e                
                 finally:
@@ -4795,6 +4865,8 @@ class setEntityPropertyValue(object):
             else:
                 ex = "Entity %s has been archived and is no longer available" %params[0]
                 raise Exceptions.ScriptError(ex)
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except Exceptions.EntityPropertyValueTypeError as e:
             raise Exceptions.EntityPropertyValueTypeError(e)
         except Exceptions.EntityPropertyValueOutOfBoundsError as e:
@@ -6633,7 +6705,7 @@ def filterListDuplicates(listToFilter):
 
 
 #A helper method for finding the location of an entity State Event Script, when something went wrong.
-def getScriptLocation(self, entityID, eventType, propID = None):
+def getScriptLocation(entityID, eventType, propID = None):
     """
         This method is called whenever a State Event Script throws an exception.  It's purpose is to find the filesystem location of the script that thre the exception.
         This is useful for tracking down bugs in SES scripts.  When entities are intiialized, the SES script classes are initialized and added directly to the Entities as
@@ -6667,7 +6739,7 @@ def getScriptLocation(self, entityID, eventType, propID = None):
         errorID = str(fullerror[0])
         errorMsg = str(fullerror[1])
         tb = sys.exc_info()[2]
-        raise Exceptions.EventScriptFailure("%s event van't be associated with event script.  Nested Traceback %s: %s" %(eventType, errorID, errorMsg)).with_traceback(tb)
+        raise Exceptions.EventScriptFailure("%s event can't be associated with event script.  Nested Traceback %s: %s" %(eventType, errorID, errorMsg)).with_traceback(tb)
 
         
 
@@ -6946,6 +7018,8 @@ class API(object):
             params = [entityUUID1, entityUUID2, linkAttributes, linkType]
             returnArray = self._addEntityLink.execute(params)
             return returnArray
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except Exception as e:
             exception = None
             try:
@@ -7369,6 +7443,8 @@ class API(object):
             params = [entityUUID, memberUUID]
             returnArray = self._removeEntityLink.execute(params)
             return returnArray
+        except Exceptions.EventScriptFailure as e:
+            raise e 
         except Exception as e:
             exception = None
             try:
@@ -7487,6 +7563,8 @@ class API(object):
             params = [entityUUID, propertyName, propertyValue]
             returnValue = self._setEntityPropertyValue.execute(params)
             return returnValue
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except Exception as e:
             exception = None
             try:
@@ -7534,6 +7612,8 @@ class API(object):
             params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
             evalResult = self._evaluateEntity.execute(params)
             return evalResult
+        except Exceptions.EventScriptFailure as e:
+            raise e
         except Exceptions.ScriptError as e:
             raise e
         except Exceptions.NoSuchEntityError as e:

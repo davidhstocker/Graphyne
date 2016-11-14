@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2016-10-20</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfPropertyRestriction>
+		<PropertyRestriction id="PropA_Restriction">
+			<RestrictionMinMaxInteger restrictionMin="10"/>
+			<RestrictionMinMaxInteger restrictionMax="20"/>
+		</PropertyRestriction>
+	</ListOfPropertyRestriction>
+	<ListOfMetaMeme>
+		<MetaMeme id="PropChangeTestMM">	
+			<MetaMemeProperty name="propA" type="integer" restriction="PropA_Restriction" constrained="true"/>
+			<MetaMemeProperty name="propB" type="string"/>
+			<MetaMemeProperty name="propC" type="string"/>
+			<MemberMetaMeme reference="Memetic.DNA.StateEventScript"/>
+		</MetaMeme>
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<Meme id="PropChangeTest" metameme="PropChangeTestMM">
+			<MemeProperty name="propA" value="11"/>
+			<MemeProperty name="propB" value="xyz"/>
+			<MemeProperty name="propC" value="abc"/>
+			<MemberMeme occurrence="1" memberID="PropertyChangeEvent.ValueChangeMirrorSES" />
+			<MemberMeme occurrence="1" memberID="PropertyChangeEvent.IDEchoSES" />
+		</Meme>
+		
+		<Meme id="ValueChangeMirrorScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="PropertyChangeEventTest.EchoPropDelta"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="ValueChangeMirrorSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="propertyChanged"/>
+			<MemeProperty name="PropertyID" value="propA"/>
+			<MemberMeme occurrence="1" memberID="PropertyChangeEvent.ValueChangeMirrorScript" />
+		</Meme>	
+		
+		
+		<Meme id="IDEchoScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="PropertyChangeEventTest.EchoID"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="IDEchoSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="propertyChanged"/>
+			<MemeProperty name="PropertyID" value="propB"/>
+			<MemberMeme occurrence="1" memberID="PropertyChangeEvent.IDEchoScript" />
+		</Meme>	
+	</ListOfMeme>
+	
+	
+</RMLModule>
+
+

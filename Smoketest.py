@@ -3300,7 +3300,7 @@ def testInstallExecutor():
                 returnVal3 = api.evaluateEntity(testEntityID, {"thisWontReturnAnything" : "Hello World"})
                 testResult = "False"
                 errorMsg = ("%Calling TestClass.execute() 'thisWontReturnAnything' in runtime parameter keys should return a keyError exception, but %s was returned instead!\n" %(errorMsg, returnVal2)) 
-            except Exceptions.ScriptError as e:
+            except Exceptions.EventScriptFailure as e:
                 #We should have this result
                 operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, errorMsg]}
 
@@ -3578,7 +3578,7 @@ def testLinkEvent():
         6 - Link the twoLinkEvent.LinkChangeTest entities
         7 - Break the link
     """
-    method = moduleName + '.' + 'testPropertyChangeEvent'
+    method = moduleName + '.' + 'testLinkEvent'
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
 
     resultSet = []
@@ -3715,6 +3715,181 @@ def testLinkEvent():
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
 
+
+
+def testBrokenEvents():
+    """
+        This method tests the SES event handling of broken scripts
+        
+        The first series of tests (execute) runs with a SES script that:
+            1- causes an uncaught KeyError exception
+            2- causes the same KeyError exception, but catches and actively raises it (as an exception)
+            3 - The SES script class has no execute() method 
+            
+        The second series of tests (propertyChanged) runs with a SES script that:
+            1- causes an uncaught KeyError exception
+            2- causes the same KeyError exception, but catches and actively raises it (as an exception)
+            
+        The third series of tests (linkAdd) runs with a SES script that:
+            1- causes an uncaught KeyError exception
+            2- causes the same KeyError exception, but catches and actively raises it (as an exception)
+            
+        The fourth series of tests (linkRemove) runs with a SES script that:
+            1- causes an uncaught KeyError exception
+            2- causes the same KeyError exception, but catches and actively raises it (as an exception)
+         
+    """
+    method = moduleName + '.' + 'testBrokenEvents'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create two entities from LinkEvent.LinkChangeTest. 
+    #Greate three generic entities
+    try:
+        entity0 = Graph.api.createEntityFromMeme("EventFailure.BrokenLinkChangeTest")
+        entity1 = Graph.api.createEntityFromMeme("EventFailure.ThrowsLinkChangeTest")
+        entity2 = Graph.api.createEntityFromMeme("EventFailure.MalformedEvent")
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #execute for all.
+    try:
+        unusedReturnvalue = api.evaluateEntity(entity0)
+        
+        #yes, in this testcase, valid tests throw exceptions
+        testResult = "False"
+        errorMsg = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        erorMessage = "%s  Traceback = %s %s" %(erorMessage, errorMsg, tb)
+        errata.append(erorMessage)  
+    try:
+        unusedReturnvalue = api.evaluateEntity(entity1)
+        testResult = "False"
+        errorMsg = ('Error.  execute event for EventFailure.ThrowsLinkChangeTest should raise an exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        erorMessage = "%s  Traceback = %s %s" %(erorMessage, errorMsg, tb)
+        errata.append(erorMessage) 
+    try:
+        unusedReturnvalue = api.evaluateEntity(entity2)
+        testResult = "False"
+        errorMsg = ('Error.  execute event for EventFailure.MalformedEvent should raise an exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        erorMessage = "%s  Traceback = %s %s" %(erorMessage, errorMsg, tb)
+        errata.append(erorMessage)  
+
+    #propertyChanged.
+    try:
+        unusedReturnvalue = api.setEntityPropertyValue(entity0, "propB", "abc")
+        
+        #yes, in this testcase, valid tests throw exceptions
+        testResult = "False"
+        errorMsg = ('Error.  propertyChanged event for EventFailure.BrokenLinkChangeTest should raise an exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        erorMessage = "%s  Traceback = %s %s" %(erorMessage, errorMsg, tb)
+        errata.append(erorMessage)   
+    try:
+        unusedReturnvalue = api.setEntityPropertyValue(entity1, "propB", "abc")
+        testResult = "False"
+        errorMsg = ('Error.  propertyChanged event for EventFailure.ThrowsLinkChangeTest should raise an exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        erorMessage = "%s  Traceback = %s %s" %(erorMessage, errorMsg, tb)
+        errata.append(erorMessage) 
+
+    #linkAdd
+    try:
+        unusedReturnvalue = api.addEntityLink(entity0, entity1)
+        
+        #yes, in this testcase, valid tests throw exceptions
+        testResult = "False"
+        errorMsg = ('Error.  linkAdd event for EventFailure.BrokenLinkChangeTest should raise an exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorMsg = str(fullerror[1])
+        tb = sys.exc_info()[2]
+        erorMessage = "%s  Traceback = %s %s" %(erorMessage, errorMsg, tb)
+        errata.append(erorMessage)  
+
+    #linkRemove
+    try:
+        unusedReturnvalue = api.removeEntityLink(entity0, entity1)
+        
+        #yes, in this testcase, valid tests throw exceptions
+        testResult = "False"
+        errorMsg = ('Error.  linkRemove event for EventFailure.BrokenLinkChangeTest should raise an exception, but did not!')
+        errata.append(errorMsg)
+    except Exceptions.EventScriptFailure as e:
+        pass
+    except Exception as e:
+        testResult = "False"
+        erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
+        fullerror = sys.exc_info()
+        errorID = str(fullerror[0])
+        errorMsg = str(fullerror[1])
+        erorMessage = "%s  Traceback = %s" %(erorMessage, errorMsg)
+        tb = sys.exc_info()[2]
+        raise Exceptions.EventScriptFailure(errorMsg).with_traceback(tb)
+        errata.append(erorMessage)  
+        
+    testcase = "testLinkEvent()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
    
 
 
@@ -4295,6 +4470,11 @@ def runTests(css):
     testSetData = testLinkEvent()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Link Event", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #testBrokenEvents
+    testSetData = testBrokenEvents()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Broken Event", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2016-10-20</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="BrokenEventsMM">	
+			<MetaMemeProperty name="propB" type="string"/>
+			<MemberMetaMeme reference="Memetic.DNA.StateEventScript"/>
+		</MetaMeme>
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<!-- Simply broken -->
+		<Meme id="BrokenLinkChangeTest" metameme="BrokenEventsMM">
+			<MemeProperty name="propB" value="xyz"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenExecuteSES" />
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenLinkChangeAddedSES" />
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenLinkChangeRemovedSES" />
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenPropertySES" />
+		</Meme>
+		
+		<Meme id="BrokenScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="EventFailure.BrokenScript"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		
+		<Meme id="BrokenLinkChangeAddedSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkAdd"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
+		</Meme>	
+
+		<Meme id="BrokenLinkChangeRemovedSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkRemove"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
+		</Meme>	
+		
+		<Meme id="BrokenExecuteSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="execute"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
+		</Meme>
+		
+		<Meme id="BrokenPropertySES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="propertyChanged"/>
+			<MemeProperty name="PropertyID" value="propB"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
+		</Meme>
+		
+		
+		
+		
+		<!-- Actively throws an exception during events -->
+		<Meme id="ThrowsLinkChangeTest" metameme="BrokenEventsMM">
+			<MemeProperty name="propB" value="xyz"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsExecuteSES" />
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsLinkChangeAddedSES" />
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsLinkChangeRemovedSES" />
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsPropertySES" />
+		</Meme>
+		
+		<Meme id="ThrowsScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="EventFailure.ThrowsException"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		
+		<Meme id="ThrowsLinkChangeAddedSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkAdd"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
+		</Meme>	
+
+		<Meme id="ThrowsLinkChangeRemovedSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkRemove"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
+		</Meme>	
+		
+		<Meme id="ThrowsExecuteSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="execute"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
+		</Meme>
+		
+		<Meme id="ThrowsPropertySES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="propertyChanged"/>
+			<MemeProperty name="PropertyID" value="propB"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
+		</Meme>	
+		
+		
+		<!-- Actively throws an exception during events -->
+		<Meme id="MalformedEvent" metameme="BrokenEventsMM">
+			<MemeProperty name="propB" value="xyz"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsExecuteSES" />
+		</Meme>
+		
+		<Meme id="MalformedEventScript" metameme="Memetic.DNA.Script">
+			<MemeProperty name="Script" value="EventFailure.NotAStateEventScript"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		
+		<Meme id="MalformedEventSES" metameme="Memetic.DNA.StateEventScript">
+			<MemeProperty name="State" value="linkAdd"/>
+			<MemberMeme occurrence="1" memberID="EventFailure.MalformedEventScript" />
+		</Meme>	
+
+	</ListOfMeme>
+	
+	
+</RMLModule>
