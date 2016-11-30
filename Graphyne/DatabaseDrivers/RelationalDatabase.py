@@ -1440,15 +1440,16 @@ class LinkRepository(object):
             #Now filter the removal list by traverseParameters
             #if traverseParameters is not empty, then filter it according to the rules in the traverseParameters 
             linksToBeRemoved = []
-            if (len(traverseParameters) < 1):
-                linksToBeRemoved = linkList[0]
-            else:
-                for link in linkList:
-                    for traverseParameter in traverseParameters:
-                        #Graph.TraverseParameter has three attributes: operator, parameter and value
-                        attributeTest = self.testLinkForAttribute(link, traverseParameter.parameter, traverseParameter.value, traverseParameter.operator)
-                        if attributeTest is True:
-                            linksToBeRemoved.append(link)
+            if len(linkList) > 0:
+                if (len(traverseParameters) < 1):
+                    linksToBeRemoved = linkList[0]
+                else:
+                    for link in linkList:
+                        for traverseParameter in traverseParameters:
+                            #Graph.TraverseParameter has three attributes: operator, parameter and value
+                            attributeTest = self.testLinkForAttribute(link, traverseParameter.parameter, traverseParameter.value, traverseParameter.operator)
+                            if attributeTest is True:
+                                linksToBeRemoved.append(link)
                         
             #Don't forget to remove the links from the main index
             try:

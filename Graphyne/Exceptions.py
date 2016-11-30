@@ -95,6 +95,10 @@ class MemeMemberCardinalityError(ValueError):
     """A meme's membership roll violates the cardinality rules of its parent metameme"""
     pass
 
+class EntityPropertyMissingValueError(ValueError):
+    """An entity has been asked to provide a value for a property that it does not have"""
+    pass
+
 class EntityPropertyValueTypeError(ValueError):
     """An entity's property has been asked to assign a value of the wrong type"""
     pass

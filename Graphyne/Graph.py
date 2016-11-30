@@ -2583,15 +2583,15 @@ class Entity(object):
                 logQ.put( [logType , logLevel.WARNING , method , ex])
                 raise Exceptions.EntityInitializationError(ex).with_traceback(tb)
 
-            
+        initParams = {} #the params dict for the initi event is empty   
         if self.initScript is not None:
             try:
-                self.initScript.execute(self.uuid)
+                self.initScript.execute(self.uuid, initParams)
             except Exception as e:
                 errorMsg = "Error executing the initialization state event script of entity %s from meme %s" %(self.uuid, self.memePath.fullTemplatePath)
                 logQ.put( [logType , logLevel.WARNING , method , errorMsg])
                 #For debugging
-                self.initScript.execute(self.uuid)
+                self.initScript.execute(self.uuid, initParams)
         self.isInitialized = True     
                 
 
@@ -3425,11 +3425,15 @@ class Entity(object):
         prop = None
         #Just peel off the very last entry after the last dot.  It is our property name
         if splitPropPath[0] == '':
-            prop = self.properties[fullPropPath] 
-            try:
-                value = prop.value
-            except:
-                value = None
+            if fullPropPath in self.properties:
+                prop = self.properties[fullPropPath] 
+                try:
+                    value = prop.value
+                except:
+                    value = None
+            else:
+                errorMsg = "Entity %s of type %s was asked to provide the value of property '%s', but it has no such property" %(self.uuid, self.memePath.fullTemplatePath, fullPropPath)
+                raise Exceptions.EntityPropertyMissingValueError(errorMsg)
         else:
             #if there is a tuple and an entry for splitPropPath[2], then we can find the entity
             #    associated with splitPropPath[0]
@@ -3545,7 +3549,7 @@ class Entity(object):
                     params['newVal'] = proposedNewValue
                     if fullPropPath in self.propertyChangeEvents:
                         ses = self.propertyChangeEvents[fullPropPath]
-                        returnValue = ses.execute([self.uuid, params])
+                        returnValue = ses.execute(self.uuid, params)
                         unusedCatch = "me"
                 except Exception as e:
                     templateProperty.value = []
@@ -3569,7 +3573,7 @@ class Entity(object):
                     params['newVal'] = proposedNewValue[0]
                     if fullPropPath in self.propertyChangeEvents:
                         ses = self.propertyChangeEvents[fullPropPath]
-                        returnValue = ses.execute([self.uuid, params])
+                        returnValue = ses.execute(self.uuid, params)
                         unusedCatch = "me"
                 except Exception as e:
                     templateProperty.value = []
@@ -3942,7 +3946,7 @@ class addEntityLink(object):
                     linkParams = {"sourceEntityID" : params[0], "targetEntityID" : params[1], "membershipType" : params[3], "linkAttributes": params[2]}
                     if hasattr(entity0, 'linkAdd'):
                         try:
-                            sesScriptReturn = entity0.linkAdd.execute([params[0], linkParams])
+                            sesScriptReturn = entity0.linkAdd.execute(params[0], linkParams)
                             returnArray.append(sesScriptReturn)
                         except Exception as e:
                             fullerror = sys.exc_info()
@@ -3964,7 +3968,7 @@ class addEntityLink(object):
                         returnArray.append(None)
                     if hasattr(entity1, 'linkAdd'):
                         try:
-                            sesScriptReturn = entity1.linkAdd.execute([params[1], linkParams])
+                            sesScriptReturn = entity1.linkAdd.execute(params[1], linkParams)
                             returnArray.append(sesScriptReturn)
                         except Exception as e:
                             fullerror = sys.exc_info()
@@ -4257,6 +4261,8 @@ class getEntityPropertyValue(object):
                 entity.entityLock.acquire(True)
                 try:
                     returnVal = entity.getPropertyValue(params[1])
+                except Exceptions.EntityPropertyMissingValueError as e:
+                    raise e
                 except Exception as e:
                     raise e                
                 finally:
@@ -4266,8 +4272,15 @@ class getEntityPropertyValue(object):
                 raise Exceptions.ScriptError(ex)
         
         except Exception as e:
-            ex = "Function getEntityPropertyValue failed.  Traceback = %s" %e
-            raise Exceptions.ScriptError(ex)
+            fullerror = sys.exc_info()
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            try:
+                entity = self.getEntity(params[0])
+                ex = "Function getEntityPropertyValue failed. on entitty of type %s.  Details: (%s, %s, %s, %s, %s).  Traceback = %s" %(entity.memePath.fullTemplatePath, params[0], params[1], params[2], params[3], params[4], errorMsg)
+            except Exception as e:
+                ex = "Function getEntityPropertyValue failed. on entitty of unknown type.  Details: (%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  Traceback = %s" %(params[0], params[1], params[2], params[3], params[4], errorMsg)   
+            raise Exceptions.ScriptError(ex).with_traceback(tb)
         return returnVal
     
     
@@ -4594,7 +4607,7 @@ class removeEntityLink(object):
             linkParams = {"sourceEntityID" : params[0], "targetEntityID" : params[1]}
             if hasattr(entity0, 'linkRemove'):
                 try:
-                    sesScriptReturn = entity0.linkRemove.execute([params[0], linkParams])
+                    sesScriptReturn = entity0.linkRemove.execute(params[0], linkParams)
                     returnArray.append(sesScriptReturn)
                 except Exception as e:
                     try:
@@ -4616,7 +4629,7 @@ class removeEntityLink(object):
                 returnArray.append(None)
             if hasattr(entity1, 'linkRemove'):
                 try:
-                    sesScriptReturn = entity1.linkRemove.execute([params[1], linkParams])
+                    sesScriptReturn = entity1.linkRemove.execute(params[1], linkParams)
                     returnArray.append(sesScriptReturn)
                 except Exception as e:
                     try:
@@ -4721,17 +4734,19 @@ class removeEntityTaxonomy(object):
     
     
 class evaluateEntity(object):
-    def execute(self, params):
+    def execute(self, uuidVal, params):
         returnVal = None
         try:
-            uuidVal = params[0]
-            
             #Evaluate entity is called with five params: 
             #    entityUUID, runtimeVariables, ActionID = None, Subject = None, Controller = None, supressInit = False
             #It must in turn call getEntity.execute(), which has also has four params in a different layout.  
             #    The runtimeVariables at position 1 is stripped out
-            retreiveParams = copy.copy(params)
-            retreiveParams.__delitem__(1)
+            retreiveParams = []
+            retreiveParams.append(params["entityID"])
+            retreiveParams.append(params["actionID"])
+            retreiveParams.append(params["subjectID"])
+            retreiveParams.append(params["objectID"])
+            retreiveParams.append(params["supressInit"])
             
             entityClass = getEntity() 
             entity = entityClass.execute(retreiveParams)
@@ -4742,19 +4757,19 @@ class evaluateEntity(object):
                     entity.execScript.entityLock.acquire(True)
                     try:
                         #Do proper exception handling
-                        returnVal = entity.execScript.execute(params)
+                        returnVal = entity.execScript.execute(uuidVal, params)
                     except Exception as e:
                         fullerror = sys.exc_info()
                         errorID = str(fullerror[0])
                         errorMsg = str(fullerror[1])
                         tb = sys.exc_info()[2]
                         try:
-                            scriptLoc = getScriptLocation(params[1], "execScript")
+                            scriptLoc = getScriptLocation(uuidVal, "execScript")
                         except Exception as e:
                             innerFullerror = sys.exc_info()
                             innerErrorMsg = str(innerFullerror[1])
                             scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg
-                        errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during linkRemove event."  %(entity.memePath.fullTemplatePath, scriptLoc)
+                        errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during evaluate event."  %(entity.memePath.fullTemplatePath, scriptLoc)
                         errorMessage = "%s  Entity is target." %(errorMessage)
                         errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
                         logQ.put( [logType , logLevel.WARNING , "Graph.EvaluateEntity.execute" , errorMessage])
@@ -7206,14 +7221,22 @@ class API(object):
             params = [entityUUID, propertyName, ActionID, Subject, Controller]
             value = self._getEntityPropertyValue.execute(params)
             return value
+        except Exceptions.EntityPropertyMissingValueError as e:
+            fullerror = sys.exc_info()
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
         except Exception as e:
             exception = None
+            fullerror = sys.exc_info()
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
             try:
                 entity = self.getEntity(entityUUID)
-                exception = "Action on %s entity: getEntityPropertyValue(%s, %s, %s, %s, %s) traceback = %s" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller, e)
+                exception = "Action on %s entity: getEntityPropertyValue(%s, %s, %s, %s, %s)" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller)
             except Exception as e:
-                exception = "Action on entity of unknown type: getEntityPropertyValue(%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  traceback = %s" %(entityUUID, propertyName, ActionID, Subject, Controller, e)
-            raise Exceptions.ScriptError(exception)             
+                exception = "Action on entity of unknown type: getEntityPropertyValue(%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository." %(entityUUID, propertyName, ActionID, Subject, Controller)
+            raise Exceptions.ScriptError(exception).with_traceback(tb)          
 
 
 
@@ -7606,11 +7629,11 @@ class API(object):
         If it is a fully resolved path that is passed and the entity does not exist yet (i.e. the meme is not a singleton),
             then this method will also force its creation.   
         supressInit determines whether or not to initialize entities that are created for evaluation """    
-    def evaluateEntity(self, entityUUID, runtimeVariables = {}, ActionID = None, Subject = None, Controller = None, supressInit = False):
+    def evaluateEntity(self, entityUUID, runtimeVariables = {}, actionID = None, subjectID = None, objectID = (), supressInit = False):
         try:
             #ToDo - fully resolved path of singleton still broken here
-            params = [entityUUID, runtimeVariables, ActionID, Subject, Controller, supressInit]
-            evalResult = self._evaluateEntity.execute(params)
+            params = {"entityID" : entityUUID, "runtimeVariables" : runtimeVariables, "actionID":actionID, "subjectID":subjectID, "objectID":objectID, "supressInit":supressInit}
+            evalResult = self._evaluateEntity.execute(entityUUID, params)
             return evalResult
         except Exceptions.EventScriptFailure as e:
             raise e

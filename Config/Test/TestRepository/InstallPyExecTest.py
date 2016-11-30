@@ -13,16 +13,16 @@ class TestClass(threading.Thread):
         self.meme = path
         self.entityLock = threading.RLock()
         
-    def execute(self, params):
+    def execute(self, entityID, params):
         ''' 
-            Return a string, based on the content of runtimeVariables (params[1])
+            Return a string, based on the content of runtimeVariables (params["runtimeVariables"])
         '''
         # If param is not empty, then return params[0]
         # Else return the meme path
         
-        if len(params[1]) == 0:
+        if len(params['runtimeVariables']) == 0:
             return self.meme
-        elif "returnMe" in params[1]:
-            return params[1]["returnMe"]
+        elif "returnMe" in params['runtimeVariables']:
+            return params['runtimeVariables']["returnMe"]
         else:
             raise KeyError

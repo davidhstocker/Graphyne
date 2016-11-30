@@ -1881,7 +1881,11 @@ def testNumericValue(filename):
             entityIDList = api.getEntitiesByMemeType(stringArray[0])
             for entityIDListEntry in entityIDList:
                 entityID = entityIDListEntry
-            numberList = api.evaluateEntity(entityID, testArgumentMap)
+            numberListS = api.evaluateEntity(entityID, testArgumentMap)
+            numberList = []
+            for numberString in numberListS:
+                dec = decimal.Decimal(numberString)
+                numberList.append(dec)
             argAsDecimal = decimal.Decimal(stringArray[1])
             if argAsDecimal in numberList:
                 testResult = True
@@ -2013,7 +2017,7 @@ def testCondition(filename):
         entityIDList = api.getEntitiesByMemeType(stringArray[0])
         for entityIDListEntry in entityIDList:
             subjectID = entityIDListEntry
-            testArgumentMap = {'subjectID' : subjectID, 'objectID': subjectID, stringArray[2] : stringArray[1]}
+            testArgumentMap = {stringArray[2] : stringArray[1]}
         try:
             testArgumentMap[stringArray[4]] = stringArray[3]
         except:
@@ -2072,15 +2076,12 @@ def testAACondition(filename):
         subjectID = api.createEntityFromMeme(stringArray[1])
         objectID = None
         try:
-            objectID = api.createEntityFromMeme(stringArray[2])
+            objectID = Graph.api.createEntityFromMeme(stringArray[2])
         except:
             pass
 
-        testArgumentMap['subjectID'] = subjectID
         if objectID is None:
-            testArgumentMap['objectID'] = subjectID
-        else:
-            testArgumentMap['objectID'] = objectID
+            objectID = subjectID
             
         try:
             del testArgumentMap['XXX']
@@ -2089,7 +2090,10 @@ def testAACondition(filename):
         
         testResult = False
         try:
-            testResult = api.evaluateEntity(stringArray[0], testArgumentMap)
+            entityIDList = api.getEntitiesByMemeType(stringArray[0])
+            for entityIDListEntry in entityIDList:
+                cEntityID = entityIDListEntry
+            testResult = api.evaluateEntity(cEntityID, testArgumentMap, None, subjectID, objectID)
         except Exception as e:
             errorMsg = ('Error!  Traceback = %s' % (e) )
             errata.append(errorMsg)

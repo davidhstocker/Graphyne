@@ -31,13 +31,12 @@ __author__ = 'David Stocker'
 # ***** END GPL LICENCE BLOCK *****
 # --------------------------------------------------------------------------
 
-class ConditionTrueOrFalse(object):
+import Graphyne.Scripting
 
-    def __init__(self, dtParams = None, rtParams = None):
-        self.dtParams = dtParams
-        self.rtParams = rtParams   
-        
-    def execute(self, params):
+
+class ConditionTrueOrFalse(Graphyne.Scripting.StateEventScript):
+
+    def execute(self, entityID, argumentMap):
         #All this script does is check the passed parameter argument map (as if the condition has a 
         # simple argument - see ConditionSet.execute() in condition.py) for an entry called "TestValue".
         # If it is present and True, then return True.  Otherwise (no argument map, argument map present, 
@@ -45,14 +44,12 @@ class ConditionTrueOrFalse(object):
         # return False.
         returnValue = False
         try:
-            if type({}) == type(params[1]): 
-                argumentMap = params[1]
-                try:
-                    passedParam = argumentMap[u"TestValue"]
-                    if passedParam.upper() == u"TRUE":
-                        returnValue = True
-                except:
-                    pass
+            try:
+                passedParam = argumentMap['runtimeVariables'][u"TestValue"]
+                if passedParam.upper() == u"TRUE":
+                    returnValue = True
+            except:
+                pass
         except:
             pass
         return returnValue

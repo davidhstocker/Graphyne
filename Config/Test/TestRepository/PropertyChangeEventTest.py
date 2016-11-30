@@ -11,20 +11,20 @@ class EchoPropDelta(Graphyne.Scripting.StateEventScript):
         This class tests the property change event.  It returns the old and new values.
     """
         
-    def execute(self, params):
+    def execute(self, entityID, params):
         ''' 
             Return a string, based on the content of runtimeVariables (params[2])
         '''
         # If param is not empty, then return params[0]
         # Else return the meme path
         
-        if "oldVal" in params[1]:
-            oldVal =  params[1]["oldVal"]
+        if "oldVal" in params:
+            oldVal =  params["oldVal"]
         else:
             raise KeyError
         
-        if "newVal" in params[1]:
-            newVal =  params[1]["newVal"]
+        if "newVal" in params:
+            newVal =  params["newVal"]
         else:
             raise KeyError
         
@@ -40,8 +40,8 @@ class EchoID(Graphyne.Scripting.StateEventScript):
     
     className = "Echo"
         
-    def execute(self, params):
+    def execute(self, entityID, params):
         ''' 
             Return the uuid of the calling entity
         '''
-        return "%s" %(params[0])
+        return "%s" %(entityID)

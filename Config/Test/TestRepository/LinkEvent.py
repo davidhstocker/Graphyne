@@ -11,26 +11,25 @@ class LinkAdded(Graphyne.Scripting.StateEventScript):
         This class tests the property change event.  It returns the old and new values.
     """
         
-    def execute(self, params):
+    def execute(self, selfUUID, params):
         ''' 
            Echo the string "Added <uuid> as link <source/target> for <counterpartUUID>"
            
         '''
-        selfUUID = params[0]
         sourceEntityID = None
         targetEntityID = None
         st = "source"
         counterpart = None
         
         
-        if "sourceEntityID" in params[1]:
-            sourceEntityID =  params[1]["sourceEntityID"]
+        if "sourceEntityID" in params:
+            sourceEntityID =  params["sourceEntityID"]
             
         else:
             raise KeyError
         
-        if "targetEntityID" in params[1]:
-            targetEntityID =  params[1]["targetEntityID"]
+        if "targetEntityID" in params:
+            targetEntityID =  params["targetEntityID"]
             if selfUUID == targetEntityID:
                 st = "target"
         else:
@@ -53,26 +52,25 @@ class LinkRemoved(Graphyne.Scripting.StateEventScript):
     
     className = "Echo"
         
-    def execute(self, params): 
+    def execute(self, selfUUID, params): 
         ''' 
            Echo the string "Removed <uuid> as link <source/target> for <counterpartUUID>"
            
         '''
-        selfUUID = params[0]
         sourceEntityID = None
         targetEntityID = None
         st = "source"
         counterpart = None
         
         
-        if "sourceEntityID" in params[1]:
-            sourceEntityID =  params[1]["sourceEntityID"]
+        if "sourceEntityID" in params:
+            sourceEntityID =  params["sourceEntityID"]
             
         else:
             raise KeyError
         
-        if "targetEntityID" in params[1]:
-            targetEntityID =  params[1]["targetEntityID"]
+        if "targetEntityID" in params:
+            targetEntityID =  params["targetEntityID"]
             if selfUUID == targetEntityID:
                 st = "target"
         else:

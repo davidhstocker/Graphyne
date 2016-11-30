@@ -32,7 +32,7 @@ class StateEventScript(threading.Thread):
     def setState(self, propertyID):
         self.propertyID = propertyID
         
-    def execute(self, params):
+    def execute(self, entityID, params):
         """
             Override this method to implement the execute
         """

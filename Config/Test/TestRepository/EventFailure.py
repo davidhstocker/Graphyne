@@ -12,7 +12,7 @@ class BrokenScript(Graphyne.Scripting.StateEventScript):
         Do something not allowed and cause an exception
     """
         
-    def execute(self, params):
+    def execute(self, entityID, params):
             aDict = {"a": 1}
             unusedB = aDict["b"] #this should raise an exception
             
@@ -23,7 +23,7 @@ class ThrowsException(Graphyne.Scripting.StateEventScript):
         Like BrokenScript, but should catch and raise the exception
     """
         
-    def execute(self, params):
+    def execute(self, entityID, params):
       
         try:
             aDict = {"a": 1}
