@@ -337,7 +337,7 @@ Graphyne supports a mechanism for tying scripts to entity life cycle events.  Th
 
 If we want to add event to an entity, we have to consider three things.  Firstly, we need to be able to declare which language the script is written in.  Secondly, we need to declare which event it is and lastly, we need the location of the file containing the script.
 
-### How Graphyne handles state event scripts
+### How Graphyne handles state event script memes
 
 When a schema designer wants to add a state event script to a meme, she does so by creating a chain of entities as diagramed in the picture, below.  Firstly, there is a parent meme.  It is the entities of this meme which will eventually be “executable”.  Secondly, there are 0..n child memes that extend *Memetic.DNA.StateEventScript*.  Each of these has a *State* property, with restriction type *Memetic.StateEventType*.  Each *Memetic.DNA.StateEventScript* derived meme has a *Memetic.DNA.Script* derived child meme.  This meme in turn has a *Script* property, which points to a filesystem location.  If the event type is execute, then it can be called at any time, with the **evaluateEntity()** api method.  The others are internal events, tied to the life cycle of an entity.
 
@@ -375,20 +375,34 @@ The StateEventScript and Script memes are instantiated as entities in the graph,
 
 ![][image-14]
 
-Below is a template example for such a script class.  Its init method is expected to take two params; self and a dictionary, containing any runtime parameters.  The runtime parameters are optional when calling evaluateEntity(), as it has an empty dictionary as a default parameter.  When creating the execute() method however, this parameter is mandatory, or a Python **TypeError** will be thrown.  This will surface as a Graphyne **Exceptions.ScriptError **exception, with Python 3 raise… from… nesting information about the **TypeError**.
+###State Event Script Python code
 
-```python
-class SomeClassName(object):
+The actual state event "scripts" themselves are python classes that have an execute() method.  When the entity is bootstrapped,  this class is instantiated and added as a callable object on the entity, which is then manually called via the graph api (as in the case of the execute event) or triggered automatically in the case of the other events.
 
-def __init__(self, rtParams = None):
-pass  
-
-def execute(self, params):
-return None e
-```
-
+Writing SES script python code is easy.  If you want to write a state event script class, you will need the following:    
+- import Graphyne.Scripting in the module containing your class.
+- import Graph.api, if you plan on accessing the graph api.
+- Your class should extend **StateEventScript** (from Graphyne.Scripting).  
+- **Do not** override the __init__() method.  That is triggered behind the scenes during bootstrapping of the entity.
+- Override the execute() method.  This is where your scripting goes.  This method will always be called with two positional parameters at runtime; UUID (as a string) of the entity at position 0 and a dictionary at position 1.
+- There are no restrictions on what the execute() method returns.
   
 
+Below is an example for such a script class.
+
+```python
+import Graphyne.Scripting
+import Graph.api
+
+class SomeClassName(Graphyne.Scripting.StateEventScript): 
+
+def execute(self, entityID, params):
+    return None
+```
+
+If the SES script raises an exception, it will be caught by Graphyne and raised as a **Exceptions.EventScriptFailure** exception, along with Python 3 raise… from… nesting information about the inner exception.  Note that if an exception is called during a Graph.api call, the nested exception will probably be of type **Exceptions.ScriptError**.
+  
+The **params** dictionary object has event specific keys.  These are documented in detail in the Graph Event Scripting Parameter Reference.
 
 
 
