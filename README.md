@@ -402,7 +402,7 @@ def execute(self, entityID, params):
 
 If the SES script raises an exception, it will be caught by Graphyne and raised as a **Exceptions.EventScriptFailure** exception, along with Python 3 raise… from… nesting information about the inner exception.  Note that if an exception is called during a Graph.api call, the nested exception will probably be of type **Exceptions.ScriptError**.
   
-The **params** dictionary object has event specific keys.  These are documented in detail in the Graph Event Scripting Parameter Reference.
+The **params** dictionary object has event specific keys.  These are documented in detail in the [Graph Event Scripting Parameter Reference][16].
 
 
 
@@ -424,6 +424,8 @@ The **params** dictionary object has event specific keys.  These are documented 
 [13]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#implicit-memes
 [14]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#back-references
 [15]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#evaluateEntity
+[16]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/GraphEventScriptingParameterReference.md
+
 
 [image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ChildMemes.png
 [image-2]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/SingletonBridge.png
