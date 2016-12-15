@@ -3542,7 +3542,8 @@ class Entity(object):
             #    then go ahead and set the value
             # If it is not a list, then property.value will have a length of 0 or 1, depending on whether it has a value or not
             oldValue = copy.copy(templateProperty.value)  #When firing propertyChanged events, we pass both the old and new values
-            params = {'oldVal' : oldValue}
+            stringID = "%s" %self.uuid
+            params = {'oldVal' : oldValue, 'entityID' : stringID}
             returnValue = None
             if templateProperty.propertyType == entityPropTypes.List:
                 try:
@@ -3629,7 +3630,7 @@ class Entity(object):
                     else:
                         errorMessage = "%s entity unable to initialize propertyChanged state event script %s.%s, as no property has been assigned."  %(self.memePath, mName, cName)
                         raise Exceptions.StateEventScriptInitError(errorMessage)
-            except Exception:
+            except Exception as e:
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
                 errorID = str(fullerror[0])
@@ -3764,7 +3765,7 @@ class execStateEventScript(object):
             elif (params[1] == 2):
                 try:
                     if entity.terminateScript is not None: testMe = True
-                except: return returnVal #no init script installed
+                except: return returnVal #no terminate script installed
                 if testMe == True:
                     returnVal = entity.terminateScript.execute(params)
             else:
@@ -4016,16 +4017,39 @@ class addEntityLink(object):
 class destroyEntity(object):
     ''' Two params: entity, drillDown (optional, default True)'''
     def execute(self, params):
+        method = moduleName + '.' +  'destroyEntity' + '.execute'
         global entityRepository
         
         drillDown = True
         if len(params) == 2:
             drillDown = params[1]
         try:
+            returnData = None
             entity = entityRepository.getEntity(params[0])
             if entity.depricated != True:
                 entity.entityLock.acquire(True)
                 try:
+                    entityID = "%s" %entity.uuid
+                    if hasattr(entity, 'terminateScript'):
+                        if entity.terminateScript is not None:
+                            try:
+                                returnData = entity.terminateScript.execute(entity.uuid, {})
+                            except Exception as e:
+                                fullerror = sys.exc_info()
+                                errorID = str(fullerror[0])
+                                errorMsg = str(fullerror[1])
+                                tb = sys.exc_info()[2]
+                                try:
+                                    scriptLoc = getScriptLocation(entityID, "terminateScript")
+                                except Exception as e:
+                                    innerFullerror = sys.exc_info()
+                                    innerErrorMsg = str(innerFullerror[1])
+                                    scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg 
+                                errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during destroyEntity event."  %(entity.memePath.fullTemplatePath, scriptLoc)
+                                errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
+                                logQ.put( [logType , logLevel.WARNING , method , errorMessage])
+                                raise Exceptions.EventScriptFailure(errorMessage).with_traceback(tb)
+                    
                     nearestNeighbors = api.getLinkCounterpartsByType(params[0], "*")
                     
                     # depricate the entity
@@ -4069,6 +4093,7 @@ class destroyEntity(object):
             else:
                 ex = "Entity %s has been archived and is no longer available" %params[1]
                 raise Exceptions.ScriptError(ex)
+            return returnData
         except Exception as e:
             ex = "Function destroyEntity failed.  Traceback = %s" %e
             raise Exceptions.ScriptError(ex)
@@ -7077,7 +7102,8 @@ class API(object):
     def destroyEntity(self, entityUUID):
         try: 
             params = [entityUUID]
-            entity = self._destroyEntity.execute(params)
+            returnvalue = self._destroyEntity.execute(params)
+            return returnvalue
         except Exception as e:
             exception = None
             try:

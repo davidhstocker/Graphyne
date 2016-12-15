@@ -289,7 +289,7 @@ Graphyne can use the Memetic package as its default repository.  Memetic has a p
 If you are using [implicit memes][13], there are a couple of things that need to be done in order for this to work.  Firstly, there needs to be an SQL table for each meme and secondly, the graph has to be directed to use that database as its persistence.  
 
 
-## Bootstrap Process
+## Graph Bootstrap Process
 
 When Graph.startDB() is executed, this is the bootstrap order:
 1. All repositories are walked, python paths are updated and templates are indexed.
@@ -301,6 +301,18 @@ When Graph.startDB() is executed, this is the bootstrap order:
 7. Memes are now validated against their metamemes.  The results are published in //\<userhomedir\>/Graphyne/GraphyneValidationStatus.html.  If the Memetic content is buggy, this is a good place to start working the problem.
 8. Any entities stored in database persistence are now re-instated into the catalog.
 9. Any singleton memes are instantiated, if they were not already re-instantiated from persistence.
+
+
+## Entity Bootstrap Process
+
+Whenever a new entity is created, there is a five step process that it undergoes, before it is live in the graph.  
+1. A "stub" version of the entity is created from the meme, containing only the meme and metameme related metadata and the new entity's ID.
+2. If the meme has child memes, then those entities will also be ordered created now.
+3. Any entities created in step two are now linked.
+4. Any properties defined in the meme are now added to the entity.
+5. The initialize SES event script - if there is any - is now executed.
+
+
 
 # Memetic Scripting
 
@@ -333,7 +345,7 @@ Graphyne supports a mechanism for tying scripts to entity life cycle events.  Th
 **terminate** - triggered when an entity is deprecated or deleted.
 **linkAdd** - triggered when an entity is on either end of a new link.
 **linkRemove** - triggered when a link that joins the entity is removed.
-**propertiesChanged** - triggered whenever the properties of an entity are changed.
+**propertyChanged** - triggered whenever the properties of an entity are changed.
 
 If we want to add event to an entity, we have to consider three things.  Firstly, we need to be able to declare which language the script is written in.  Secondly, we need to declare which event it is and lastly, we need the location of the file containing the script.
 
@@ -385,6 +397,7 @@ Writing SES script python code is easy.  If you want to write a state event scri
 - Your class should extend **StateEventScript** (from Graphyne.Scripting).  
 - **Do not** override the __init__() method.  That is triggered behind the scenes during bootstrapping of the entity.
 - Override the execute() method.  This is where your scripting goes.  This method will always be called with two positional parameters at runtime; UUID (as a string) of the entity at position 0 and a dictionary at position 1.
+- The dictionary object at position 1 has content that may be useful in handling the event script.  It has [event specific keys][16].
 - There are no restrictions on what the execute() method returns.
   
 
@@ -392,7 +405,7 @@ Below is an example for such a script class.
 
 ```python
 import Graphyne.Scripting
-import Graph.api
+import Graphyne.Graph
 
 class SomeClassName(Graphyne.Scripting.StateEventScript): 
 

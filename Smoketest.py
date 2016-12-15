@@ -3894,6 +3894,110 @@ def testBrokenEvents():
     Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
+
+
+def testInitializeEvent():
+    """
+        Create one entity from EventInitRemove.InitRemoveEventTest. 
+        Greate three generic entities
+        
+        1 - Check that it has an AProp property and its value is 'Hello'
+        
+        The meme has no proeprties, but the initialize event script adds the AProp property
+    """
+    method = moduleName + '.' + 'testInitializeEvent'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create two entities from LinkEvent.LinkChangeTest. 
+    #Greate three generic entities
+    try:
+        theEntity = Graph.api.createEntityFromMeme("EventInitRemove.InitRemoveEventTest")
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entity!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #1 - Link the a LinkEvent.LinkChangeTest entitiy with a generic one, with LinkChangeTest as the source
+    try:
+        retrunValue = api.getEntityPropertyValue(theEntity, "AProp")
+        if retrunValue != "Hello": 
+            testResult = "False"
+            errorMsg = 'The initialize event script, EventInitRemove.OnInitialize, should add a property called AProp to EventInitRemove.InitRemoveEventTest and its value should be "Hello".  It is actually "%s" !\n' %(retrunValue)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error in initialze event script!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+        
+    testcase = "testInitializeEvent()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+
+def testRemoveEvent():
+    """
+        Locate the EventInitRemove.InitRemoveEventTest entity created in testInitializeEvent(). (it should be singular) 
+        Delete it
+        
+        1 - Check that delete script return value is 'Hello World'
+        
+        The meme has no proeprties, but the initialize event script adds the AProp property
+    """
+    method = moduleName + '.' + 'testInitializeEvent'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create two entities from LinkEvent.LinkChangeTest. 
+    #Greate three generic entities
+    try:
+        theEntities = Graph.api.getEntitiesByMemeType("EventInitRemove.InitRemoveEventTest")
+        if len(theEntities) != 1: 
+            testResult = "False"
+            errorMsg = 'One EventInitRemove.InitRemoveEventTest entity was created in the graph, during testInitializeEvent().  There can be only one!  There are actually %s ' %(len(theEntities))
+        else:
+            theEntity = theEntities[0]
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error locating entity!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    #1 - Link the a LinkEvent.LinkChangeTest entitiy with a generic one, with LinkChangeTest as the source
+    try:
+        destroyReturn = api.destroyEntity(theEntity)
+        if destroyReturn != "Hello World": 
+            testResult = "False"
+            errorMsg = 'The terminate event script, EventInitRemove.OnDelete, should return "Hello World".  It actually returned "%s" !\n' %(destroyReturn)
+
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error in terminate event script!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+        
+    testcase = "testRemoveEvent()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
    
 
 
@@ -4479,6 +4583,16 @@ def runTests(css):
     testSetData = testBrokenEvents()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Broken Event", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #testLinkEvent
+    testSetData = testInitializeEvent()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Initialize Event", testSetPercentage, copy.deepcopy(testSetData)])
+    
+    #testBrokenEvents
+    testSetData = testRemoveEvent()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Remove Event", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
