@@ -29,6 +29,7 @@ import json
 from os.path import expanduser
 from .DatabaseDrivers import SQLDictionary
 from . import Exceptions
+from . import Condition
 from . import Fileutils
 #import PluginFacade
 
@@ -2546,43 +2547,162 @@ class Entity(object):
 
         # The script entity is special in that is is non-executable and is only ever linked to by an SES meme.
         #    Therefore, we should skip initializing it
-        if self.metaMeme.rfind("Memetic.DNA.Script") != -1:
+        if self.metaMeme.rfind("Graphyne.DNA.Script") != -1:
             return
         
-        #Install SES scripts on all entities that link one except Script entities.  
-        #    This may seem counterintuitive, but we don't install event scripts on "Script" entities.
-        #sesEntities = self.getLinkedEntitiesByMemeType(u'*::Memetic.ConditionInitSES', None, 1)
-        #sesEntities = self.getLinkedEntitiesByMemeType(u'**::Memetic.ConditionInitSES', None, 1)
-        #sesEntities = self.getLinkedEntitiesByMetaMemeType(u'*::Memetic.StateEventScript', None, 1)
-        sesEntities = self.getLinkedEntitiesByMetaMemeType('Memetic.DNA.StateEventScript', 1)
-            
-        for sesEntityUUID in sesEntities:
-            sesEntity = entityRepository.getEntity(sesEntityUUID)
-            propertyID = None
-            try:
-                state = sesEntity.getPropertyValue('State')
-                try:
-                    propertyID = sesEntity.getPropertyValue('PropertyID')
-                except Exception as e:
-                    pass #getPropertyValue() throws an exception if the property is not present.  Ignore this exception
-                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Memetic.DNA.Script', linkTypes.SUBATOMIC)
-                for scriptEntityUUID in scriptEntities:
-                    scriptEntity = entityRepository.getEntity(scriptEntityUUID)
-                    scriptLocation = scriptEntity.getPropertyValue('Script')
-                    scriptLanguage = scriptEntity.getPropertyValue('Language')
-                    self.setStateEventScript(scriptLocation, scriptLanguage, state, propertyID)
-            except Exceptions.StateEventScriptInitError as e:
-                raise e
-            except Exception as e:
-                #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
-                fullerror = sys.exc_info()
-                errorID = str(fullerror[0])
-                errorMsg = str(fullerror[1])
-                tb = sys.exc_info()[2]
-                ex = "Failed to initialize Memetic.StateEventScript entity %s, child of %s entity %s. Nested Traceback = %s: %s" %(sesEntity.memePath.fullTemplatePath, self.memePath.fullTemplatePath, self.uuid, errorID, errorMsg)
-                logQ.put( [logType , logLevel.WARNING , method , ex])
-                raise Exceptions.EntityInitializationError(ex).with_traceback(tb)
+        #SES Handling
+        #If an entity is to have event scripts, then it will have SES enetities as schildren.  The goal of
+        #  the following code block is to collect the scripts associated with these SES entities and install
+        #  them onto the 'parent' entity. 
+        #This may seem counterintuitive, but we don't install event scripts on SES entities, but rather 
+        #    on their child 'script' entities.  This is because although graphyne currently supports only
+        #    python scripts, we want to be future-proofe and leave open the possibility of having additional
+        #    scripting options in the future.
+        #ConditionXXX entities have special handling and are ignored here.  
+        conditionMetaMemes = ['Graphyne.Condition.ConditionSet', 'Graphyne.Condition.ConditionString', 'Graphyne.Condition.ConditionNumeric']
+        if self.metaMeme in conditionMetaMemes:
+            parentConditionIDList = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.Condition", 1)
+            for parentConditionIDListItem in parentConditionIDList:
+                parentConditionID = parentConditionIDListItem
+            if self.metaMeme == "Graphyne.Condition.ConditionSet":
+                childConditions = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", 1)
 
+            operator = Condition.getOperatorFromConditionEntity(parentConditionID)
+            path = api.getEntityMemeType(parentConditionID)
+            newCondition = None
+            if self.metaMeme  == "Graphyne.Condition.ConditionSet":
+                newCondition = Condition.ConditionSet(parentConditionID, path, operator, childConditions)
+            else:
+                #determine the paths and argument types    
+                currArgumentType = Condition.getArgumentTypeFromConditionEntity(parentConditionID)
+                argumentPaths = Condition.getArgumentsFromConditionEntity(parentConditionID)
+                
+                if currArgumentType == Condition.argumentType.MULTI_ATTRIBUTE:
+                    if self.metaMeme == 'Graphyne.Condition.ConditionString':
+                        #conditionContainerUUID, name, operator, subjectArgumentPath, argumentTag1, objectArgumentPath, argumentTag2
+                        newCondition = Condition.ConditionStringMultiA(parentConditionID, path, operator, argumentPaths)
+                    elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
+                        newCondition = Condition.ConditionNumericMultiA(parentConditionID, path, operator, argumentPaths)
+                elif currArgumentType == Condition.argumentType.ATTRIBUTE:
+                    values = Condition.getTestValuesFromConditionEntity(parentConditionID)
+                    if self.metaMeme == 'Graphyne.Condition.ConditionString':
+                        #totdo - crash here
+                        newCondition = Condition.ConditionStringAAA(parentConditionID, path, operator, argumentPaths, values)
+                    elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
+                        newCondition = Condition.ConditionNumericAAA(parentConditionID, path, operator, argumentPaths, values)
+                else:
+                    values = Condition.getTestValuesFromConditionEntity(parentConditionID)
+                    if self.metaMeme == 'Graphyne.Condition.ConditionString':
+                        values = Condition.getTestValuesFromConditionEntity(parentConditionID)
+                        newCondition = Condition.ConditionStringSimple(parentConditionID, path, operator, argumentPaths, values)
+                    elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
+                        memberUUIDs = api.getLinkCounterpartsByMetaMemeType(parentConditionID, "**::Graphyne.Numeric.Formula", 1)
+                        newCondition = Condition.ConditionNumericSimple(parentConditionID, path, operator, argumentPaths, memberUUIDs)
+            
+            api.installPythonExecutor(parentConditionID, newCondition)
+            
+            uuidAsStr = str(parentConditionID)
+            logStatement = "Added executor object to %s condition %s" %(path, uuidAsStr)
+            api.writeLog(logStatement)
+        
+            #  Event installation of Conditions other script conditions.  Conditions are two tiered, with a 
+            #    condition entity as parent for a xxxCondition entity, which in turn has the SES child.  
+            #ConditionSet
+            listOfSetConditions = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", 1)
+            for setConditionUUID in listOfSetConditions:
+                childConditions = api.getLinkCounterpartsByMetaMemeType(setConditionUUID, ">>Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", 1)
+    
+            conditionType = None
+            try:
+                memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", 1)
+                if len(memberUUIDs) < 1:
+                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionString", 1)
+                if len(memberUUIDs) < 1:
+                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionNumeric", 1)
+                for conditionToTestUUID in memberUUIDs:
+                    #There should be exactly ONE member.  Condition is a switch
+                    conditionType = api.getEntityMetaMemeType(conditionToTestUUID)
+                
+                if conditionType is not None:
+                    if conditionType != "Graphyne.Condition.ConditionScript":
+                        #Operators are not relevant for script conditions
+                        operator = Condition.getOperatorFromConditionEntity(self.uuid)
+        
+                    newCondition = None
+                    if conditionType == "Graphyne.Condition.ConditionSet":
+                        newCondition = Condition.ConditionSet(self.uuid, self.path.fullTemplatePath, operator, childConditions)
+                    else:
+                        #determine the paths and argument types    
+                        
+                        currArgumentType = Condition.getArgumentTypeFromConditionEntity(self.uuid)
+                        argumentPaths = Condition.getArgumentsFromConditionEntity(self.uuid)
+                        
+                        if currArgumentType == Condition.argumentType.MULTI_ATTRIBUTE:
+                            if conditionType == 'Graphyne.Condition.ConditionString':
+                                #self.uuid, name, operator, subjectArgumentPath, argumentTag1, objectArgumentPath, argumentTag2
+                                newCondition = Condition.ConditionStringMultiA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths)
+                            elif conditionType == 'Graphyne.Condition.ConditionNumeric':
+                                newCondition = Condition.ConditionNumericMultiA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths)
+                        elif currArgumentType == Condition.argumentType.ATTRIBUTE:
+                            values = Condition.getTestValuesFromConditionEntity(self.uuid)
+                            if conditionType == 'Graphyne.Condition.ConditionString':
+                                #totdo - crash here
+                                newCondition = Condition.ConditionStringAAA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
+                            elif conditionType == 'Graphyne.Condition.ConditionNumeric':
+                                newCondition = Condition.ConditionNumericAAA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
+                        else:
+                            values = Condition.getTestValuesFromConditionEntity(self.uuid)
+                            if conditionType == 'Graphyne.Condition.ConditionString':
+                                values = Condition.getTestValuesFromConditionEntity(self.uuid)
+                                newCondition = Condition.ConditionStringSimple(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
+                            elif conditionType == 'Graphyne.Condition.ConditionNumeric':
+                                memberUUIDs = api.getLinkCounterpartsByMetaMemeType(self.uuid, "**::Numeric.Formula", 1)
+                                newCondition = Condition.ConditionNumericSimple(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, memberUUIDs)
+                        
+                        self.installExecutorObject(newCondition)
+                        uuidAsStr = str(self.uuid)
+                        logStatement = "Added executor object to %s condition %s" %(self.path.fullTemplatePath, uuidAsStr)
+                        api.writeLog(logStatement)
+            except Exception as e:
+                unusedDebugCatch = "me"
+        else:
+            #Install SES scripts
+            sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.StateEventScript', 1)
+            
+            #this block is for Script conditions.  They function as normal SES evaluate events, but whereas 
+            #    the callable object (script) is normally installed onto the parent of Graphyne.DNA.StateEventScript 
+            #    (which in this case is Graphyne.Condition.ConditionScript), it is instead called on the grandparent, 
+            #    which in this case is Graphyne.Condition.Condition entity
+            if self.metaMeme == 'Graphyne.Condition.Condition':
+                sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.Condition.ConditionScript::Graphyne.DNA.StateEventScript', 1)
+                
+            for sesEntityUUID in sesEntities:
+                sesEntity = entityRepository.getEntity(sesEntityUUID)
+                propertyID = None
+                try:
+                    state = sesEntity.getPropertyValue('State')
+                    try:
+                        propertyID = sesEntity.getPropertyValue('PropertyID')
+                    except Exception as e:
+                        pass #getPropertyValue() throws an exception if the property is not present.  Ignore this exception
+                    scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.Script', linkTypes.SUBATOMIC)
+                    for scriptEntityUUID in scriptEntities:
+                        scriptEntity = entityRepository.getEntity(scriptEntityUUID)
+                        scriptLocation = scriptEntity.getPropertyValue('Script')
+                        scriptLanguage = scriptEntity.getPropertyValue('Language')
+                        self.setStateEventScript(scriptLocation, scriptLanguage, state, propertyID)
+                except Exceptions.StateEventScriptInitError as e:
+                    raise e
+                except Exception as e:
+                    #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    ex = "Failed to initialize Graphyne.StateEventScript entity %s, child of %s entity %s. Nested Traceback = %s: %s" %(sesEntity.memePath.fullTemplatePath, self.memePath.fullTemplatePath, self.uuid, errorID, errorMsg)
+                    logQ.put( [logType , logLevel.WARNING , method , ex])
+                    raise Exceptions.EntityInitializationError(ex).with_traceback(tb)
+                
         initParams = {} #the params dict for the initi event is empty   
         if self.initScript is not None:
             try:
@@ -3465,78 +3585,79 @@ class Entity(object):
         splitPropPath = fullPropPath.rpartition(partitionSequence)
         
         #Just peel off the very last entry after the last dot.  It is our property name
+        proposedNewValue = []
         if splitPropPath[0] != '':
             targetEntityIDList = self.getLinkedEntitiesByMemeType(splitPropPath[0], None, None)
             for targetEntityID in targetEntityIDList:
                 targetEntity = entityRepository.getEntity(targetEntityID)
-                unusedReturn = targetEntity.setPropertyValue(splitPropPath[2], value)
+                returnValue = targetEntity.setPropertyValue(splitPropPath[2], value)
         else:
             if self.getHasProperty(fullPropPath) != True:
                 self.addStringProperty(fullPropPath, value)
+                templateProperty = self.properties[fullPropPath]
             else:
                 templateProperty = self.properties[fullPropPath]
                 
-                proposedNewValue = []
-                if templateProperty.propertyType == entityPropTypes.List:
-                    try:
-                        for val in value:
-                            proposedNewValue.append(val)
-                    except:
-                        proposedNewValue.append(value)
-                else:
-                    try:
-                        if templateProperty.propertyType == entityPropTypes.String:
-                            if type(value) == 'unicode':
-                                proposedNewValue.append(value)
-                            else:
-                                proposedNewValue.append(str(value))
-                        elif templateProperty.propertyType == entityPropTypes.Decimal:
-                            proposedNewValue.append(decimal.Decimal(value))
-                        elif templateProperty.propertyType == entityPropTypes.Integer:
-                            proposedNewValue.append(int(value))   
-                        elif templateProperty.propertyType == entityPropTypes.Boolean:
-                            prop = False
-                            if value.lower() == 'true':
-                                prop = True
-                            else:
-                                try:
-                                    prop = bool(value)
-                                except:
-                                    prop = False
-                            proposedNewValue.append(prop)
-                    except:
-                        e = e = "Can't set value of %s entity %s property %s to %s.  Wrong Type" %(self.memePath, self.uuid, templateProperty.name, value)
+            if templateProperty.propertyType == entityPropTypes.List:
+                try:
+                    for val in value:
+                        proposedNewValue.append(val)
+                except:
+                    proposedNewValue.append(value)
+            else:
+                try:
+                    if templateProperty.propertyType == entityPropTypes.String:
+                        if type(value) == 'unicode':
+                            proposedNewValue.append(value)
+                        else:
+                            proposedNewValue.append(str(value))
+                    elif templateProperty.propertyType == entityPropTypes.Decimal:
+                        proposedNewValue.append(decimal.Decimal(value))
+                    elif templateProperty.propertyType == entityPropTypes.Integer:
+                        proposedNewValue.append(int(value))   
+                    elif templateProperty.propertyType == entityPropTypes.Boolean:
+                        prop = False
+                        if value.lower() == 'true':
+                            prop = True
+                        else:
+                            try:
+                                prop = bool(value)
+                            except:
+                                prop = False
+                        proposedNewValue.append(prop)
+                except:
+                    e = e = "Can't set value of %s entity %s property %s to %s.  Wrong Type" %(self.memePath, self.uuid, templateProperty.name, value)
+                    #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
+                    raise Exceptions.EntityPropertyValueTypeError(e)             
+                    
+            if (templateProperty.constrained == True) and (templateProperty.propertyType != entityPropTypes.Boolean):
+                # test the constraints
+                if (templateProperty.restList is not None) and (len(templateProperty.restList) > 0):
+                    allInList = True
+                    bogusValues = []
+                    for propVal in proposedNewValue:
+                        inList = False
+                        for restriction in templateProperty.restList:
+                            if restriction == propVal:
+                                inList = True
+                        if inList == False:
+                            allInList = False
+                            bogusValues.append(propVal)
+                    if allInList == False:
+                        e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and the following values violate the constraint: %s" %(self.memePath, self.uuid, property.name, value, bogusValues)
                         #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
-                        raise Exceptions.EntityPropertyValueTypeError(e)             
-                        
-                if (templateProperty.constrained == True) and (templateProperty.propertyType != entityPropTypes.Boolean):
-                    # test the constraints
-                    if (templateProperty.restList is not None) and (len(templateProperty.restList) > 0):
-                        allInList = True
-                        bogusValues = []
-                        for propVal in proposedNewValue:
-                            inList = False
-                            for restriction in templateProperty.restList:
-                                if restriction == propVal:
-                                    inList = True
-                            if inList == False:
-                                allInList = False
-                                bogusValues.append(propVal)
-                        if allInList == False:
-                            e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and the following values violate the constraint: %s" %(self.memePath, self.uuid, property.name, value, bogusValues)
+                        raise Exceptions.EntityPropertyValueOutOfBoundsError(e)
+                else:
+                    if templateProperty.restMax is not None:
+                        if templateProperty.restMax < proposedNewValue[0]:
+                            e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and new value is greater than the allowed max of %s" %(self.memePath, self.uuid, templateProperty.name, value, templateProperty.restMax)
                             #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
-                            raise Exceptions.EntityPropertyValueOutOfBoundsError(e)
-                    else:
-                        if templateProperty.restMax is not None:
-                            if templateProperty.restMax < proposedNewValue[0]:
-                                e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and new value is greater than the allowed max of %s" %(self.memePath, self.uuid, templateProperty.name, value, templateProperty.restMax)
-                                #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
-                                raise Exceptions.EntityPropertyValueOutOfBoundsError(e)   
-                        if templateProperty.restMin is not None:
-                            if templateProperty.restMin > proposedNewValue[0]:
-                                e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and new value is less than the allowed min of %s" %(self.memePath, self.uuid, templateProperty.name, value, templateProperty.restMin)
-                                #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
-                                raise Exceptions.EntityPropertyValueOutOfBoundsError(e)  
+                            raise Exceptions.EntityPropertyValueOutOfBoundsError(e)   
+                    if templateProperty.restMin is not None:
+                        if templateProperty.restMin > proposedNewValue[0]:
+                            e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and new value is less than the allowed min of %s" %(self.memePath, self.uuid, templateProperty.name, value, templateProperty.restMin)
+                            #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
+                            raise Exceptions.EntityPropertyValueOutOfBoundsError(e)  
                 
             # if we can cast the value and no exceptions have been raised due to constraints,
             #    then go ahead and set the value
@@ -5736,16 +5857,14 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
         #schemaPath = os.path.join(installFilePath, "Schema")
         #sys.path.append(schemaPath)
         #Voodoo alert!
-        #This block presumes that the Memetic package is installed, either manually or via PiP
-        #  Since we don't know where it will be, we'll need to find it first.
-        #  1 - Import a module from within the Memotica package.
-        #    There is an empty module (_Unused.py) within this package, specifically for this import
+        #  The 'default' schema is in the same directory as Graph.py
+        #  Since we don't know where it is in the filesystem, we need to find out where we are installed first.
+        #  1 - Import a module from within the Graphyne package.
+        #    We have already imported Exceptions.py, so we'll look for its location
         #  2 - Fetch the dirname of this module.
-        #  3 - Fetch the parent of that dir (the grandparent of _Unused.py
         #    This will be the "Repository" location and will contain the Memetic package
         try:
-            import Memetic._Unused
-            childDirectory = os.path.dirname(Memetic._Unused.__file__)
+            childDirectory = os.path.dirname(Exceptions.__file__)
             parentDirectory = os.path.split(childDirectory)
             objectMap = Fileutils.walkRepository(parentDirectory[0], objectMap)
         except Exception as e:
@@ -6764,12 +6883,12 @@ def getScriptLocation(entityID, eventType, propID = None):
     try:
         #find the location of the script
         theEntity = entityRepository.getEntity(entityID)
-        sesEntities = theEntity.getLinkedEntitiesByMetaMemeType('Memetic.DNA.StateEventScript', linkTypes.SUBATOMIC)
+        sesEntities = theEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.StateEventScript', linkTypes.SUBATOMIC)
         for sesEntityUUID in sesEntities:
             sesEntity = entityRepository.getEntity(sesEntityUUID)
             state = sesEntity.getPropertyValue('State')
             if state == eventType:
-                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Memetic.DNA.Script', linkTypes.SUBATOMIC)
+                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.Script', linkTypes.SUBATOMIC)
                 for scriptEntityUUID in scriptEntities:
                     scriptEntity = entityRepository.getEntity(scriptEntityUUID)
                     scriptLoc = scriptEntity.getPropertyValue('Script')
@@ -7706,16 +7825,31 @@ class API(object):
             evalResult = linkRepository.getCounterpartIndices(entityUUID)
             return evalResult
         except KeyError as e:
-            exception = "Get counterparts of entity %s failed. traceback = %s" %(entityUUID, e)
-            raise Exceptions.ScriptError(exception)
-        except Exception as e:
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            nestEerrorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            errorMsg = "Get counterparts of entity %s failed. Nested Traceback = %s: %s" %(entityUUID, errorID, nestEerrorMsg)
+            logQ.put( [logType , logLevel.WARNING , "Graph.api.getEntityCounterparts" , errorMsg])
+            raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
+        except Exception:
             try:
                 meme = self.getEntityMemeType(entityUUID)
-                exception = "Get counterparts of %s entity %s failed. traceback = %s" %(meme, entityUUID, e)
-                raise Exceptions.ScriptError(exception)
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                nestEerrorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                errorMsg = "Get counterparts of %s entity %s failed. Nested Traceback = %s: %s" %(meme, entityUUID, errorID, nestEerrorMsg)
+                logQ.put( [logType , logLevel.WARNING , "Graph.api.getEntityCounterparts" , errorMsg])
+                raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
             except:
-                exception = "Get counterparts of entity %s failed. traceback = %s" %(entityUUID, e)
-                raise Exceptions.ScriptError(exception)
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                nestEerrorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                errorMsg = "Get counterparts of entity %s failed. Nested Traceback = %s: %s" %(entityUUID, errorID, nestEerrorMsg)
+                logQ.put( [logType , logLevel.WARNING , "Graph.api.getEntityCounterparts" , errorMsg])
+                raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
 
 
     def getCluster(self, entityUUID, linkTypes = 0, crossSingletons = False):
@@ -7723,9 +7857,15 @@ class API(object):
             params = [entityUUID, linkTypes, crossSingletons]
             evalResult = self._getCluster.execute(params)
             return evalResult
-        except Exception as e:
-            exception = "Get Cluster of entity %s failed. traceback = %s" %(entityUUID, e)
-            raise Exceptions.ScriptError(exception)
+        except Exception:
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            nestEerrorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            errorMsg = "Get Cluster of entity %s failed. Nested Traceback = %s: %s" %(entityUUID, errorID, nestEerrorMsg)
+            logQ.put( [logType , logLevel.WARNING , "Graph.api.getEntityCounterparts" , errorMsg])
+            raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
+
         
         
     def getClusterJSON(self, entityUUID, linkTypes = 0, crossSingletons = False):

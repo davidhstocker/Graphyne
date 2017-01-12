@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Metadata>
+		<Revision>
+		  <CreationDate>2009-12-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>		
+	</Metadata>
+	
+	<ListOfPropertyRestriction>
+		<PropertyRestriction id="StringOperator">
+			<RestrictionValueString>Equal</RestrictionValueString>
+			<RestrictionValueString>NotEqual</RestrictionValueString>
+			<RestrictionValueString>Longer</RestrictionValueString>
+			<RestrictionValueString>Shorter</RestrictionValueString>
+			<RestrictionValueString>SameLength</RestrictionValueString>
+			<RestrictionValueString>NotSameLength</RestrictionValueString>
+			<RestrictionValueString>StartsWith</RestrictionValueString>
+			<RestrictionValueString>EndsWith</RestrictionValueString>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="NumericOperator">
+			<RestrictionValueString>Equal</RestrictionValueString>
+			<RestrictionValueString>NotEqual</RestrictionValueString>
+			<RestrictionValueString>GreaterThan</RestrictionValueString>
+			<RestrictionValueString>LessThan</RestrictionValueString>
+			<RestrictionValueString>EqualOrGreaterThan</RestrictionValueString>
+			<RestrictionValueString>EqualOrLessThan</RestrictionValueString>			
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="SetOperator">
+			<RestrictionValueString>AND</RestrictionValueString>
+			<RestrictionValueString>OR</RestrictionValueString>
+			<RestrictionValueString>NOT</RestrictionValueString>			
+		</PropertyRestriction>
+	</ListOfPropertyRestriction>
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="ValueString">
+			<MetaMemeProperty name="Value" type="string"/>
+		</MetaMeme>
+		<MetaMeme id="SimpleArgument">
+			<MetaMemeProperty name="ArgumentTag" type="string"/>
+		</MetaMeme>	
+		<MetaMeme id="AgentAttributeArgument">
+			<MetaMemeProperty name="SubjectArgumentPath" type="string"/>
+			<MetaMemeProperty name="ArgumentTag" type="string"/>
+		</MetaMeme>
+		<MetaMeme id="MultiAgentAttributeArgument">
+			<MetaMemeProperty name="SubjectArgumentPath" type="string"/>
+			<MetaMemeProperty name="ObjectArgumentPath" type="string"/>
+		</MetaMeme>
+		<MetaMeme id="Argument" switch="true" singleton="true">
+			<MemberMetaMeme reference="SimpleArgument" min="1" max="1"/>
+			<MemberMetaMeme reference="AgentAttributeArgument" min="1" max="1"/> 
+			<MemberMetaMeme reference="MultiAgentAttributeArgument" min="1" max="1"/>
+	</MetaMeme>	
+		<MetaMeme id="ConditionSetChildren">
+			<MemberMetaMeme reference="Condition" min="1"/>
+		</MetaMeme>		
+		<MetaMeme id="ConditionSet" singleton="true">
+			<MetaMemeProperty name="SetOperator" type="string"/>
+			<MemberMetaMeme reference="ConditionSetChildren" min="1" max="1"/>
+		</MetaMeme>	
+		<MetaMeme id="ConditionString" singleton="true">
+			<MetaMemeProperty name="StringOperator" type="string" restriction="StringOperator"/>
+			<MemberMetaMeme reference="ValueString" min="0"/>
+			<MemberMetaMeme reference="Argument" min="1" max="1"/>
+		</MetaMeme>	
+		<MetaMeme id="ConditionNumeric" singleton="true">
+			<MetaMemeProperty name="NumericOperator" type="string"/>
+			<MemberMetaMeme reference="Graphyne.Numeric.Formula" min="0"/>
+			<MemberMetaMeme reference="Argument" min="1" max="1"/>
+		</MetaMeme>
+		<MetaMeme id="ConditionScript" singleton="true">
+			<MetaMemeProperty name="ScriptName" type="string"/>
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1"/>
+		</MetaMeme>	
+		<MetaMeme id="Condition" switch="true" singleton="true">
+			<MetaMemeProperty name="Priority" type="integer" constrained="true"/>
+			<MemberMetaMeme reference="ConditionSet" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionString" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionNumeric" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionScript" min="1" max="1"/>
+		</MetaMeme>		
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+
+		<!-- The 'default' Condtiions -->
+		<Meme id="True" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="Graphyne.Condition.True_CScr"/>
+		</Meme>
+		<Meme id="True_CScr" metameme="Graphyne.Condition.ConditionScript">
+			<MemberMeme occurrence="1" memberID="Graphyne.DNA.TrueSES"/>
+		</Meme>
+		
+		<Meme id="False" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="Graphyne.Condition.False_CScr"/>
+		</Meme>
+		<Meme id="False_CScr" metameme="Graphyne.Condition.ConditionScript">
+			<MemberMeme occurrence="1" memberID="Graphyne.DNA.FalseSES"/>
+		</Meme>
+	
+
+	</ListOfMeme>
+</RMLModule>

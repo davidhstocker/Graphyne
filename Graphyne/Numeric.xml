@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Metadata>
+		<Revision>
+		  <CreationDate>2009-12-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>		
+	</Metadata>
+	
+	<ListOfPropertyRestriction>
+		<PropertyRestriction id="StringOperator">
+			<RestrictionValueString>Equal</RestrictionValueString>
+			<RestrictionValueString>NotEqual</RestrictionValueString>
+			<RestrictionValueString>Longer</RestrictionValueString>
+			<RestrictionValueString>Shorter</RestrictionValueString>
+			<RestrictionValueString>SameLength</RestrictionValueString>
+			<RestrictionValueString>NotSameLength</RestrictionValueString>
+			<RestrictionValueString>StartsWith</RestrictionValueString>
+			<RestrictionValueString>EndsWith</RestrictionValueString>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="NumericOperator">
+			<RestrictionValueString>Equal</RestrictionValueString>
+			<RestrictionValueString>NotEqual</RestrictionValueString>
+			<RestrictionValueString>GreaterThan</RestrictionValueString>
+			<RestrictionValueString>LessThan</RestrictionValueString>
+			<RestrictionValueString>EqualOrGreaterThan</RestrictionValueString>
+			<RestrictionValueString>EqualOrLessThan</RestrictionValueString>			
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="SetOperator">
+			<RestrictionValueString>AND</RestrictionValueString>
+			<RestrictionValueString>OR</RestrictionValueString>
+			<RestrictionValueString>NOT</RestrictionValueString>			
+		</PropertyRestriction>
+	</ListOfPropertyRestriction>
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="Formula" switch="true" singleton="true">
+			<MemberMetaMeme reference="ValueNumeric" min="1" max="1"/>
+		</MetaMeme>
+		<MetaMeme id="ValueNumeric" singleton="true">
+			<MetaMemeProperty name="Value" type="decimal"/>
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1"/>
+		</MetaMeme>		
+	
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<!--Random Distribution Init State Event Script-->
+		<Meme id="RandomInitScript" metameme="Graphyne.DNA.Script">
+			<MemeProperty name="Script" value="Graphyne.Numeric.InitRandom"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="RandomInitSES" metameme="Graphyne.DNA.StateEventScript">
+			<MemeProperty name="State" value="initialize"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.RandomInitScript" />
+		</Meme>	
+		
+		<!--Random Distribution Init State Event Script-->
+		<Meme id="ValueNumericInitScript" metameme="Graphyne.DNA.Script">
+			<MemeProperty name="Script" value="Graphyne.Numeric.InitValueNumeric"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="ValueNumericInitSES" metameme="Graphyne.DNA.StateEventScript">
+			<MemeProperty name="State" value="initialize"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitScript" />
+		</Meme>		
+	</ListOfMeme>
+</RMLModule>

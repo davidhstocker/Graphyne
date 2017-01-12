@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Metadata>
+		<Revision>
+		  <CreationDate>2008-07-05</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>		
+	</Metadata>
+	
+	<ListOfPropertyRestriction>
+		
+		<PropertyRestriction id="StateEventType">
+			<RestrictionValueString>initialize</RestrictionValueString><!--formerly 0-->
+			<RestrictionValueString>execute</RestrictionValueString><!--formerly 1-->
+			<RestrictionValueString>terminate</RestrictionValueString><!--formerly 2-->
+			<RestrictionValueString>linkAdd</RestrictionValueString>
+			<RestrictionValueString>linkRemove</RestrictionValueString>
+			<RestrictionValueString>propertyChanged</RestrictionValueString>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="ScriptLanguage">
+			<RestrictionValueString>python</RestrictionValueString>
+		</PropertyRestriction>
+		
+		<PropertyRestriction id="ISOLanguageCodes">
+			<!-- from http://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt -->
+			<RestrictionValueString>aa</RestrictionValueString><!--Afar-->
+			<RestrictionValueString>ab</RestrictionValueString><!--Abkhazian-->
+			<RestrictionValueString>ae</RestrictionValueString><!--Avestan-->
+			<RestrictionValueString>af</RestrictionValueString><!--Afrikaans-->
+			<RestrictionValueString>ak</RestrictionValueString><!--Akan-->
+			<RestrictionValueString>am</RestrictionValueString><!--Amharic-->
+			<RestrictionValueString>an</RestrictionValueString><!--Aragonese-->
+			<RestrictionValueString>ar</RestrictionValueString><!--Arabic-->
+			<RestrictionValueString>as</RestrictionValueString><!--Assamese-->
+			<RestrictionValueString>av</RestrictionValueString><!--Avaric-->
+			<RestrictionValueString>ay</RestrictionValueString><!--Aymara-->
+			<RestrictionValueString>az</RestrictionValueString><!--Azerbaijani-->
+			<RestrictionValueString>ba</RestrictionValueString><!--Bashkir-->
+			<RestrictionValueString>be</RestrictionValueString><!--Belarusian-->
+			<RestrictionValueString>bg</RestrictionValueString><!--Bulgarian-->
+			<RestrictionValueString>bh</RestrictionValueString><!--Bihari-->
+			<RestrictionValueString>bi</RestrictionValueString><!--Bislama-->
+			<RestrictionValueString>bm</RestrictionValueString><!--Bambara-->
+			<RestrictionValueString>bn</RestrictionValueString><!--Bengali-->
+			<RestrictionValueString>bo</RestrictionValueString><!--Tibetan-->
+			<RestrictionValueString>br</RestrictionValueString><!--Breton-->
+			<RestrictionValueString>bs</RestrictionValueString><!--Bosnian-->
+			<RestrictionValueString>ca</RestrictionValueString><!--Catalan; Valencian-->
+			<RestrictionValueString>ce</RestrictionValueString><!--Chechen-->
+			<RestrictionValueString>ch</RestrictionValueString><!--Chamorro-->
+			<RestrictionValueString>co</RestrictionValueString><!--Corsican-->
+			<RestrictionValueString>cr</RestrictionValueString><!--Cree-->
+			<RestrictionValueString>cs</RestrictionValueString><!--Czech-->
+			<RestrictionValueString>cu</RestrictionValueString><!--Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic-->
+			<RestrictionValueString>cv</RestrictionValueString><!--Chuvash-->
+			<RestrictionValueString>cy</RestrictionValueString><!--Welsh-->
+			<RestrictionValueString>da</RestrictionValueString><!--Danish-->
+			<RestrictionValueString>de</RestrictionValueString><!--German-->
+			<RestrictionValueString>dv</RestrictionValueString><!--Divehi; Dhivehi; Maldivian-->
+			<RestrictionValueString>dz</RestrictionValueString><!--Dzongkha-->
+			<RestrictionValueString>ee</RestrictionValueString><!--Ewe-->
+			<RestrictionValueString>el</RestrictionValueString><!--Greek, Modern (1453-)-->
+			<RestrictionValueString>en</RestrictionValueString><!--English-->
+			<RestrictionValueString>eo</RestrictionValueString><!--Esperanto-->
+			<RestrictionValueString>es</RestrictionValueString><!--Spanish; Castilian-->
+			<RestrictionValueString>et</RestrictionValueString><!--Estonian-->
+			<RestrictionValueString>eu</RestrictionValueString><!--Basque-->
+			<RestrictionValueString>fa</RestrictionValueString><!--Persian-->
+			<RestrictionValueString>ff</RestrictionValueString><!--Fulah-->
+			<RestrictionValueString>fi</RestrictionValueString><!--Finnish-->
+			<RestrictionValueString>fj</RestrictionValueString><!--Fijian-->
+			<RestrictionValueString>fo</RestrictionValueString><!--Faroese-->
+			<RestrictionValueString>fr</RestrictionValueString><!--French-->
+			<RestrictionValueString>fy</RestrictionValueString><!--Western Frisian-->
+			<RestrictionValueString>ga</RestrictionValueString><!--Irish-->
+			<RestrictionValueString>gd</RestrictionValueString><!--Gaelic; Scottish Gaelic-->
+			<RestrictionValueString>gl</RestrictionValueString><!--Galician-->
+			<RestrictionValueString>gn</RestrictionValueString><!--Guarani-->
+			<RestrictionValueString>gu</RestrictionValueString><!--Gujarati-->
+			<RestrictionValueString>gv</RestrictionValueString><!--Manx-->
+			<RestrictionValueString>ha</RestrictionValueString><!--Hausa-->
+			<RestrictionValueString>he</RestrictionValueString><!--Hebrew-->
+			<RestrictionValueString>hi</RestrictionValueString><!--Hindi-->
+			<RestrictionValueString>ho</RestrictionValueString><!--Hiri Motu-->
+			<RestrictionValueString>hr</RestrictionValueString><!--Croatian-->
+			<RestrictionValueString>ht</RestrictionValueString><!--Haitian; Haitian Creole-->
+			<RestrictionValueString>hu</RestrictionValueString><!--Hungarian-->
+			<RestrictionValueString>hy</RestrictionValueString><!--Armenian-->
+			<RestrictionValueString>hz</RestrictionValueString><!--Herero-->
+			<RestrictionValueString>ia</RestrictionValueString><!--Interlingua (International Auxiliary Language Association)-->
+			<RestrictionValueString>id</RestrictionValueString><!--Indonesian-->
+			<RestrictionValueString>ie</RestrictionValueString><!--Interlingue; Occidental-->
+			<RestrictionValueString>ig</RestrictionValueString><!--Igbo-->
+			<RestrictionValueString>ii</RestrictionValueString><!--Sichuan Yi; Nuosu-->
+			<RestrictionValueString>ik</RestrictionValueString><!--Inupiaq-->
+			<RestrictionValueString>io</RestrictionValueString><!--Ido-->
+			<RestrictionValueString>is</RestrictionValueString><!--Icelandic-->
+			<RestrictionValueString>it</RestrictionValueString><!--Italian-->
+			<RestrictionValueString>iu</RestrictionValueString><!--Inuktitut-->
+			<RestrictionValueString>ja</RestrictionValueString><!--Japanese-->
+			<RestrictionValueString>jv</RestrictionValueString><!--Javanese-->
+			<RestrictionValueString>ka</RestrictionValueString><!--Georgian-->
+			<RestrictionValueString>kg</RestrictionValueString><!--Kongo-->
+			<RestrictionValueString>ki</RestrictionValueString><!--Kikuyu; Gikuyu-->
+			<RestrictionValueString>kj</RestrictionValueString><!--Kuanyama; Kwanyama-->
+			<RestrictionValueString>kk</RestrictionValueString><!--Kazakh-->
+			<RestrictionValueString>kl</RestrictionValueString><!--Kalaallisut; Greenlandic-->
+			<RestrictionValueString>km</RestrictionValueString><!--Central Khmer-->
+			<RestrictionValueString>kn</RestrictionValueString><!--Kannada-->
+			<RestrictionValueString>ko</RestrictionValueString><!--Korean-->
+			<RestrictionValueString>kr</RestrictionValueString><!--Kanuri-->
+			<RestrictionValueString>ks</RestrictionValueString><!--Kashmiri-->
+			<RestrictionValueString>ku</RestrictionValueString><!--Kurdish-->
+			<RestrictionValueString>kv</RestrictionValueString><!--Komi-->
+			<RestrictionValueString>kw</RestrictionValueString><!--Cornish-->
+			<RestrictionValueString>ky</RestrictionValueString><!--Kirghiz; Kyrgy-->
+			<RestrictionValueString>la</RestrictionValueString><!--Latin-->
+			<RestrictionValueString>lb</RestrictionValueString><!--Luxembourgish; Letzeburgesch-->
+			<RestrictionValueString>lg</RestrictionValueString><!--Ganda-->
+			<RestrictionValueString>li</RestrictionValueString><!--Limburgan; Limburger; Limburgish-->
+			<RestrictionValueString>ln</RestrictionValueString><!--Lingala-->
+			<RestrictionValueString>lo</RestrictionValueString><!--Lao-->
+			<RestrictionValueString>lt</RestrictionValueString><!--Lithuanian-->
+			<RestrictionValueString>lu</RestrictionValueString><!--Luba-Katanga-->
+			<RestrictionValueString>lv</RestrictionValueString><!--Latvian-->
+			<RestrictionValueString>mg</RestrictionValueString><!--Malagasy-->
+			<RestrictionValueString>mh</RestrictionValueString><!--Marshallese-->
+			<RestrictionValueString>mi</RestrictionValueString><!--Maori-->
+			<RestrictionValueString>mk</RestrictionValueString><!--Macedonian-->
+			<RestrictionValueString>ml</RestrictionValueString><!--Malayalam-->
+			<RestrictionValueString>mn</RestrictionValueString><!--Mongolian-->
+			<RestrictionValueString>mr</RestrictionValueString><!--Marathi-->
+			<RestrictionValueString>ms</RestrictionValueString><!--Malay-->
+			<RestrictionValueString>mt</RestrictionValueString><!--Maltese-->
+			<RestrictionValueString>my</RestrictionValueString><!--Burmese-->
+			<RestrictionValueString>na</RestrictionValueString><!--Nauru-->
+			<RestrictionValueString>nb</RestrictionValueString><!--Bokmål, Norwegian; Norwegian Bokmål-->
+			<RestrictionValueString>nd</RestrictionValueString><!--Ndebele, North; North Ndebele-->
+			<RestrictionValueString>ne</RestrictionValueString><!--Nepali-->
+			<RestrictionValueString>ng</RestrictionValueString><!--Ndonga-->
+			<RestrictionValueString>nl</RestrictionValueString><!--Dutch; Flemish-->
+			<RestrictionValueString>nn</RestrictionValueString><!--Norwegian Nynorsk; Nynorsk, Norwegian-->
+			<RestrictionValueString>no</RestrictionValueString><!--Norwegian-->
+			<RestrictionValueString>nr</RestrictionValueString><!--Ndebele, South; South Ndebele-->
+			<RestrictionValueString>nv</RestrictionValueString><!--Navajo; Navaho-->
+			<RestrictionValueString>ny</RestrictionValueString><!--Chichewa; Chewa; Nyanja-->
+			<RestrictionValueString>oc</RestrictionValueString><!--Occitan (post 1500); Provençal-->
+			<RestrictionValueString>oj</RestrictionValueString><!--Ojibwa-->
+			<RestrictionValueString>om</RestrictionValueString><!--Oromo-->
+			<RestrictionValueString>or</RestrictionValueString><!--Oriya-->
+			<RestrictionValueString>os</RestrictionValueString><!--Ossetian; Ossetic-->
+			<RestrictionValueString>pa</RestrictionValueString><!--Panjabi; Punjabi-->
+			<RestrictionValueString>pi</RestrictionValueString><!--Pali-->
+			<RestrictionValueString>pl</RestrictionValueString><!--Polish-->
+			<RestrictionValueString>ps</RestrictionValueString><!--Pushto; Pashto-->
+			<RestrictionValueString>pt</RestrictionValueString><!--Portuguese-->
+			<RestrictionValueString>qu</RestrictionValueString><!--Quechua-->
+			<RestrictionValueString>rm</RestrictionValueString><!--Romansh-->
+			<RestrictionValueString>rn</RestrictionValueString><!--Rundi-->
+			<RestrictionValueString>ro</RestrictionValueString><!--Romanian; Moldavian; Moldovan-->
+			<RestrictionValueString>ru</RestrictionValueString><!--Russian-->
+			<RestrictionValueString>rw</RestrictionValueString><!--Kinyarwanda-->
+			<RestrictionValueString>sa</RestrictionValueString><!--Sanskrit-->
+			<RestrictionValueString>sc</RestrictionValueString><!--Sardinian-->
+			<RestrictionValueString>sd</RestrictionValueString><!--Sindhi-->
+			<RestrictionValueString>se</RestrictionValueString><!--Northern Sami-->
+			<RestrictionValueString>sg</RestrictionValueString><!--Sango-->
+			<RestrictionValueString>si</RestrictionValueString><!--Sinhala; Sinhalese-->
+			<RestrictionValueString>sk</RestrictionValueString><!--Slovak-->
+			<RestrictionValueString>sl</RestrictionValueString><!--Slovenian-->
+			<RestrictionValueString>sm</RestrictionValueString><!--Samoan-->
+			<RestrictionValueString>sn</RestrictionValueString><!--Shona-->
+			<RestrictionValueString>so</RestrictionValueString><!--Somali-->
+			<RestrictionValueString>sq</RestrictionValueString><!--Albanian-->
+			<RestrictionValueString>sr</RestrictionValueString><!--Serbian-->
+			<RestrictionValueString>ss</RestrictionValueString><!--Swati-->
+			<RestrictionValueString>st</RestrictionValueString><!--Sotho, Southern-->
+			<RestrictionValueString>su</RestrictionValueString><!--Sundanese-->
+			<RestrictionValueString>sv</RestrictionValueString><!--Swedish-->
+			<RestrictionValueString>sw</RestrictionValueString><!--Swahili-->
+			<RestrictionValueString>ta</RestrictionValueString><!--Tamil-->
+			<RestrictionValueString>te</RestrictionValueString><!--Telugu-->
+			<RestrictionValueString>tg</RestrictionValueString><!--Tajik-->
+			<RestrictionValueString>th</RestrictionValueString><!--Thai-->
+			<RestrictionValueString>ti</RestrictionValueString><!--Tigrinya-->
+			<RestrictionValueString>tk</RestrictionValueString><!--Turkmen-->
+			<RestrictionValueString>tl</RestrictionValueString><!--Tagalog-->
+			<RestrictionValueString>tn</RestrictionValueString><!--Tswana-->
+			<RestrictionValueString>to</RestrictionValueString><!--Tonga (Tonga Islands)-->
+			<RestrictionValueString>tr</RestrictionValueString><!--Turkish-->
+			<RestrictionValueString>ts</RestrictionValueString><!--Tsonga-->
+			<RestrictionValueString>tt</RestrictionValueString><!--Tatar-->
+			<RestrictionValueString>tw</RestrictionValueString><!--Twi-->
+			<RestrictionValueString>ty</RestrictionValueString><!--Tahitian-->
+			<RestrictionValueString>ug</RestrictionValueString><!--Uighur; Uyghur-->
+			<RestrictionValueString>uk</RestrictionValueString><!--Ukrainian-->
+			<RestrictionValueString>ur</RestrictionValueString><!--Urdu-->
+			<RestrictionValueString>uz</RestrictionValueString><!--Uzbek-->
+			<RestrictionValueString>ve</RestrictionValueString><!--Venda-->
+			<RestrictionValueString>vi</RestrictionValueString><!--Vietnamese-->
+			<RestrictionValueString>vo</RestrictionValueString><!--Volapük-->
+			<RestrictionValueString>wa</RestrictionValueString><!--Walloon-->
+			<RestrictionValueString>wo</RestrictionValueString><!--Wolof-->
+			<RestrictionValueString>xh</RestrictionValueString><!--Xhosa-->
+			<RestrictionValueString>yi</RestrictionValueString><!--Yiddish-->
+			<RestrictionValueString>yo</RestrictionValueString><!--Yoruba-->
+			<RestrictionValueString>za</RestrictionValueString><!--Zhuang; Chuang-->
+			<RestrictionValueString>zh</RestrictionValueString><!--Chinese-->
+			<RestrictionValueString>zu</RestrictionValueString><!--Zulu-->
+		</PropertyRestriction>
+		
+	</ListOfPropertyRestriction>
+	
+	<ListOfMetaMeme>
+		
+		<!-- Agent -->
+		<MetaMeme id="OrderedListMember">
+			<MetaMemeProperty name="Priority" type="integer"/>
+		</MetaMeme>
+		<MetaMeme id="Taxonomy"/>
+		<MetaMeme id="BubbleUp">
+			<MetaMemeProperty name="Condition" type="string"/>
+			<MetaMemeProperty name="MergeScript" type="string"/>
+			<MetaMemeProperty name="Property" type="string"/>
+			<MetaMemeProperty name="Restrictive" type="boolean"/>
+			<MemberMetaMeme reference="MergeScript" min="0" max="1"/>
+		</MetaMeme>	
+		<MetaMeme id="MergeScript">
+			<MemberMetaMeme reference="" min="1" max="1"/>
+		</MetaMeme>
+		<MetaMeme id="BubbleUpParadigm">
+			<MetaMemeProperty name="Tiered" type="boolean"/>
+			<MetaMemeProperty name="Restrictive" type="boolean"/>
+			<MemberMetaMeme reference="BubbleUp" min="1"/>
+		</MetaMeme>	
+
+		<MetaMeme id="Thing">
+			<MetaMemeProperty name="Tags" type="list"/>
+			<MemberMetaMeme reference="Taxonomy" min="0"/>
+			<MemberMetaMeme reference="Event" min="0" max="1"/>
+			<MemberMetaMeme reference="BubbleUpParadigm" min="0" max="1"/>
+		</MetaMeme>	
+
+		<!-- Condition -->
+
+		<MetaMeme id="ConditionalMember">
+			<MetaMemeExtensions>
+				<MetaMemeID>OrderedListMember</MetaMemeID>	
+			</MetaMemeExtensions>
+			<MemberMetaMeme reference="Graphyne.Condition.Condition" min="1" max="1"/>
+		</MetaMeme>
+		
+		<!-- Controller -->
+		<MetaMeme id="Whitelist">
+			<MetaMemeProperty name="Action" type="list"/>
+			<MetaMemeProperty name="Stimulus" type="list"/>
+		</MetaMeme>	
+		<MetaMeme id="Blacklist">
+			<MetaMemeProperty name="Action" type="list"/>
+			<MetaMemeProperty name="Stimulus" type="list"/>
+		</MetaMeme>
+		<MetaMeme id="ControllerDeclaration" switch="true">
+			<MetaMemeProperty name="SubscribedDescriptors" type="list"/>
+			<MetaMemeProperty name="SubscribedChannels" type="list"/>
+			<MemberMetaMeme reference="Whitelist"/>
+			<MemberMetaMeme reference="Blacklist"/>
+		</MetaMeme>
+
+		<!-- Scripts -->
+		<MetaMeme id="StateEventScript" singleton="true">
+			<MetaMemeProperty name="State" type="string" restriction="StateEventType" constrained="true"/>
+			<MetaMemeProperty name="PropertyID" type="string"/>
+			<MemberMetaMeme reference="Script" min="1" max="1"/>
+		</MetaMeme>		
+		<MetaMeme id="Script" singleton="true">
+			<MetaMemeProperty name="Script" type="string"/>
+			<MetaMemeProperty name="Language" type="string" constrained="true" restriction="ScriptLanguage"/>
+		</MetaMeme>
+		
+		<!-- Channel -->
+		<MetaMeme id="ChannelDeclaration">
+			<MetaMemeProperty name="EndorsedControllerTemplates" type="list"/>
+			<MetaMemeProperty name="DistributionParadigm" type="string"/>
+			<MetaMemeProperty name="DescriptorType" type="string"/>
+			<MetaMemeProperty name="Description" type="string"/>
+		</MetaMeme>	
+		
+
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<Meme id="TrueScript" metameme="Script">
+			<MemeProperty name="Script" value="Graphyne.Scripts.ConditionTrue"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="TrueSES" metameme="StateEventScript">
+			<MemeProperty name="State" value="execute"/>
+			<MemberMeme occurrence="1" memberID="TrueScript" />
+		</Meme>	
+
+		<Meme id="FalseScript" metameme="Script">
+			<MemeProperty name="Script" value="Graphyne.Scripts.ConditionFalse"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="FalseSES" metameme="StateEventScript">
+			<MemeProperty name="State" value="execute"/>
+			<MemberMeme occurrence="1" memberID="FalseScript" />
+		</Meme>		
+
+	</ListOfMeme>
+
+</RMLModule>

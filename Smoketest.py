@@ -3879,11 +3879,10 @@ def testBrokenEvents():
         testResult = "False"
         erorMessage = ('Error.  execute event for EventFailure.BrokenLinkChangeTest should raise an Exceptions.ScriptError exception, but did not!')
         fullerror = sys.exc_info()
-        errorID = str(fullerror[0])
         errorMsg = str(fullerror[1])
         erorMessage = "%s  Traceback = %s" %(erorMessage, errorMsg)
         tb = sys.exc_info()[2]
-        raise Exceptions.EventScriptFailure(errorMsg).with_traceback(tb)
+        #raise Exceptions.EventScriptFailure(errorMsg).with_traceback(tb)
         errata.append(erorMessage)  
         
     testcase = "testLinkEvent()"
