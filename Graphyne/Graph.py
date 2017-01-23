@@ -1231,7 +1231,7 @@ class MetaMeme(object):
 class MemberMetaMeme(object):
     className = "MemberMetaMeme"
     
-    def __init__(self, memPath, minVal, maxVal, allDesctinctMembers = False):
+    def __init__(self, memPath, minVal, maxVal, lt = linkTypes.ATOMIC, allDesctinctMembers = False):
         #method = moduleName + '.' +  self.className + '.__init__'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
         self.memberPath = memPath
@@ -1239,6 +1239,7 @@ class MemberMetaMeme(object):
         self.min = minVal
         self.max = maxVal
         self.allDesctinctMembers = allDesctinctMembers
+        self.lt = lt
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"]) 
         
     def validateMemberIsMetaMeme(self, parentMetaMeme):
@@ -1656,10 +1657,10 @@ class SourceMeme(object):
             raise Exceptions.MemePropertyValidationError(exceptionMsg)   
         
 
-    def addMemberMeme(self, memberID, occurrence):
+    def addMemberMeme(self, memberID, occurrence, lt = linkTypes.ATOMIC):
         method = moduleName + '.' +  self.className + '.addMemberMeme'
         try:
-            self.memberMemes[memberID] = occurrence
+            self.memberMemes[memberID] = (occurrence, lt)
             #debug
             #dummyString = "why is the implicit meme not a reerence?"
             #/debug
@@ -2055,7 +2056,7 @@ class Meme(object):
             resolvedMembers = {}
             unresolvedMember = False
             for unresolvedMemberMeme in self.memberMemes.keys():
-                memeberMemeOcc = self.memberMemes[unresolvedMemberMeme]
+                memeberMemeOcc = self.memberMemes[unresolvedMemberMeme][0]
                 try:
                     resolvedMemberMetaMeme = templateRepository.resolveTemplate(self.path, unresolvedMemberMeme)
                     resolvedMembers[resolvedMemberMetaMeme.path.fullTemplatePath] = memeberMemeOcc
@@ -2229,7 +2230,7 @@ class Meme(object):
             
             If the new member is a singleton and the entity had been created, then just return that UUID
             
-            If noMembers is true, then entities from the meme's members will be created and the entities linked
+            If noMembers is false, then entities from the meme's members will be created and the entities linked
             
             If passedUUID is not None, then the passed value will be attached to the Entity.  This is used where
             the entity is being restored from persistence on engine start.
@@ -2561,11 +2562,11 @@ class Entity(object):
         #ConditionXXX entities have special handling and are ignored here.  
         conditionMetaMemes = ['Graphyne.Condition.ConditionSet', 'Graphyne.Condition.ConditionString', 'Graphyne.Condition.ConditionNumeric']
         if self.metaMeme in conditionMetaMemes:
-            parentConditionIDList = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.Condition", 1)
+            parentConditionIDList = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.Condition", linkTypes.SUBATOMIC)
             for parentConditionIDListItem in parentConditionIDList:
                 parentConditionID = parentConditionIDListItem
             if self.metaMeme == "Graphyne.Condition.ConditionSet":
-                childConditions = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", 1)
+                childConditions = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", None)
 
             operator = Condition.getOperatorFromConditionEntity(parentConditionID)
             path = api.getEntityMemeType(parentConditionID)
@@ -2574,8 +2575,18 @@ class Entity(object):
                 newCondition = Condition.ConditionSet(parentConditionID, path, operator, childConditions)
             else:
                 #determine the paths and argument types    
-                currArgumentType = Condition.getArgumentTypeFromConditionEntity(parentConditionID)
-                argumentPaths = Condition.getArgumentsFromConditionEntity(parentConditionID)
+                try:
+                    currArgumentType = Condition.getArgumentTypeFromConditionEntity(parentConditionID)
+                    argumentPaths = Condition.getArgumentsFromConditionEntity(parentConditionID)
+                except Exception as e:
+                    #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
+                    fullerror = sys.exc_info()
+                    errorID = str(fullerror[0])
+                    errorMsg = str(fullerror[1])
+                    tb = sys.exc_info()[2]
+                    ex = "Failed to initialize entity %s, of type %s. Nested Traceback = %s: %s" %(self.uuid, self.memePath.fullTemplatePath, errorID, errorMsg)
+                    logQ.put( [logType , logLevel.WARNING , method , ex])
+                    raise Exceptions.EntityInitializationError(ex).with_traceback(tb)
                 
                 if currArgumentType == Condition.argumentType.MULTI_ATTRIBUTE:
                     if self.metaMeme == 'Graphyne.Condition.ConditionString':
@@ -2596,7 +2607,7 @@ class Entity(object):
                         values = Condition.getTestValuesFromConditionEntity(parentConditionID)
                         newCondition = Condition.ConditionStringSimple(parentConditionID, path, operator, argumentPaths, values)
                     elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
-                        memberUUIDs = api.getLinkCounterpartsByMetaMemeType(parentConditionID, "**::Graphyne.Numeric.Formula", 1)
+                        memberUUIDs = api.getLinkCounterpartsByMetaMemeType(parentConditionID, "**::Graphyne.Numeric.Formula", None)
                         newCondition = Condition.ConditionNumericSimple(parentConditionID, path, operator, argumentPaths, memberUUIDs)
             
             api.installPythonExecutor(parentConditionID, newCondition)
@@ -2608,17 +2619,17 @@ class Entity(object):
             #  Event installation of Conditions other script conditions.  Conditions are two tiered, with a 
             #    condition entity as parent for a xxxCondition entity, which in turn has the SES child.  
             #ConditionSet
-            listOfSetConditions = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", 1)
+            listOfSetConditions = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", None)
             for setConditionUUID in listOfSetConditions:
-                childConditions = api.getLinkCounterpartsByMetaMemeType(setConditionUUID, ">>Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", 1)
+                childConditions = api.getLinkCounterpartsByMetaMemeType(setConditionUUID, ">>Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", None)
     
             conditionType = None
             try:
-                memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", 1)
+                memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", None)
                 if len(memberUUIDs) < 1:
-                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionString", 1)
+                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionString", None)
                 if len(memberUUIDs) < 1:
-                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionNumeric", 1)
+                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionNumeric", None)
                 for conditionToTestUUID in memberUUIDs:
                     #There should be exactly ONE member.  Condition is a switch
                     conditionType = api.getEntityMetaMemeType(conditionToTestUUID)
@@ -2656,7 +2667,7 @@ class Entity(object):
                                 values = Condition.getTestValuesFromConditionEntity(self.uuid)
                                 newCondition = Condition.ConditionStringSimple(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
                             elif conditionType == 'Graphyne.Condition.ConditionNumeric':
-                                memberUUIDs = api.getLinkCounterpartsByMetaMemeType(self.uuid, "**::Numeric.Formula", 1)
+                                memberUUIDs = api.getLinkCounterpartsByMetaMemeType(self.uuid, "**::Numeric.Formula")
                                 newCondition = Condition.ConditionNumericSimple(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, memberUUIDs)
                         
                         self.installExecutorObject(newCondition)
@@ -2667,14 +2678,14 @@ class Entity(object):
                 unusedDebugCatch = "me"
         else:
             #Install SES scripts
-            sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.StateEventScript', 1)
+            sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.StateEventScript', None)
             
             #this block is for Script conditions.  They function as normal SES evaluate events, but whereas 
             #    the callable object (script) is normally installed onto the parent of Graphyne.DNA.StateEventScript 
             #    (which in this case is Graphyne.Condition.ConditionScript), it is instead called on the grandparent, 
             #    which in this case is Graphyne.Condition.Condition entity
             if self.metaMeme == 'Graphyne.Condition.Condition':
-                sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.Condition.ConditionScript::Graphyne.DNA.StateEventScript', 1)
+                sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.Condition.ConditionScript::Graphyne.DNA.StateEventScript', None)
                 
             for sesEntityUUID in sesEntities:
                 sesEntity = entityRepository.getEntity(sesEntityUUID)
@@ -2685,7 +2696,7 @@ class Entity(object):
                         propertyID = sesEntity.getPropertyValue('PropertyID')
                     except Exception as e:
                         pass #getPropertyValue() throws an exception if the property is not present.  Ignore this exception
-                    scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.Script', linkTypes.SUBATOMIC)
+                    scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.Script', None)
                     for scriptEntityUUID in scriptEntities:
                         scriptEntity = entityRepository.getEntity(scriptEntityUUID)
                         scriptLocation = scriptEntity.getPropertyValue('Script')
@@ -2711,7 +2722,7 @@ class Entity(object):
                 errorMsg = "Error executing the initialization state event script of entity %s from meme %s" %(self.uuid, self.memePath.fullTemplatePath)
                 logQ.put( [logType , logLevel.WARNING , method , errorMsg])
                 #For debugging
-                self.initScript.execute(self.uuid, initParams)
+                #self.initScript.execute(self.uuid, initParams)
         self.isInitialized = True     
                 
 
@@ -2737,7 +2748,10 @@ class Entity(object):
 
         if noMembers == False:
             for memberMemeKey in parentMeme.memberMemes.keys():
-                occurs = parentMeme.memberMemes[memberMemeKey]
+                occurs = parentMeme.memberMemes[memberMemeKey][0]  #memermeme is a tuple with coocurence count at position 0 and linkType at position 1
+                lnkTyp = parentMeme.memberMemes[memberMemeKey][1]
+                if lnkTyp == 1:
+                    unusedCatch = "me"
                 member = templateRepository.resolveTemplate(parentMeme.path, memberMemeKey)
                 n = 1
                 while n <= int(occurs):
@@ -2750,7 +2764,8 @@ class Entity(object):
                         #Don't bother locking the child for now as the public does not know about it yet
                         #memberID1, memberID2, membershipType, keyLink = None, masterEntity = None
                         #ToDo: cataloging of links is currently paremeter-less
-                        linkRepository.catalogLink(self.uuid, childEntityID, linkTypes.SUBATOMIC, {}, masterEntity)
+                        #linkRepository.catalogLink(self.uuid, childEntityID, linkTypes.SUBATOMIC, {}, masterEntity)
+                        linkRepository.catalogLink(self.uuid, childEntityID, lnkTyp, {}, masterEntity)
                     except Exception as e:
                         errprMsg = "Problem instantiating child meme of %s.  Entity initialization aborted!  Traceback = %s" %(parentMeme.path.fullTemplatePath, e)
                         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
@@ -5442,8 +5457,9 @@ class sourceMemeMemberAdd (object):
             sourceMeme.sourceMemeLock.acquire(True)
             try:
                 count = int(params[2])
+                lt = int(params[3])
                 templateRepository.lock.acquire(True)
-                sourceMeme.addMemberMeme(params[1], count)
+                sourceMeme.addMemberMeme(params[1], count, lt)
                 validationResults = sourceMeme.compile(True, False)
             except Exception as e:
                 errorMsg = "Can't add member %s to meme %s.  Traceback = %s" %(params[1], params[0], e)
@@ -6140,6 +6156,29 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
     else:
         logQ.put( [logType , logLevel.INFO , method ,"ValidateOnLoad is set to 'false' in AngelaMasterConfiguration.xml.  No auto validation will be performed"])
 
+    #Refactor memes with aubatomic links
+    #Previously, when reading the memes in, we could not determine which children had subatomic links.
+    #   This information is defined in the metameme only and when reading a meme from its file, it is not possible
+    #   to fully resolve child meme links, as they may have the local name only in the xml file.  
+    #At this stage however, we have our metamemes and memes in the template repository and can fully resolve child memes.
+    #    This allows us to finally determine which ones should be subatomic
+    for sourceMeme in memes:
+        memeToBeUpdated = templateRepository.templates[sourceMeme.path.fullTemplatePath]
+        for memberMemeKey in memeToBeUpdated.memberMemes.keys():
+            occurs = memeToBeUpdated.memberMemes[memberMemeKey][0]  #memermeme is a tuple with coocurence count at position 0 and linkType at position 1
+            sourceMetaMeme = templateRepository.templates[memeToBeUpdated.metaMeme]
+            try:
+                memberPath = templateRepository.resolveTemplatePath(sourceMeme.path.fullTemplatePath, memberMemeKey)
+                memberMeme = templateRepository.templates[memberPath]
+                membership = sourceMetaMeme.memberMetaMemes[memberMeme.metaMeme]
+                if membership.lt == linkTypes.SUBATOMIC:  
+                    memeToBeUpdated.memberMemes[memberMemeKey] = (occurs, linkTypes.SUBATOMIC)
+                    templateRepository.templates[sourceMeme.path.fullTemplatePath] = memeToBeUpdated
+                    unusedCatch = "me"
+            except:
+                pass
+    
+    
     #Restore entities from persistence
     entityTupleList = entityRepository.getAllArchivedEntities(0)
     for entityTuple in entityTupleList:
@@ -6401,7 +6440,9 @@ def getMetaMemesFromFile(xmlData, codepage, modulePath):
                 maxStr = memberMetaMemeElement.getAttribute("max")
                 cardMax = int(maxStr)
             except: pass
-            memberMetaMeme = MemberMetaMeme(memPath, cardMin, cardMax)
+            
+            lt = 0
+            memberMetaMeme = MemberMetaMeme(memPath, cardMin, cardMax, lt)
             memberMetaMemes[memPath.fullTemplatePath] = memberMetaMeme
             
                 
@@ -6599,7 +6640,13 @@ def getMemesFromFile(dbConnectionString, xmlData, codePage, modulePath):
                 for memberElement in memeElement.getElementsByTagName("MemberMeme"):
                     memberID = memberElement.getAttribute("memberID")
                     occurrence= memberElement.getAttribute("occurrence")
-                    meme.addMemberMeme(memberID, occurrence)
+                    lt = 0  #linkType = ATOMIC
+                    try:
+                        xmlLT = memberElement.getAttribute("linktype")
+                        if xmlLT == "subatomic":
+                            lt = 1 #linkType = SUBATOMIC
+                    except: pass
+                    meme.addMemberMeme(memberID, occurrence, lt)
                     
                 for modifiesElement in memeElement.getElementsByTagName("MemeEnhancements"):
                     for idElement in modifiesElement.getElementsByTagName("MemeID"):
@@ -8015,10 +8062,10 @@ class API(object):
             raise e 
         
         
-    def sourceMemeMemberAdd(self, fullTemplatePath, memberID, occurrence):
+    def sourceMemeMemberAdd(self, fullTemplatePath, memberID, occurrence, lt = linkTypes.ATOMIC):
         try:
             occurrence = str(occurrence) #Make sure to cast it to string, so that we can handle it as int or string.
-            params = [fullTemplatePath, memberID, occurrence]
+            params = [fullTemplatePath, memberID, occurrence, lt]
             evalResult = self._sourceMemeMemberAdd.execute(params)
             return evalResult
         except Exceptions.ScriptError as e:

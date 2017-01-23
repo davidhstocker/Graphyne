@@ -1,9 +1,9 @@
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 0 X TRUE
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 1 X TRUE
-Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 0 0 FALSE
+Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 0 0 TRUE
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 1 0 FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 0 1 FALSE
-Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 1 1 TRUE
+Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1<<Examples.MemeA2 1 1 FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeC2>>Examples.MemeA1 MemeK1<<Examples.MemeA2 0 X FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeC2>>Examples.MemeA1 MemeK1<<Examples.MemeA2 1 X FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1<<Examples.MemeA1 MemeK1::Examples.MemeA2 0 X FALSE
@@ -12,7 +12,7 @@ Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1::Examples.MemeA1 MemeK1::Examples.
 Examples.MemeA2 Examples.MemeA1 MemeK1 MemeK1>>Examples.MemeA1 MemeK1>>Examples.MemeA2 0 X FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 >>MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 0 X TRUE
 Examples.MemeA2 Examples.MemeA1 MemeK1 >>MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 1 X TRUE
-Examples.MemeA2 Examples.MemeA1 MemeK1 >>MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 1 1 TRUE
+Examples.MemeA2 Examples.MemeA1 MemeK1 >>MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 1 1 FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 <<MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 0 X FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 <<MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 1 X FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 <<MemeK1>>Examples.MemeA1 <<MemeK1<<Examples.MemeA2 1 1 FALSE
@@ -21,7 +21,7 @@ Examples.MemeA2 Examples.MemeA1 MemeK1 >>MemeK1>>Examples.MemeA1 >>MemeK1<<Examp
 Examples.MemeA2 Examples.MemeA1 MemeK1 >>MemeK1>>Examples.MemeA1 >>MemeK1<<Examples.MemeA2 1 1 FALSE
 Examples.MemeA2 Examples.MemeA1 MemeK1 ::MemeK1>>Examples.MemeA1 ::MemeK1<<Examples.MemeA2 0 X TRUE
 Examples.MemeA2 Examples.MemeA1 MemeK1 ::MemeK1>>Examples.MemeA1 ::MemeK1<<Examples.MemeA2 1 X TRUE
-Examples.MemeA2 Examples.MemeA1 MemeK1 ::MemeK1>>Examples.MemeA1 ::MemeK1<<Examples.MemeA2 1 1 TRUE
+Examples.MemeA2 Examples.MemeA1 MemeK1 ::MemeK1>>Examples.MemeA1 ::MemeK1<<Examples.MemeA2 1 1 FALSE
 Examples.MemeA2 Examples.MemeA1 X >>Examples.MemeA1 <<Examples.MemeA2 0 X TRUE
 Examples.MemeA1 Examples.MemeA2 X >>Examples.MemeA2 <<Examples.MemeA1 0 X TRUE
 Examples.MemeA2 Examples.MemeA1 X <<Examples.MemeA1 <<Examples.MemeA2 0 X FALSE

@@ -28,7 +28,7 @@
 	</ListOfPropertyRestriction>
 	<ListOfMetaMeme>
 		<MetaMeme id="LinkChangeMM">	
-			<MemberMetaMeme reference="Memetic.DNA.StateEventScript"/>
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript"/>
 		</MetaMeme>
 	</ListOfMetaMeme>
 	
@@ -38,21 +38,21 @@
 			<MemberMeme occurrence="1" memberID="LinkEvent.LinkChangeRemovedSES" />
 		</Meme>
 		
-		<Meme id="LinkAddedScript" metameme="Memetic.DNA.Script">
+		<Meme id="LinkAddedScript" metameme="Graphyne.DNA.Script">
 			<MemeProperty name="Script" value="LinkEvent.LinkAdded"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
-		<Meme id="LinkChangeAddedSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="LinkChangeAddedSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="LinkEvent.LinkAddedScript" />
 		</Meme>	
 		
 		
-		<Meme id="LinkRemovedScript" metameme="Memetic.DNA.Script">
+		<Meme id="LinkRemovedScript" metameme="Graphyne.DNA.Script">
 			<MemeProperty name="Script" value="LinkEvent.LinkRemoved"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
-		<Meme id="LinkChangeRemovedSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="LinkChangeRemovedSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkRemove"/>
 			<MemberMeme occurrence="1" memberID="LinkEvent.LinkRemovedScript" />
 		</Meme>	

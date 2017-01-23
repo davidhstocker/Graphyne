@@ -1,3 +1,4 @@
 Examples.MemeM2 Examples.MemeA1 MemeL1 MemeL1::Examples.MemeA1 MemeL1::Examples.MemeM2 0 X TRUE
+Examples.MemeM2 Examples.MemeA1 MemeL1 MemeL1::Examples.MemeA1 MemeL1::Examples.MemeM2 1 1 FALSE
 Examples.MemeM2 Examples.MemeA1 MemeL1 MemeL1::Examples.MemeA1 MemeL1::Examples.MemeM2 1 X TRUE
-Examples.MemeM2 Examples.MemeA1 MemeL1 MemeL1::Examples.MemeA1 MemeL1::Examples.MemeM2 1 1 TRUE
+Examples.MemeM2 Examples.MemeA1 MemeL1 MemeL1::Examples.MemeA1 MemeL1::Examples.MemeM2 0 0 TRUE

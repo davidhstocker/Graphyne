@@ -21,208 +21,189 @@
     
     <ListOfMeme>
         <!-- Numeric Conditions -->
-        <Meme id="propK_greaterThan5" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="propK_greaterThan5_CN"/>
+        <Meme id="propK_greaterThan5" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_greaterThan5_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="propK_greaterThan5_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="greaterThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="intValue_5"/>
-            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+        <Meme id="propK_greaterThan5_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="greaterThan" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="intValue_5" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK" linktype="subatomic"/>
             <Description/>
         </Meme>
-        <Meme id="propK_lessThan5" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="propK_lessThan5_CN"/>
+        <Meme id="propK_lessThan5" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_lessThan5_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="propK_lessThan5_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="lessThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="intValue_5"/>
-            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
-            <Description/>
-        </Meme>
-        
-        <Meme id="propK_equalTo10" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="propK_equalTo10_CN"/>
-        </Meme>
-        <Meme id="propK_equalTo10_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="Equal"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="intValue_10"/>
-            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
-            <Description/>
-        </Meme>
-        <Meme id="propK_notEqualTo10" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="propK_notEqualTo10_CN"/>
-        </Meme>
-        <Meme id="propK_notEqualTo10_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="lessThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="intValue_10"/>
-            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+        <Meme id="propK_lessThan5_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="intValue_5" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK" linktype="subatomic"/>
             <Description/>
         </Meme>
         
-        <Meme id="propK_greaterThan15" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="propK_greaterThan15_CN"/>
+        <Meme id="propK_equalTo10" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_equalTo10_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="propK_greaterThan15_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="greaterThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="intValue_15"/>
-            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+        <Meme id="propK_equalTo10_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="Equal" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="intValue_10" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK" linktype="subatomic"/>
             <Description/>
         </Meme>
-        <Meme id="propK_lessThan15" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="propK_lessThan15_CN"/>
+        <Meme id="propK_notEqualTo10" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_notEqualTo10_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="propK_lessThan15_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="lessThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="intValue_15"/>
-            <MemberMeme occurrence="1" memberID="ArgumentK1propK"/>
+        <Meme id="propK_notEqualTo10_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="intValue_10" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK" linktype="subatomic"/>
             <Description/>
         </Meme>
         
-        <Meme id="startsWithVowel" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="startsWithVowel_CS"/>
+        <Meme id="propK_greaterThan15" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_greaterThan15_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="startsWithVowel_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="propK_greaterThan15_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="greaterThan" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="intValue_15" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK" linktype="subatomic"/>
+            <Description/>
+        </Meme>
+        <Meme id="propK_lessThan15" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="propK_lessThan15_CN" linktype="subatomic"/>
+        </Meme>
+        <Meme id="propK_lessThan15_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="intValue_15" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ArgumentK1propK" linktype="subatomic"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="startsWithVowel" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="startsWithVowel_CS" linktype="subatomic"/>
+        </Meme>
+        <Meme id="startsWithVowel_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="StartsWith"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_a"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_e"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_i"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_o"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_u"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_A"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_E"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_I"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_O"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_U"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_a" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_e" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_i" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_o" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_u" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_A" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_E" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_I" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_O" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_U" linktype="subatomic"/>
             <MemberMeme occurrence="1" memberID="ArgumentH1propH"/>
         </Meme>
-        <Meme id="endsWithVowel" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="endsWithVowel_CS"/>
+        <Meme id="endsWithVowel" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="endsWithVowel_CS" linktype="subatomic"/>
         </Meme>
-        <Meme id="endsWithVowel_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="endsWithVowel_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="EndsWith"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_a"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_e"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_i"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_o"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_u"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_A"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_E"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_I"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_O"/>
-            <MemberMeme occurrence="1" memberID="ConditionsString.stringValue_U"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_a" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_e" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_i" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_o" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_u" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_A" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_E" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_I" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_O" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.stringValue_U" linktype="subatomic"/>
             <MemberMeme occurrence="1" memberID="ArgumentH1propH"/>
         </Meme>
         
-        <Meme id="A4propA_notSameAsF1propA" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="A4propA_notSameAsF1propA_CS"/>
+        <Meme id="A4propA_notSameAsF1propA" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A4propA_notSameAsF1propA_CS" linktype="subatomic"/>
         </Meme>
-        <Meme id="A4propA_notSameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="A4propA_notSameAsF1propA_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="NotEqual"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF" linktype="subatomic"/>
         </Meme>
         
-        <Meme id="A4propA_sameAsF1propA" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="A4propA_sameAsF1propA_CS"/>
+        <Meme id="A4propA_sameAsF1propA" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A4propA_sameAsF1propA_CS" linktype="subatomic"/>
         </Meme>
-        <Meme id="A4propA_sameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="A4propA_sameAsF1propA_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="Equal"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF" linktype="subatomic"/>
         </Meme>
         
-        <Meme id="A3propA_sameAsF1propA" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="A3propA_sameAsF1propA_CS"/>
+        <Meme id="A3propA_sameAsF1propA" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A3propA_sameAsF1propA_CS" linktype="subatomic"/>
         </Meme>
-        <Meme id="A3propA_sameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="A3propA_sameAsF1propA_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="Equal"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF" linktype="subatomic"/>
         </Meme>
         
-        <!--<Meme id="A3propA_sameAsF1propA" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="A3propA_sameAsF1propA_CS"/>
+        <!--<Meme id="A3propA_sameAsF1propA" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A3propA_sameAsF1propA_CS" linktype="subatomic"/>
         </Meme>
-        <Meme id="A3propA_sameAsF1propA_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="A3propA_sameAsF1propA_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="Equal"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF" linktype="subatomic"/>
         </Meme>
         -->
-        <Meme id="A4propA_notSameAsA1propA" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="A4propA_notSameAsA1propA_CS"/>
+        <Meme id="A4propA_notSameAsA1propA" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="A4propA_notSameAsA1propA_CS" linktype="subatomic"/>
         </Meme>
-        <Meme id="A4propA_notSameAsA1propA_CS" metameme="Memetic.Condition.ConditionString">
+        <Meme id="A4propA_notSameAsA1propA_CS" metameme="Graphyne.Condition.ConditionString">
             <MemeProperty name="StringOperator" value="NotEqual"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_A1propA"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_A1propA" linktype="subatomic"/>
         </Meme>
         
-        <Meme id="C3propB_greaterThanK1propK" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="C3propB_greaterThanK1propK_CN"/>
+        <Meme id="C3propB_greaterThanK1propK" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_greaterThanK1propK_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="C3propB_greaterThanK1propK_CN" metameme="Memetic.Condition.ConditionNumeric">
+        <Meme id="C3propB_greaterThanK1propK_CN" metameme="Graphyne.Condition.ConditionNumeric">
             <MemeProperty name="NumericOperator" value="greaterThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK" linktype="subatomic"/>
             <Description/>
         </Meme>
         
-        <Meme id="C3propB_lessThanK1propK" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="C3propB_lessThanK1propK_CN"/>
+        <Meme id="C3propB_lessThanK1propK" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_lessThanK1propK_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="C3propB_lessThanK1propK_CN" metameme="Memetic.Condition.ConditionNumeric">
+        <Meme id="C3propB_lessThanK1propK_CN" metameme="Graphyne.Condition.ConditionNumeric">
             <MemeProperty name="NumericOperator" value="lessThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK" linktype="subatomic"/>
             <Description/>
         </Meme>
         
-        <Meme id="K1propK_greaterThanC3propB" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="K1propK_greaterThanC3propB_CN"/>
+        <Meme id="K1propK_greaterThanC3propB" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="K1propK_greaterThanC3propB_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="K1propK_greaterThanC3propB_CN" metameme="Memetic.Condition.ConditionNumeric">
+        <Meme id="K1propK_greaterThanC3propB_CN" metameme="Graphyne.Condition.ConditionNumeric">
             <MemeProperty name="NumericOperator" value="greaterThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB" linktype="subatomic"/>
             <Description/>
         </Meme>
         
-        <Meme id="K1propK_lessThanC3propB" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="K1propK_lessThanC3propB_CN"/>
+        <Meme id="K1propK_lessThanC3propB" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="K1propK_lessThanC3propB_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="K1propK_lessThanC3propB_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="lessThan"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB"/>
+        <Meme id="K1propK_lessThanC3propB_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="lessThan" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB" linktype="subatomic"/>
             <Description/>
         </Meme>
         
-        <Meme id="C3propB_equaklToC2propB" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="C3propB_equaklToC2propB_CN"/>
+        <Meme id="C3propB_equaklToC2propB" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_equaklToC2propB_CN" linktype="subatomic"/>
         </Meme>
-        <Meme id="C3propB_equaklToC2propB_CN" metameme="Memetic.Condition.ConditionNumeric">
+        <Meme id="C3propB_equaklToC2propB_CN" metameme="Graphyne.Condition.ConditionNumeric">
+            <MemeProperty name="NumericOperator" value="equal" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C2propB" linktype="subatomic"/>
+            <Description/>
+        </Meme>
+        
+        <Meme id="C3propB_equaklToC1propB" metameme="Graphyne.Condition.Condition">
+            <MemberMeme occurrence="1" memberID="C3propB_equaklToC1propB_CN" linktype="subatomic"/>
+        </Meme>
+        <Meme id="C3propB_equaklToC1propB_CN" metameme="Graphyne.Condition.ConditionNumeric">
             <MemeProperty name="NumericOperator" value="equal"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C2propB"/>
-            <Description/>
-        </Meme>
-        
-        <Meme id="C3propB_equaklToC1propB" metameme="Memetic.Condition.Condition">
-            <MemberMeme occurrence="1" memberID="C3propB_equaklToC1propB_CN"/>
-        </Meme>
-        <Meme id="C3propB_equaklToC1propB_CN" metameme="Memetic.Condition.ConditionNumeric">
-            <MemeProperty name="NumericOperator" value="equal"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C1propB"/>
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C1propB" linktype="subatomic"/>
             <Description/>
         </Meme>
 		
@@ -242,98 +223,98 @@
 		</Meme>	
 
         <!-- Arguments -->
-        <Meme id="ArgumentK1propK" metameme="Memetic.Condition.Argument">
+        <Meme id="ArgumentK1propK" metameme="Graphyne.Condition.Argument">
             <MemberMeme occurrence="1" memberID="ArgumentK1propK_SArgument"/>
         </Meme>         
-        <Meme id="ArgumentK1propK_SArgument" metameme="Memetic.Condition.AgentAttributeArgument">
+        <Meme id="ArgumentK1propK_SArgument" metameme="Graphyne.Condition.AgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propK"/>
         </Meme>     
         
-        <Meme id="ArgumentH1propH" metameme="Memetic.Condition.Argument">
-            <MemberMeme occurrence="1" memberID="ArgumentH1propH_SArgument"/>
+        <Meme id="ArgumentH1propH" metameme="Graphyne.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="ArgumentH1propH_SArgument" linktype="subatomic"/>
         </Meme>         
-        <Meme id="ArgumentH1propH_SArgument" metameme="Memetic.Condition.AgentAttributeArgument">
+        <Meme id="ArgumentH1propH_SArgument" metameme="Graphyne.Condition.AgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propH"/>
         </Meme> 
         
-        <Meme id="MultiArg_A4propA_F1propF" metameme="Memetic.Condition.Argument">
-            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF_SArgument"/>
+        <Meme id="MultiArg_A4propA_F1propF" metameme="Graphyne.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_A4propA_F1propF_SArgument" linktype="subatomic"/>
         </Meme>         
-        <Meme id="MultiArg_A4propA_F1propF_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_A4propA_F1propF_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propA"/>
             <MemeProperty name="ObjectArgumentPath" value="propF"/>
         </Meme> 
         
-        <Meme id="MultiArg_A3propA_F1propF" metameme="Memetic.Condition.Argument">
+        <Meme id="MultiArg_A3propA_F1propF" metameme="Graphyne.Condition.Argument">
             <MemberMeme occurrence="1" memberID="MultiArg_A3propA_F1propF_SArgument"/>
         </Meme>         
-        <Meme id="MultiArg_A3propA_F1propF_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_A3propA_F1propF_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propA"/>
             <MemeProperty name="ObjectArgumentPath" value="propF"/>
         </Meme> 
         
-        <Meme id="MultiArg_A4propA_A1propA" metameme="Memetic.Condition.Argument">
+        <Meme id="MultiArg_A4propA_A1propA" metameme="Graphyne.Condition.Argument">
             <MemberMeme occurrence="1" memberID="MultiArg_A4propA_A1propA_SArgument"/>
         </Meme>         
-        <Meme id="MultiArg_A4propA_A1propA_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_A4propA_A1propA_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propA"/>
             <MemeProperty name="ObjectArgumentPath" value="propA"/>
         </Meme> 
         
-        <Meme id="MultiArg_C3propB_K1propK" metameme="Memetic.Condition.Argument">
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK_SArgument"/>
+        <Meme id="MultiArg_C3propB_K1propK" metameme="Graphyne.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_K1propK_SArgument" linktype="subatomic"/>
         </Meme>         
-        <Meme id="MultiArg_C3propB_K1propK_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_C3propB_K1propK_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="ObjectArgumentPath" value="propB"/>
             <MemeProperty name="SubjectArgumentPath" value="propK"/>
         </Meme> 
         
-        <Meme id="MultiArg_K1propK_C3propB" metameme="Memetic.Condition.Argument">
-            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB_SArgument"/>
+        <Meme id="MultiArg_K1propK_C3propB" metameme="Graphyne.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_K1propK_C3propB_SArgument" linktype="subatomic"/>
         </Meme>         
-        <Meme id="MultiArg_K1propK_C3propB_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_K1propK_C3propB_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propB"/>
             <MemeProperty name="ObjectArgumentPath" value="propK"/>
         </Meme> 
         
-        <Meme id="MultiArg_C3propB_C2propB" metameme="Memetic.Condition.Argument">
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C2propB_SArgument"/>
+        <Meme id="MultiArg_C3propB_C2propB" metameme="Graphyne.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C2propB_SArgument" linktype="subatomic"/>
         </Meme>         
-        <Meme id="MultiArg_C3propB_C2propB_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_C3propB_C2propB_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propB"/>
             <MemeProperty name="ObjectArgumentPath" value="propB"/>
         </Meme> 
         
-        <Meme id="MultiArg_C3propB_C1propB" metameme="Memetic.Condition.Argument">
-            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C1propB_SArgument"/>
+        <Meme id="MultiArg_C3propB_C1propB" metameme="Graphyne.Condition.Argument">
+            <MemberMeme occurrence="1" memberID="MultiArg_C3propB_C1propB_SArgument" linktype="subatomic"/>
         </Meme>         
-        <Meme id="MultiArg_C3propB_C1propB_SArgument" metameme="Memetic.Condition.MultiAgentAttributeArgument">
+        <Meme id="MultiArg_C3propB_C1propB_SArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
             <MemeProperty name="SubjectArgumentPath" value="propB"/>
             <MemeProperty name="ObjectArgumentPath" value="propB"/>
         </Meme>
 
         
         <!-- Numeric Values --> 
-		<Meme id="intValue_5" metameme="Memetic.Numeric.Formula">
-			<MemberMeme occurrence="1" memberID="nv_intValue_5"/>
+		<Meme id="intValue_5" metameme="Graphyne.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_5" linktype="subatomic"/>
 		</Meme>
-        <Meme id="nv_intValue_5" metameme="Memetic.Numeric.ValueNumeric">
+        <Meme id="nv_intValue_5" metameme="Graphyne.Numeric.ValueNumeric">
             <MemeProperty name="Value" value="5"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+            <MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES" linktype="subatomic"/>
         </Meme>
-		<Meme id="intValue_10" metameme="Memetic.Numeric.Formula">
-			<MemberMeme occurrence="1" memberID="nv_intValue_10"/>
+		<Meme id="intValue_10" metameme="Graphyne.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_10" linktype="subatomic"/>
 		</Meme>
-        <Meme id="nv_intValue_10" metameme="Memetic.Numeric.ValueNumeric">
+        <Meme id="nv_intValue_10" metameme="Graphyne.Numeric.ValueNumeric">
             <MemeProperty name="Value" value="10"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+            <MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES" linktype="subatomic"/>
         </Meme>
-		<Meme id="intValue_15" metameme="Memetic.Numeric.Formula">
-			<MemberMeme occurrence="1" memberID="nv_intValue_15"/>
+		<Meme id="intValue_15" metameme="Graphyne.Numeric.Formula">
+			<MemberMeme occurrence="1" memberID="nv_intValue_15" linktype="subatomic"/>
 		</Meme>
-        <Meme id="nv_intValue_15" metameme="Memetic.Numeric.ValueNumeric">
+        <Meme id="nv_intValue_15" metameme="Graphyne.Numeric.ValueNumeric">
             <MemeProperty name="Value" value="15"/>
-            <MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+            <MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES" linktype="subatomic"/>
         </Meme>
 
                 

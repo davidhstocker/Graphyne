@@ -63,37 +63,37 @@
 			<MetaMemeProperty name="ObjectArgumentPath" type="string"/>
 		</MetaMeme>
 		<MetaMeme id="Argument" switch="true" singleton="true">
-			<MemberMetaMeme reference="SimpleArgument" min="1" max="1"/>
-			<MemberMetaMeme reference="AgentAttributeArgument" min="1" max="1"/> 
-			<MemberMetaMeme reference="MultiAgentAttributeArgument" min="1" max="1"/>
+			<MemberMetaMeme reference="SimpleArgument" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="AgentAttributeArgument" min="1" max="1" linktype="subatomic"/> 
+			<MemberMetaMeme reference="MultiAgentAttributeArgument" min="1" max="1" linktype="subatomic"/>
 	</MetaMeme>	
 		<MetaMeme id="ConditionSetChildren">
-			<MemberMetaMeme reference="Condition" min="1"/>
+			<MemberMetaMeme reference="Condition" min="1" linktype="subatomic"/>
 		</MetaMeme>		
 		<MetaMeme id="ConditionSet" singleton="true">
 			<MetaMemeProperty name="SetOperator" type="string"/>
-			<MemberMetaMeme reference="ConditionSetChildren" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionSetChildren" min="1" max="1" linktype="subatomic"/>
 		</MetaMeme>	
 		<MetaMeme id="ConditionString" singleton="true">
 			<MetaMemeProperty name="StringOperator" type="string" restriction="StringOperator"/>
-			<MemberMetaMeme reference="ValueString" min="0"/>
-			<MemberMetaMeme reference="Argument" min="1" max="1"/>
+			<MemberMetaMeme reference="ValueString" min="0" linktype="subatomic"/>
+			<MemberMetaMeme reference="Argument" min="1" max="1" linktype="subatomic"/>
 		</MetaMeme>	
 		<MetaMeme id="ConditionNumeric" singleton="true">
 			<MetaMemeProperty name="NumericOperator" type="string"/>
-			<MemberMetaMeme reference="Graphyne.Numeric.Formula" min="0"/>
-			<MemberMetaMeme reference="Argument" min="1" max="1"/>
+			<MemberMetaMeme reference="Graphyne.Numeric.Formula" min="0" linktype="subatomic"/>
+			<MemberMetaMeme reference="Argument" min="1" max="1" linktype="subatomic"/>
 		</MetaMeme>
 		<MetaMeme id="ConditionScript" singleton="true">
 			<MetaMemeProperty name="ScriptName" type="string"/>
-			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1"/>
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1" linktype="subatomic"/>
 		</MetaMeme>	
 		<MetaMeme id="Condition" switch="true" singleton="true">
 			<MetaMemeProperty name="Priority" type="integer" constrained="true"/>
-			<MemberMetaMeme reference="ConditionSet" min="1" max="1"/>
-			<MemberMetaMeme reference="ConditionString" min="1" max="1"/>
-			<MemberMetaMeme reference="ConditionNumeric" min="1" max="1"/>
-			<MemberMetaMeme reference="ConditionScript" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionSet" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="ConditionString" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="ConditionNumeric" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="ConditionScript" min="1" max="1" linktype="subatomic"/>
 		</MetaMeme>		
 	</ListOfMetaMeme>
 	
@@ -101,14 +101,14 @@
 
 		<!-- The 'default' Condtiions -->
 		<Meme id="True" metameme="Graphyne.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="Graphyne.Condition.True_CScr"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Condition.True_CScr" linktype="subatomic"/>
 		</Meme>
 		<Meme id="True_CScr" metameme="Graphyne.Condition.ConditionScript">
 			<MemberMeme occurrence="1" memberID="Graphyne.DNA.TrueSES"/>
 		</Meme>
 		
 		<Meme id="False" metameme="Graphyne.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="Graphyne.Condition.False_CScr"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Condition.False_CScr" linktype="subatomic"/>
 		</Meme>
 		<Meme id="False_CScr" metameme="Graphyne.Condition.ConditionScript">
 			<MemberMeme occurrence="1" memberID="Graphyne.DNA.FalseSES"/>

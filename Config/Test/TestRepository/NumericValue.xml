@@ -21,70 +21,70 @@
 	
 	<ListOfMeme>
 		<!-- Numeric Values -->	
-		<Meme id="intValue_3" metameme="Memetic.Numeric.Formula">
+		<Meme id="intValue_3" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_intValue_3"/>
 		</Meme>
-		<Meme id="nv_intValue_3" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_intValue_3" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="3"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>
-		<Meme id="intValue_2" metameme="Memetic.Numeric.Formula">
+		<Meme id="intValue_2" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_intValue_2"/>
 		</Meme>
-		<Meme id="nv_intValue_2" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_intValue_2" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="2"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>
-		<Meme id="intValue_1" metameme="Memetic.Numeric.Formula">
+		<Meme id="intValue_1" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_intValue_1"/>
 		</Meme>
-		<Meme id="nv_intValue_1" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_intValue_1" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="1"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>
 
-		<Meme id="equalOrGreaterThan90Value_90" metameme="Memetic.Numeric.Formula">
+		<Meme id="equalOrGreaterThan90Value_90" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_equalOrGreaterThan90Value_90"/>
 		</Meme>		
-		<Meme id="nv_equalOrGreaterThan90Value_90" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_equalOrGreaterThan90Value_90" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="90.00"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>		
-		<Meme id="equalOrLessThan31Value_31" metameme="Memetic.Numeric.Formula">
+		<Meme id="equalOrLessThan31Value_31" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_equalOrLessThan31Value_31"/>
 		</Meme>
-		<Meme id="nv_equalOrLessThan31Value_31" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_equalOrLessThan31Value_31" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="31.00"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>	
-		<Meme id="equalOrLessThan30Value_30" metameme="Memetic.Numeric.Formula">
+		<Meme id="equalOrLessThan30Value_30" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_equalOrLessThan30Value_30"/>
 		</Meme>
-		<Meme id="nv_equalOrLessThan30Value_30" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_equalOrLessThan30Value_30" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="30.00"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>	
 		
-		<Meme id="decimalValue_2" metameme="Memetic.Numeric.Formula">
+		<Meme id="decimalValue_2" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_decimalValue_2"/>
 		</Meme>		
-		<Meme id="nv_decimalValue_2" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_decimalValue_2" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="2.00"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>	
-		<Meme id="decimalValue_1_5" metameme="Memetic.Numeric.Formula">
+		<Meme id="decimalValue_1_5" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_decimalValue_1_5"/>
 		</Meme>
-		<Meme id="nv_decimalValue_1_5" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_decimalValue_1_5" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="1.50"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>	
-		<Meme id="decimalValue_2_5" metameme="Memetic.Numeric.Formula">
+		<Meme id="decimalValue_2_5" metameme="Graphyne.Numeric.Formula">
 			<MemberMeme occurrence="1" memberID="nv_decimalValue_2_5"/>
 		</Meme>
-		<Meme id="nv_decimalValue_2_5" metameme="Memetic.Numeric.ValueNumeric">
+		<Meme id="nv_decimalValue_2_5" metameme="Graphyne.Numeric.ValueNumeric">
 			<MemeProperty name="Value" value="2.50"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Numeric.ValueNumericInitSES"/>
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 		</Meme>	
 
 	</ListOfMeme>

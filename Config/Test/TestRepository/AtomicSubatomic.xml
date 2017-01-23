@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+    xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<ListOfMetaMeme>
+		<MetaMeme id="ParentMM">
+			<MemberMetaMeme reference="ChildMM" min="1" max="2"/>
+		</MetaMeme>
+		<MetaMeme id="ChildMM"/>	
+	</ListOfMetaMeme>
+    
+    <ListOfMeme>
+        <!-- Numeric Conditions -->
+        <Meme id="ParentMeme1" metameme="ParentMM">
+            <MemberMeme occurrence="1" memberID="ChildMeme11" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ChildMeme12" linktype="subatomic"/>
+        </Meme>
+        <Meme id="ChildMeme11" metameme="ChildMM">
+        </Meme>
+        <Meme id="ChildMeme12" metameme="ChildMM">
+        </Meme>
+        
+        <Meme id="ParentMeme2" metameme="ParentMM">
+            <MemberMeme occurrence="1" memberID="ChildMeme21" linktype="subatomic"/>
+            <MemberMeme occurrence="1" memberID="ChildMeme22"/>
+        </Meme>
+        <Meme id="ChildMeme21" metameme="ChildMM">
+        </Meme>
+        <Meme id="ChildMeme22" metameme="ChildMM">
+        </Meme>
+        
+        <Meme id="ParentMeme3" metameme="ParentMM">
+            <MemberMeme occurrence="1" memberID="ChildMeme31"/>
+            <MemberMeme occurrence="1" memberID="ChildMeme32"/>
+        </Meme>
+        <Meme id="ChildMeme31" metameme="ChildMM">
+        </Meme>
+        <Meme id="ChildMeme32" metameme="ChildMM">
+        </Meme>
+ 
+
+                
+        
+    </ListOfMeme>
+</RMLModule>

@@ -653,15 +653,15 @@ def getArgumentTypeFromConditionEntity(conditionContainer):
     #SimpleArgument
     #AgentAttributeArgument
     argument = None
-    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.SimpleArgument", 1)
+    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.SimpleArgument")
     for unused_memID in memberUUIDs:
         argument = argumentType.SIMPLE
 
-    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.AgentAttributeArgument", 1)
+    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.AgentAttributeArgument")
     for unused_memID in memberUUIDs:
         argument = argumentType.ATTRIBUTE
         
-    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.MultiAgentAttributeArgument", 1)
+    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.MultiAgentAttributeArgument")
     for unused_memID in memberUUIDs:
         argument = argumentType.MULTI_ATTRIBUTE
         
@@ -687,11 +687,11 @@ def getArgumentsFromConditionEntity(conditionContainer):
         AA Arguments will have a full blown Member Path
         '''
     argumentInfo = {}
-    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.SimpleArgument", 1)
+    memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.SimpleArgument")
     if len(memberUUIDs) < 1:
-        memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.AgentAttributeArgument", 1)
+        memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.AgentAttributeArgument")
     if len(memberUUIDs) < 1:
-        memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.MultiAgentAttributeArgument", 1)
+        memberUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.MultiAgentAttributeArgument")
 
 
     for argumentEntity in memberUUIDs:
@@ -713,6 +713,7 @@ def getArgumentsFromConditionEntity(conditionContainer):
         msSatement= "Structure of problem meme = %s" %memeStructure
         Graph.api.writeError(statement)
         Graph.api.writeError(msSatement)
+        raise Exceptions.MalformedConditionalError(msSatement)
 
     return argumentInfo
 
@@ -822,7 +823,7 @@ def getTestValuesFromConditionEntity(conditionContainer):
     if len(values) == 0:
         memeType = Graph.api.getEntityMemeType(conditionContainer)
         statement = "CONTENT-WARNING: Unable to get test values from condition %s.  Please check the structure of the meme." %memeType
-        memeStructure = Graph.api.getClusterMembers(conditionContainer, 1, False)
+        memeStructure = Graph.api.getClusterMembers(conditionContainer, 0, False)
         msSatement= "Structure of problem meme = %s" %memeStructure
         Graph.api.writeError(statement)
         Graph.api.writeError(msSatement)

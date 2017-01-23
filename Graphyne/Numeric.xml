@@ -66,7 +66,7 @@
 		</Meme>
 		<Meme id="RandomInitSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="initialize"/>
-			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.RandomInitScript" />
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.RandomInitScript" linktype="subatomic" />
 		</Meme>	
 		
 		<!--Random Distribution Init State Event Script-->
@@ -76,7 +76,7 @@
 		</Meme>
 		<Meme id="ValueNumericInitSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="initialize"/>
-			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitScript" />
+			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitScript" linktype="subatomic" />
 		</Meme>		
 	</ListOfMeme>
 </RMLModule>

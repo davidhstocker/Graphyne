@@ -22,292 +22,278 @@
 	<ListOfMeme>
 		
 		<!-- Set Conditions -->
-		<Meme id="setNotTest" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="setNotTest_ConSet"/>
+		<Meme id="setNotTest" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setNotTest_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setNotTest_ConSet" metameme="Memetic.Condition.ConditionSet">
+		<Meme id="setNotTest_ConSet" metameme="Graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="NOT"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="setNotTest_ConSet_I"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="setNotTest_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
+		<Meme id="setNotTest_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
 			<MemberMeme occurrence="1" memberID="startsWithVowel"/>
 			<MemberMeme occurrence="1" memberID="endsWith"/>
 		</Meme>
 
-		<Meme id="setORTest" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="setORTest_ConSet"/>
+		<Meme id="setORTest" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setORTest_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setORTest_ConSet" metameme="Memetic.Condition.ConditionSet">
+		<Meme id="setORTest_ConSet" metameme="Graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="OR"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="setORTest_ConSet_I"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="setORTest_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
+		<Meme id="setORTest_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
 			<MemberMeme occurrence="1" memberID="startsWithVowel"/>
 			<MemberMeme occurrence="1" memberID="endsWith"/>
 		</Meme>
 				
-		<Meme id="setANDTest" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="setANDTest_ConSet"/>
+		<Meme id="setANDTest" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setANDTest_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setANDTest_ConSet" metameme="Memetic.Condition.ConditionSet">
+		<Meme id="setANDTest_ConSet" metameme="Graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="AND"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="setANDTest_ConSet_I"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="setANDTest_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
+		<Meme id="setANDTest_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
 			<MemberMeme occurrence="1" memberID="startsWithVowel"/>
 			<MemberMeme occurrence="1" memberID="endsWith"/>
 		</Meme>		
 		
 		<!-- String Conditions -->		
-		<Meme id="endsWith" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="EndsWith_CS"/>
+		<Meme id="endsWith" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="EndsWith_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalUnicodeUmlaut" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalUnicodeUmlaut_CS"/>
+		<Meme id="equalUnicodeUmlaut" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalUnicodeUmlaut_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalCryllicArgument" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalCryllicArgument_CS"/>
+		<Meme id="equalCryllicArgument" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalCryllicArgument_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="startsWithVowel" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="startsWithVowel_CS"/>
+		<Meme id="startsWithVowel" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="startsWithVowel_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="notSameLength" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="notSameLength_CS"/>
+		<Meme id="notSameLength" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="notSameLength_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="sameLength" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="sameLength_CS"/>
+		<Meme id="sameLength" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="sameLength_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="shorter" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="shorter_CS"/>
+		<Meme id="shorter" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="shorter_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="longer" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="longer_CS"/>
+		<Meme id="longer" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="longer_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="notEqualString" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="notEqualString_CS"/>
+		<Meme id="notEqualString" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="notEqualString_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalString" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalString_CS"/>
+		<Meme id="equalString" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalString_CS" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalUnicodeCryllic" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalUnicodeCryllic_CS"/>
+		<Meme id="equalUnicodeCryllic" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalUnicodeCryllic_CS" linktype="subatomic"/>
 		</Meme>
 		
 		
 		
 		
-		<Meme id="EndsWith_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="EndsWith_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="EndsWith"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="endsWithValue_s"/>
-			<MemberMeme occurrence="1" memberID="endsWithValue_S"/>
-			<MemberMeme occurrence="1" memberID="endsWithString_Argument"/>
+			<MemberMeme occurrence="1" memberID="endsWithValue_s" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="endsWithValue_S" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="endsWithString_Argument" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="equalUnicodeUmlaut_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="equalUnicodeUmlaut_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Equal"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_Hofäcker"/>
-			<MemberMeme occurrence="1" memberID="stringValue_å"/>
-			<MemberMeme occurrence="1" memberID="stringValue_À"/>
-			<MemberMeme occurrence="1" memberID="stringValue_Æ"/>
-			<MemberMeme occurrence="1" memberID="stringValue_æ"/>
-			<MemberMeme occurrence="1" memberID="stringValue_û"/>
-			<MemberMeme occurrence="1" memberID="stringValue_ê"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_Hofäcker" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_å" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_À" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_Æ" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_æ" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_û" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_ê" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="equalCryllicArgument_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="equalCryllicArgument_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="StartsWith"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_a"/>
-			<MemberMeme occurrence="1" memberID="stringValue_e"/>
-			<MemberMeme occurrence="1" memberID="stringValue_i"/>
-			<MemberMeme occurrence="1" memberID="stringValue_o"/>
-			<MemberMeme occurrence="1" memberID="stringValue_u"/>
-			<MemberMeme occurrence="1" memberID="stringValue_A"/>
-			<MemberMeme occurrence="1" memberID="stringValue_E"/>
-			<MemberMeme occurrence="1" memberID="stringValue_I"/>
-			<MemberMeme occurrence="1" memberID="stringValue_O"/>
-			<MemberMeme occurrence="1" memberID="stringValue_U"/>
+			<MemberMeme occurrence="1" memberID="stringValue_a" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_e" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_i" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_o" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_u" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_A" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_E" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_I" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_O" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_U" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestStringCryllic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="startsWithVowel_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="startsWithVowel_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="StartsWith"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_a"/>
-			<MemberMeme occurrence="1" memberID="stringValue_e"/>
-			<MemberMeme occurrence="1" memberID="stringValue_i"/>
-			<MemberMeme occurrence="1" memberID="stringValue_o"/>
-			<MemberMeme occurrence="1" memberID="stringValue_u"/>
-			<MemberMeme occurrence="1" memberID="stringValue_A"/>
-			<MemberMeme occurrence="1" memberID="stringValue_E"/>
-			<MemberMeme occurrence="1" memberID="stringValue_I"/>
-			<MemberMeme occurrence="1" memberID="stringValue_O"/>
-			<MemberMeme occurrence="1" memberID="stringValue_U"/>
+			<MemberMeme occurrence="1" memberID="stringValue_a" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_e" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_i" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_o" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_u" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_A" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_E" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_I" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_O" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_U" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="notSameLength_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="notSameLength_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="NotSameLength"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="stringValue_owl"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="sameLength_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="sameLength_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="SameLength"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_owl"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_owl" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="shorter_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="shorter_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Shorter"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_owl"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_owl" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="longer_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="longer_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Longer"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_owl"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_owl" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="notEqualString_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="notEqualString_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="NotEqual"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_owl"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_owl" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="equalString_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="equalString_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Equal"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_owl"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_owl" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
-		<Meme id="equalUnicodeCryllic_CS" metameme="Memetic.Condition.ConditionString">
+		<Meme id="equalUnicodeCryllic_CS" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Equal"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="stringValue_Офисные"/>
-			<MemberMeme occurrence="1" memberID="stringValue_ΓΔΘΣΦΨΩ"/>
-			<MemberMeme occurrence="1" memberID="stringValue_قـقـق"/>
-			<MemberMeme occurrence="1" memberID="stringValue_אבהעףצץקר"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestString"/>
+			<MemberMeme occurrence="1" memberID="stringValue_Офисные" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_ΓΔΘΣΦΨΩ" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_قـقـق" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="stringValue_אבהעףצץקר" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestString" linktype="subatomic"/>
 			<Description>Test - EndsWith</Description>
 		</Meme>
 
 
 
 		<!-- Argument memes -->
-		<Meme id="ArgumentTestString" metameme="Memetic.Condition.Argument">
-			<MemberMeme occurrence="1" memberID="ArgumentTestString_SArgument"/>
+		<Meme id="ArgumentTestString" metameme="Graphyne.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentTestString_SArgument" linktype="subatomic"/>
 		</Meme>
-		<Meme id="endsWithString_Argument" metameme="Memetic.Condition.Argument">
-			<MemberMeme occurrence="1" memberID="endsWithString_SArgument"/>
+		<Meme id="endsWithString_Argument" metameme="Graphyne.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="endsWithString_SArgument" linktype="subatomic"/>
 		</Meme>
-		<Meme id="ArgumentTestStringCryllic" metameme="Memetic.Condition.Argument">
-			<MemberMeme occurrence="1" memberID="ArgumentTestStringCryllic_SArgument"/>
+		<Meme id="ArgumentTestStringCryllic" metameme="Graphyne.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentTestStringCryllic_SArgument" linktype="subatomic"/>
 		</Meme>
 
-		<Meme id="ArgumentTestString_SArgument" metameme="Memetic.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="TestString"/>
+		<Meme id="ArgumentTestString_SArgument" metameme="Graphyne.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="TestString" linktype="subatomic"/>
 		</Meme>
-		<Meme id="endsWithString_SArgument" metameme="Memetic.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="endsWith"/>
+		<Meme id="endsWithString_SArgument" metameme="Graphyne.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="endsWith" linktype="subatomic"/>
 		</Meme>		
-		<Meme id="ArgumentTestStringCryllic_SArgument" metameme="Memetic.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="Офисные"/>
+		<Meme id="ArgumentTestStringCryllic_SArgument" metameme="Graphyne.Condition.SimpleArgument">
+			<MemeProperty name="ArgumentTag" value="Офисные" linktype="subatomic"/>
 		</Meme>		
 			
 		
 		<!--Value String Memes -->
-		<Meme id="endsWithValue_s" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="s"/>
+		<Meme id="endsWithValue_s" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="s" linktype="subatomic"/>
 		</Meme>
-		<Meme id="endsWithValue_S" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="S"/>
-		</Meme>
-		
-		<Meme id="stringValue_a" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="a"/>
-		</Meme>
-		<Meme id="stringValue_e" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="e"/>
-		</Meme>
-		<Meme id="stringValue_i" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="i"/>
-		</Meme>
-		<Meme id="stringValue_o" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="o"/>
-		</Meme>
-		<Meme id="stringValue_u" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="u"/>
-		</Meme>
-		<Meme id="stringValue_A" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="A"/>
-		</Meme>
-		<Meme id="stringValue_E" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="E"/>
-		</Meme>
-		<Meme id="stringValue_I" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="I"/>
-		</Meme>
-		<Meme id="stringValue_O" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="O"/>
-		</Meme>
-		<Meme id="stringValue_U" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="U"/>
+		<Meme id="endsWithValue_S" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="S" linktype="subatomic"/>
 		</Meme>
 		
-		<Meme id="stringValue_Hofäcker" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="Hofäcker"/>
+		<Meme id="stringValue_a" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="a" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_å" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="å"/>
+		<Meme id="stringValue_e" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="e" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_À" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="À"/>
+		<Meme id="stringValue_i" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="i" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_Æ" metameme="Memetic.Condition.ValueString">
+		<Meme id="stringValue_o" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="o" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_u" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="u" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_A" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="A" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_E" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="E" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_I" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="I" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_O" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="O" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_U" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="U" linktype="subatomic"/>
+		</Meme>
+		
+		<Meme id="stringValue_Hofäcker" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="Hofäcker" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_å" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="å" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_À" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="À" linktype="subatomic"/>
+		</Meme>
+		<Meme id="stringValue_Æ" metameme="Graphyne.Condition.ValueString">
 			<MemeProperty name="Value" value="Æ"/>
 		</Meme>
-		<Meme id="stringValue_æ" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="æ"/>
+		<Meme id="stringValue_æ" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="æ" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_û" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="û"/>
+		<Meme id="stringValue_û" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="û" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_ê" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="ê"/>
+		<Meme id="stringValue_ê" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="ê" linktype="subatomic"/>
 		</Meme>
 
-		<Meme id="stringValue_owl" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="owl"/>
+		<Meme id="stringValue_owl" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="owl" linktype="subatomic"/>
 		</Meme>
 		
-		<Meme id="stringValue_Офисные" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="Офисные"/>
+		<Meme id="stringValue_Офисные" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="Офисные" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_ΓΔΘΣΦΨΩ" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="ΓΔΘΣΦΨΩ"/>
+		<Meme id="stringValue_ΓΔΘΣΦΨΩ" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="ΓΔΘΣΦΨΩ" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_قـقـق" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="قـقـق"/>
+		<Meme id="stringValue_قـقـق" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="قـقـق" linktype="subatomic"/>
 		</Meme>
-		<Meme id="stringValue_אבהעףצץקר" metameme="Memetic.Condition.ValueString">
-			<MemeProperty name="Value" value="אבהעףצץקר"/>
+		<Meme id="stringValue_אבהעףצץקר" metameme="Graphyne.Condition.ValueString">
+			<MemeProperty name="Value" value="אבהעףצץקר" linktype="subatomic"/>
 		</Meme>				
 	
 	</ListOfMeme>

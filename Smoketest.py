@@ -4,6 +4,7 @@
    Smoketest.py: Regression testing utility for Graphyne.  Multiprocessing wrapper for Smokest, allowing multiple simultaneous tests against different persistence types.
 """
 from tkinter.test.runtktests import this_dir_path
+from Graphyne.DatabaseDrivers.DriverTermplate import linkTypes
 
 __author__ = 'David Stocker'
 __copyright__ = 'Copyright 2016, David Stocker'   
@@ -1498,7 +1499,7 @@ def testEntityPhase7(phaseName = 'testEntityPhase7', fName = "Entity_Phase7.ates
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if stringArray[2] != "X":
-                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 0)
                                 
                 unusedMountPointsOverview = {}
                 for mountPoint in mountPoints:
@@ -1591,7 +1592,7 @@ def testLinkCounterpartsByMetaMemeType(phaseName = 'LinkCounterpartsByMetaMemeTy
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if stringArray[2] != "X":
-                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 0)
                                 
                 unusedMountPointsOverview = {}
                 for mountPoint in mountPoints:
@@ -1687,7 +1688,7 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
             #Attach entityID1 at the mount point specified in stringArray[2]
             rememberMe = {}
             
-            mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+            mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 0)
             for mountPoint in mountPoints:
                 api.addEntityLink(mountPoint, entityID1, {}, int(stringArray[5]))
                 rememberMe[mountPoint] = entityID1
@@ -3168,7 +3169,7 @@ def testGetHasCounterpartsByType(phaseName = 'getHasCounterpartsByType', fName =
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if stringArray[2] != "X":
-                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 0)
                                 
                 unusedMountPointsOverview = {}
                 for mountPoint in mountPoints:
@@ -3997,6 +3998,84 @@ def testRemoveEvent():
     Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
     Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return resultSet
+
+
+
+
+def testAtomicSubatomic():
+    """
+        Test atomic/subatomic links defined in memes.
+    """
+    method = moduleName + '.' + 'testAtomicSubatomic'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #The testcase entities
+    try:
+        parentMeme1 = Graph.api.createEntityFromMeme("AtomicSubatomic.ParentMeme1")  #Both shild entites have subatomic links
+        parentMeme2 = Graph.api.createEntityFromMeme("AtomicSubatomic.ParentMeme2")  #One child has an atomic link, the other subatomic
+        parentMeme3 = Graph.api.createEntityFromMeme("AtomicSubatomic.ParentMeme3")  #Both shild entites have atomic links
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating test entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+    try:
+        pm1aChildren = api.getLinkCounterpartsByMetaMemeType(parentMeme1, "AtomicSubatomic.ChildMM", linkTypes.ATOMIC)
+        pm1sChildren = api.getLinkCounterpartsByMetaMemeType(parentMeme1, "AtomicSubatomic.ChildMM", linkTypes.SUBATOMIC)
+        if len(pm1sChildren) < 2: 
+            testResult = "False"
+            errorMsg = "Meme AtomicSubatomic.ParentMeme1 should have two subatomic children.  It actually has %s\n" %(len(pm1sChildren))
+        if len(pm1aChildren) > 0: 
+            testResult = "False"
+            errorMsg = "Meme AtomicSubatomic.ParentMeme1 should have no atomic children.  It actually has %s\n" %(len(pm1aChildren))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error when searching for children of AtomicSubatomic.ParentMeme1!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    try:
+        pm2aChildren = api.getLinkCounterpartsByMetaMemeType(parentMeme2, "AtomicSubatomic.ChildMM", linkTypes.ATOMIC)
+        pm2sChildren = api.getLinkCounterpartsByMetaMemeType(parentMeme2, "AtomicSubatomic.ChildMM", linkTypes.SUBATOMIC)
+        if len(pm2sChildren) != 1: 
+            testResult = "False"
+            errorMsg = "Meme AtomicSubatomic.ParentMeme2 should have one subatomic child.  It actually has %s\n" %(len(pm2sChildren))
+        if len(pm2aChildren) != 1: 
+            testResult = "False"
+            errorMsg = "Meme AtomicSubatomic.ParentMeme2 should have one atomic child.  It actually has %s\n" %(len(pm2aChildren))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error when searching for children of AtomicSubatomic.ParentMeme2!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    try:
+        pm3aChildren = api.getLinkCounterpartsByMetaMemeType(parentMeme3, "AtomicSubatomic.ChildMM", linkTypes.ATOMIC)
+        pm3sChildren = api.getLinkCounterpartsByMetaMemeType(parentMeme3, "AtomicSubatomic.ChildMM", linkTypes.SUBATOMIC)
+        if len(pm3sChildren) > 0: 
+            testResult = "False"
+            errorMsg = "Meme AtomicSubatomic.ParentMeme1 should have no subatomic children.  It actually has %s\n" %(len(pm3sChildren))
+        if len(pm3aChildren) < 2: 
+            testResult = "False"
+            errorMsg = "Meme AtomicSubatomic.ParentMeme1 should have two atomic children.  It actually has %s\n" %(len(pm3aChildren))
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error when searching for children of AtomicSubatomic.ParentMeme3!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+
+        
+    testcase = "testAtomicSubatomic()"
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
    
 
 
@@ -4592,6 +4671,12 @@ def runTests(css):
     testSetData = testRemoveEvent()
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Remove Event", testSetPercentage, copy.deepcopy(testSetData)])
+
+    #testAtomicSubatomic
+    testSetData = testAtomicSubatomic()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Atomic and Subatomic", testSetPercentage, copy.deepcopy(testSetData)])
+
 
     #endTime = time.time()
     #validationTime = endTime - startTime     

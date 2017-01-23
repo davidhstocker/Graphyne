@@ -1,7 +1,7 @@
-Memetic.Condition.True	2 TestInt XXX XXX XXX XXX True
-Memetic.Condition.True XXX XXX XXX XXX XXX XXX True
-Memetic.Condition.False 2 TestInt XXX XXX XXX XXX False
-Memetic.Condition.False XXX XXX XXX XXX XXX XXX False
+Graphyne.Condition.True	2 TestInt XXX XXX XXX XXX True
+Graphyne.Condition.True XXX XXX XXX XXX XXX XXX True
+Graphyne.Condition.False 2 TestInt XXX XXX XXX XXX False
+Graphyne.Condition.False XXX XXX XXX XXX XXX XXX False
 TestCaseAppendix.ConditionTrueOrFalse TRUE TestValue XXX XXX XXX XXX True
 TestCaseAppendix.ConditionTrueOrFalse True TestValue XXX XXX XXX XXX True
 TestCaseAppendix.ConditionTrueOrFalse true TestValue XXX XXX XXX XXX True

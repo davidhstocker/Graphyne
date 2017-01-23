@@ -1,8 +1,8 @@
 
-Graphyne is a native Python property graph database.  It is designed to be easy to integrate into your Python projects, simple to use and very powerful.  It uses [Memetic][1] as its graph definition and query language.
+Graphyne is a smart graph, written in Python.  A smart graph is a property graph that can react to changes and incorporate decision making logic, not just passively hold data.
 
 ## Easy to Integrate into Python Projects
-Being pure python code, Graphyne can be used simply by importing it and initializing the graph.  There are no REST services or external graph servers to worry about.  You can choose to use SQLite persistence, an external SQL based database or forgo persistence entirely if you don’t need it and gain a performance bump.
+Being pure python code, Graphyne can be used simply by importing it and initializing the graph.  There are no REST services or external graph servers to worry about.  You can choose to use SQLite persistence, an external SQL based database or forgo persistence entirely if you don’t need it and gain a performance bump.  It is designed to be easy to integrate into your Python projects, simple to use and very powerful.  It uses [Memetic][1] as its graph definition and query language.
 
 ## Simple to Use
 Within 5 statements, you can import the Graphyne library, initialize the graph, and create a hello world graph by creating a pair of entities and linking them.  This allows you to get started with using Graphyne quickly in your projects.
@@ -197,6 +197,23 @@ Singletons can be used a highly connected **hyper-nodes**.  When a singleton act
 ## Links
 
 There is an API method for creating a link between two entities and one for destroying an existing link.  The method for creating a link between two entities is addEntityLink() and the method for removing a link is removeEntityLink().   You can define the link type value of 0 (atomic) or 1 (subatomic) when creating links.  The default value is 0.  Links created between entities that are based on meme and child meme relationships can have their link type defined in the memes and the cluster will be created using whatever link types are chosen by the designer.
+
+When designing memes, links defined in memes/child relationships can also be atomic or subatomic.  If the designer wishes to make use of this option, she can add a linktype attribute to the MemberMeme element, with a value of “atomic” or “subatomic”.  The example below shows this attribute in usage.  
+
+When a ParentMeme meme and its children are instantiated, the link between the *ParentMeme* entity and the *ChildMeme1* will be subatomic, while the link between *ParentMeme* entity and the *ChildMeme2* will be subatomic.  Note that there is no explicit **linktype="atomic"** attribute.  This is because the default value for link types is atomic, just as when dynamically creating links at runtime and a missing linktype attribute is treated as atomic.
+
+'''
+<Meme id="ParentMeme" metameme="ParentMM">
+	<MemberMeme occurrence="1" memberID="ChildMeme1" linktype="subatomic"/>
+	<MemberMeme occurrence="1" memberID="ChildMeme2"/>
+</Meme>
+
+<Meme id="ChildMeme1" metameme="ChildMM">
+</Meme>
+
+<Meme id="ChildMeme2" metameme="ChildMM">
+</Meme>
+'''
 
 
 ## Traversing a Graph

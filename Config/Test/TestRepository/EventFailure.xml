@@ -23,7 +23,7 @@
 	<ListOfMetaMeme>
 		<MetaMeme id="BrokenEventsMM">	
 			<MetaMemeProperty name="propB" type="string"/>
-			<MemberMetaMeme reference="Memetic.DNA.StateEventScript"/>
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript"/>
 		</MetaMeme>
 	</ListOfMetaMeme>
 	
@@ -37,27 +37,27 @@
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenPropertySES" />
 		</Meme>
 		
-		<Meme id="BrokenScript" metameme="Memetic.DNA.Script">
+		<Meme id="BrokenScript" metameme="Graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventFailure.BrokenScript"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		
-		<Meme id="BrokenLinkChangeAddedSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="BrokenLinkChangeAddedSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
 		</Meme>	
 
-		<Meme id="BrokenLinkChangeRemovedSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="BrokenLinkChangeRemovedSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkRemove"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
 		</Meme>	
 		
-		<Meme id="BrokenExecuteSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="BrokenExecuteSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="execute"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
 		</Meme>
 		
-		<Meme id="BrokenPropertySES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="BrokenPropertySES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="propertyChanged"/>
 			<MemeProperty name="PropertyID" value="propB"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
@@ -75,27 +75,27 @@
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsPropertySES" />
 		</Meme>
 		
-		<Meme id="ThrowsScript" metameme="Memetic.DNA.Script">
+		<Meme id="ThrowsScript" metameme="Graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventFailure.ThrowsException"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		
-		<Meme id="ThrowsLinkChangeAddedSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="ThrowsLinkChangeAddedSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
 		</Meme>	
 
-		<Meme id="ThrowsLinkChangeRemovedSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="ThrowsLinkChangeRemovedSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkRemove"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
 		</Meme>	
 		
-		<Meme id="ThrowsExecuteSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="ThrowsExecuteSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="execute"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
 		</Meme>
 		
-		<Meme id="ThrowsPropertySES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="ThrowsPropertySES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="propertyChanged"/>
 			<MemeProperty name="PropertyID" value="propB"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
@@ -108,12 +108,12 @@
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsExecuteSES" />
 		</Meme>
 		
-		<Meme id="MalformedEventScript" metameme="Memetic.DNA.Script">
+		<Meme id="MalformedEventScript" metameme="Graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventFailure.NotAStateEventScript"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		
-		<Meme id="MalformedEventSES" metameme="Memetic.DNA.StateEventScript">
+		<Meme id="MalformedEventSES" metameme="Graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.MalformedEventScript" />
 		</Meme>	

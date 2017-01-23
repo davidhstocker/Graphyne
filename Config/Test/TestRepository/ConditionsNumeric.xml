@@ -21,205 +21,188 @@
 	
 	<ListOfMeme>
 		<!-- Condition Memes -->
-		<Meme id="equalOrLessThan" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrLessThan_CN"/>
+		<Meme id="equalOrLessThan" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrLessThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrLessThan_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt" linktype="subatomic"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalOrGreaterThan" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrGreaterThan_CN"/>
+		<Meme id="equalOrGreaterThan" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrGreaterThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrGreaterThan_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt" linktype="subatomic"/>
 			<Description/>
 		</Meme>
-		<Meme id="lessThan" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="lessThan_CN"/>
+		<Meme id="lessThan" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="lessThan_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="lessThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="lessThan_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="LessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt" linktype="subatomic"/>
 			<Description/>
 		</Meme>
-		<Meme id="greaterThan" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="greaterThan_CN"/>
+		<Meme id="greaterThan" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="greaterThan_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="greaterThan_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="greaterThan_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="GreaterThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt" linktype="subatomic"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalNumeric" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalNumeric_CN"/>
+		<Meme id="equalNumeric" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalNumeric_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalNumeric_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalNumeric_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="Equal"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_2" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_3" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt" linktype="subatomic"/>
 			<Description/>
 		</Meme>
-		<Meme id="notEqualNumeric" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="notEqualNumeric_CN"/>
+		<Meme id="notEqualNumeric" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="notEqualNumeric_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="notEqualNumeric_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="notEqualNumeric_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="NotEqual"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="NumericValue.intValue_1"/>
-			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
+			<MemberMeme occurrence="1" memberID="NumericValue.intValue_1" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ArgumentTestInt" linktype="subatomic"/>
 			<Description/>
 		</Meme>
 		
-		<Meme id="equalOrLessThan30" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrLessThan30_CN"/>
+		<Meme id="equalOrLessThan30" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan30_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrLessThan30_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrLessThan30_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.equalOrLessThan30Value_30"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalOrLessThanDecimal" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrLessThanDecimal_CN"/>
+		<Meme id="equalOrLessThanDecimal" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThanDecimal_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrLessThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrLessThanDecimal_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalOrGreaterThanDecimal" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrGreaterThanDecimal_CN"/>
+		<Meme id="equalOrGreaterThanDecimal" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThanDecimal_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrGreaterThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrGreaterThanDecimal_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
-		<Meme id="lessThanDecimal" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="lessThanDecimal_CN"/>
+		<Meme id="lessThanDecimal" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="lessThanDecimal_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="lessThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="lessThanDecimal_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="LessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
-		<Meme id="greaterThanDecimal" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="greaterThanDecimal_CN"/>
+		<Meme id="greaterThanDecimal" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="greaterThanDecimal_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="greaterThanDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="greaterThanDecimal_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="GreaterThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
-		<Meme id="notEqualDecimal" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="notEqualDecimal_CN"/>
+		<Meme id="notEqualDecimal" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="notEqualDecimal_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="notEqualDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="notEqualDecimal_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="NotEqual"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalDecimal" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalDecimal_CN"/>
+		<Meme id="equalDecimal" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalDecimal_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalDecimal_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalDecimal_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="Equal"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_1_5"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.decimalValue_2_5"/>
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt"/>
 			<Description/>
 		</Meme>
 		
-		<Meme id="equalOrLessThan31" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrLessThan31_CN"/>
+		<Meme id="equalOrLessThan31" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan31_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrLessThan31_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrLessThan31_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.equalOrLessThan31Value_31"/>
 			<MemberMeme occurrence="1" memberID="equalOrLessThan31_Argument"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalOrGreaterThan31" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrGreaterThan31_CN"/>
+		<Meme id="equalOrGreaterThan31" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan31_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrGreaterThan31_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrGreaterThan31_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.equalOrLessThan31Value_31"/>
 			<MemberMeme occurrence="1" memberID="equalOrLessThan31_Argument"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalOrLessThan90" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrLessThan90_CN"/>
+		<Meme id="equalOrLessThan90" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrLessThan90_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrLessThan90_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrLessThan90_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.equalOrGreaterThan90Value_90"/>
 			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_Argument"/>
 			<Description/>
 		</Meme>
-		<Meme id="equalOrGreaterThan90" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_CN"/>
+		<Meme id="equalOrGreaterThan90" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_CN" linktype="subatomic"/>
 		</Meme>
-		<Meme id="equalOrGreaterThan90_CN" metameme="Memetic.Condition.ConditionNumeric">
+		<Meme id="equalOrGreaterThan90_CN" metameme="Graphyne.Condition.ConditionNumeric">
 			<MemeProperty name="NumericOperator" value="EqualOrGreaterThan"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
 			<MemberMeme occurrence="1" memberID="NumericValue.equalOrGreaterThan90Value_90"/>
 			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_Argument"/>
 			<Description/>
 		</Meme>
 
 		<!-- Arguments -->
-		<Meme id="ArgumentTestInt" metameme="Memetic.Condition.Argument">
+		<Meme id="ArgumentTestInt" metameme="Graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="ArgumentTestInt_SArgument"/>
 		</Meme>			
-		<Meme id="ArgumentTestInt_SArgument" metameme="Memetic.Condition.SimpleArgument">
+		<Meme id="ArgumentTestInt_SArgument" metameme="Graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="TestInt"/>
 		</Meme>		
-		<Meme id="equalOrGreaterThan90_Argument" metameme="Memetic.Condition.Argument">
+		<Meme id="equalOrGreaterThan90_Argument" metameme="Graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="equalOrGreaterThan90_SArgument"/>
 		</Meme>			
-		<Meme id="equalOrGreaterThan90_SArgument" metameme="Memetic.Condition.SimpleArgument">
+		<Meme id="equalOrGreaterThan90_SArgument" metameme="Graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="StimulusLevel"/>
 		</Meme>	
-		<Meme id="equalOrLessThan31_Argument" metameme="Memetic.Condition.Argument">
+		<Meme id="equalOrLessThan31_Argument" metameme="Graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="equalOrLessThan31_SArgument"/>
 		</Meme>			
-		<Meme id="equalOrLessThan31_SArgument" metameme="Memetic.Condition.SimpleArgument">
+		<Meme id="equalOrLessThan31_SArgument" metameme="Graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="StimulusLevel"/>
 		</Meme>	
 		

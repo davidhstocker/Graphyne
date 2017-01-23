@@ -21,58 +21,55 @@
 	
 	<ListOfMeme>
 
-		<Meme id="setWithTargetsInPackage" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet"/>
+		<Meme id="setWithTargetsInPackage" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInPackage_ConSet" metameme="Memetic.Condition.ConditionSet">
+		<Meme id="setWithTargetsInPackage_ConSet" metameme="Graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="NOT"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet_I"/>
+			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet_I" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInPackage_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
-			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith"/>
-			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel"/>
+		<Meme id="setWithTargetsInPackage_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel" linktype="subatomic"/>
 		</Meme>		
 		
 		
-		<Meme id="setWithTargetsInAnotherPackage" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet"/>
+		<Meme id="setWithTargetsInAnotherPackage" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInAnotherPackage_ConSet" metameme="Memetic.Condition.ConditionSet">
+		<Meme id="setWithTargetsInAnotherPackage_ConSet" metameme="Graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="OR"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet_I"/>
+			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet_I" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInAnotherPackage_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
-			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith"/>
-			<MemberMeme occurrence="1" memberID="TestPackage2.ConditionsString.endsWith"/>
+		<Meme id="setWithTargetsInAnotherPackage_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="TestPackage2.ConditionsString.endsWith" linktype="subatomic"/>
 		</Meme>		
 
 		
-		<Meme id="setWithTargetsInFreeModule" metameme="Memetic.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet"/>
+		<Meme id="setWithTargetsInFreeModule" metameme="Graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInFreeModule_ConSet" metameme="Memetic.Condition.ConditionSet">
+		<Meme id="setWithTargetsInFreeModule_ConSet" metameme="Graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="OR"/>
-			<MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/>
-			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet_I"/>
+			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet_I" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInFreeModule_ConSet_I" metameme="Memetic.Condition.ConditionSetChildren">
-			<MemberMeme occurrence="1" memberID="ConditionsString.endsWith"/>
-			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel"/>
+		<Meme id="setWithTargetsInFreeModule_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
+			<MemberMeme occurrence="1" memberID="ConditionsString.endsWith" linktype="subatomic"/>
+			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel" linktype="subatomic"/>
 		</Meme>	
 		
 		<!-- Arguments -->
-		<Meme id="ArgumentCurrency" metameme="Memetic.Condition.Argument">
-			<MemberMeme occurrence="1" memberID="ArgumentCurrency_SArgument"/>
+		<Meme id="ArgumentCurrency" metameme="Graphyne.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentCurrency_SArgument" linktype="subatomic"/>
 		</Meme>			
-		<Meme id="ArgumentCurrency_SArgument" metameme="Memetic.Condition.SimpleArgument">
+		<Meme id="ArgumentCurrency_SArgument" metameme="Graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="Currency"/>
 		</Meme>	
-		<Meme id="ArgumentTestWord" metameme="Memetic.Condition.Argument">
-			<MemberMeme occurrence="1" memberID="ArgumentTestWord_SArgument"/>
+		<Meme id="ArgumentTestWord" metameme="Graphyne.Condition.Argument">
+			<MemberMeme occurrence="1" memberID="ArgumentTestWord_SArgument" linktype="subatomic"/>
 		</Meme>			
-		<Meme id="ArgumentTestWord_SArgument" metameme="Memetic.Condition.SimpleArgument">
+		<Meme id="ArgumentTestWord_SArgument" metameme="Graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="TestWord"/>
 		</Meme>			
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
+	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Metadata>
+		<Revision>
+		  <CreationDate>2016-10-20</CreationDate>
+		  <ParentUUID>ParentUUID</ParentUUID>
+		  <ParentURL>ParentURL</ParentURL>
+		</Revision>
+		<Contributor>
+		  <Author>David Stocker</Author>
+		  <AuthorContact></AuthorContact>
+		  <AuthorURL>http://www.projectangela.org</AuthorURL>
+		  <Comments>First definition of Agent in RML</Comments>
+		  <Copyright>Project Angela</Copyright>
+		  <License>MIT</License>
+		  <SourceData>SourceData</SourceData>
+		</Contributor>
+	</Metadata>	
+	
+	<ListOfMetaMeme>
+		<MetaMeme id="MMWithEvents">	
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript"/>
+		</MetaMeme>
+	</ListOfMetaMeme>
+	
+	<ListOfMeme>
+		<Meme id="InitRemoveEventTest" metameme="MMWithEvents">
+			<MemberMeme occurrence="1" memberID="EventInitRemove.InitSES" />
+			<MemberMeme occurrence="1" memberID="EventInitRemove.DelSES" />
+		</Meme>
+		
+		<Meme id="InitScript" metameme="Graphyne.DNA.Script">
+			<MemeProperty name="Script" value="EventInitRemove.OnInitialize"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="InitSES" metameme="Graphyne.DNA.StateEventScript">
+			<MemeProperty name="State" value="initialize"/>
+			<MemberMeme occurrence="1" memberID="EventInitRemove.InitScript" />
+			
+		</Meme>	
+		
+		
+		<Meme id="DelScript" metameme="Graphyne.DNA.Script">
+			<MemeProperty name="Script" value="EventInitRemove.OnDelete"/>
+			<MemeProperty name="Language" value="python"/>
+		</Meme>
+		<Meme id="DelSES" metameme="Graphyne.DNA.StateEventScript">
+			<MemeProperty name="State" value="terminate"/>
+			<MemberMeme occurrence="1" memberID="EventInitRemove.DelScript" />
+		</Meme>	
+	</ListOfMeme>
+	
+	
+</RMLModule>

@@ -247,7 +247,7 @@ class InitValueNumeric(Scripting.StateEventScript):
         try:
             functionContainerUUID = None
             propertyValue = Graph.api.getEntityPropertyValue(valueNumericEntityUUID, "Value")
-            functionContainerUUIDSet = Graph.api.getLinkCounterpartsByMetaMemeType(valueNumericEntityUUID, "Graphyne.Numeric.Formula", 1)
+            functionContainerUUIDSet = Graph.api.getLinkCounterpartsByMetaMemeType(valueNumericEntityUUID, "Graphyne.Numeric.Formula")
             for functionContainerUUIDSetEntry in functionContainerUUIDSet:
                 functionContainerUUID = functionContainerUUIDSetEntry
             if functionContainerUUID is None:
@@ -302,7 +302,7 @@ class InitRandom(object):
         
         #todo 
         randomContainerUUID = None
-        randomContainerUUIDSet = Graph.api.getLinkCounterpartsByMetaMemeType(randomEntityUUID, "Graphyne.Numeric.RandomNumber", 1)
+        randomContainerUUIDSet = Graph.api.getLinkCounterpartsByMetaMemeType(randomEntityUUID, "Graphyne.Numeric.RandomNumber")
         for randomContainerUUIDSetEntry in randomContainerUUIDSet:
             randomContainerUUID = randomContainerUUIDSetEntry
         if randomContainerUUID is None:
@@ -310,7 +310,7 @@ class InitRandom(object):
             Graph.api.writeError(warningMsg)
         else:            
             functionContainerUUID = None
-            functionContainerUUIDSet = Graph.api.getLinkCounterpartsByMetaMemeType(functionContainerUUID, "Graphyne.Numeric.Formula", 1)
+            functionContainerUUIDSet = Graph.api.getLinkCounterpartsByMetaMemeType(functionContainerUUID, "Graphyne.Numeric.Formula")
             for functionContainerUUIDSetEntry in functionContainerUUIDSet:
                 functionContainerUUID = functionContainerUUIDSetEntry
             
@@ -387,24 +387,24 @@ class InitRandom(object):
                                 argumentDetailType.SAMin)
         """
         randomElement = {}
-        randomRootUUIDs = Graph.api.getLinkCounterpartsByType(randomEntityUUID, argType, 1)
+        randomRootUUIDs = Graph.api.getLinkCounterpartsByType(randomEntityUUID, argType)
         if len(randomRootUUIDs) > 0:
             randomUUIDs = []
             for randomRootUUID in randomRootUUIDs:
                 randomElement = {"BaseType" : argType, "BaseID" : randomRootUUID}
-                randomUUIDs = Graph.api.getLinkCounterpartsByType(randomRootUUID, val, 1)
+                randomUUIDs = Graph.api.getLinkCounterpartsByType(randomRootUUID, val)
                 if len(randomUUIDs) > 0:
                     randomElement["RType"] = val
                     for randomUUID in randomUUIDs:
                         randomElement["RID"] = randomUUID
                 else:
-                    randomUUIDs = Graph.api.getLinkCounterpartsByType(randomRootUUID, aaa, 1)
+                    randomUUIDs = Graph.api.getLinkCounterpartsByType(randomRootUUID, aaa)
                     if len(randomUUIDs) > 0:
                         randomElement["RType"] = aaa
                         for randomUUID in randomUUIDs:
                             randomElement["RID"] = randomUUID      
                     else:
-                        randomUUIDs = Graph.api.getLinkCounterpartsByType(randomRootUUID, sa, 1)
+                        randomUUIDs = Graph.api.getLinkCounterpartsByType(randomRootUUID, sa)
                         if len(randomUUIDs) > 0:
                             randomElement["RType"] = sa
                             for randomUUID in randomUUIDs:
@@ -429,15 +429,15 @@ def getArgumentTypeFromrandomEntity(conditionContainer):
     #SimpleArgument
     #AgentAttributeArgument
     argument = None
-    randomRootUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Memetic.Argument::Memetic.SimpleArgument", 1)
+    randomRootUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.SimpleArgument")
     for unused_memID in randomRootUUIDs:
         argument = argumentType.SIMPLE
 
-    randomRootUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Memetic.Argument::Memetic.AgentAttributeArgument", 1)
+    randomRootUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.AgentAttributeArgument")
     for unused_memID in randomRootUUIDs:
         argument = argumentType.ATTRIBUTE
         
-    randomRootUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Memetic.Argument::Memetic.MultiAgentAttributeArgument", 1)
+    randomRootUUIDs = Graph.api.getLinkCounterpartsByType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.MultiAgentAttributeArgument")
     for unused_memID in randomRootUUIDs:
         argument = argumentType.MULTI_ATTRIBUTE
         
