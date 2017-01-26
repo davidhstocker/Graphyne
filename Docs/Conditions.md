@@ -231,21 +231,8 @@ The nested Condition elements are evaluated and if the combination of their valu
 
 The following Condition contains a ConditionSet that in turn wraps all three of the previous example and returns True when all three are True.
 
-```
-<Meme id="ExampleCondition" metameme="Graphyne.Condition.Condition">
-	<MemberMeme occurrence="1" memberID="ExampleConditionSet" linktype="subatomic"/>
-</Meme>
-<Meme id="ExampleConditionSet" metameme="Graphyne.Condition.ConditionSet">
-	<MemeProperty name="SetOperator" value="AND"/>
-	<MemberMeme occurrence="1" memberID="ExampleCSChildren" linktype="subatomic"/>
-</Meme>
-<Meme id="ExampleCSChildren" metameme="Graphyne.Condition.ConditionSetChildren">
-	<MemberMeme occurrence="1" memberID="equalOrLessThan" linktype="subatomic"/>
-	<MemberMeme occurrence="1" memberID="endsWith" linktype="subatomic"/>
-	<MemberMeme occurrence="1" memberID="True" linktype="subatomic"/>
-</Meme>
-```
-___
+
+
 
 
 [1]:	https://github.com/davidhstocker/Graphyne#memetic-scripting
