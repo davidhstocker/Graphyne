@@ -245,7 +245,7 @@ The following Condition contains a ConditionSet that in turn wraps all three of 
 	<MemberMeme occurrence="1" memberID="True" linktype="subatomic"/>
 </Meme>
 ```
-
+___
 
 
 [1]:	https://github.com/davidhstocker/Graphyne#memetic-scripting
