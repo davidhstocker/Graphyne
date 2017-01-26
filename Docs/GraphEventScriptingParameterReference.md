@@ -11,8 +11,8 @@ Whenever [evaluateEntity()][1] is called for a given entity.  This is the only e
 ## Parameter Keys
 **runtimeVariables** = A dictionary containing any custom parameter information that the designer wishes to pass to the ex=valuate script.
 **actionID** = A uuid (as a string) for a calling entity.  E.g. if and event script on entity A is triggering evaluateEntity() for entity B, then entity A is the action.  There is no requirement that the event script do anything with this parameter and it defaults to None, but it is there if you need it.
-**subjectID** = A uuid (as a string) for an entity that is the subject of the script.  The subject may or may not be the entity for which the event is running.  As with actionID, there is no requirement that the event script do anything with this parameter and it defaults to None, but it is there if you need it.  This parameter is used when evaluating agent (and multi-agent) attribute conditions.
-**objectID** = A uuid (as a string) for an entity that is the subject of the script.  The subject may or may not be the entity for which the event is running.  As with actionID, there is no requirement that the event script do anything with this parameter and it defaults to None, but it is there if you need it.  This parameter is used when evaluating multi-agent attribute conditions.
+**subjectID** = A uuid (as a string) for an entity that is the subject of the script.  The subject may or may not be the entity for which the event is running.  As with actionID, there is no requirement that the event script do anything with this parameter and it defaults to None, but it is there if you need it.  [This parameter is used when evaluating agent (and multi-agent) attribute conditions][2].
+**objectID** = A uuid (as a string) for an entity that is the subject of the script.  The subject may or may not be the entity for which the event is running.  As with actionID, there is no requirement that the event script do anything with this parameter and it defaults to None, but it is there if you need it.  [This parameter is used when evaluating multi-agent attribute conditions][2].
 
 
 ---- 
@@ -72,3 +72,4 @@ This event is called with an empty rumtime parameter dictionary.
 
 
 [1]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#evaluateentity
+[2]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Conditions.md#argument

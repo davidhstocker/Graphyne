@@ -434,6 +434,9 @@ If the SES script raises an exception, it will be caught by Graphyne and raised 
   
 The **params** dictionary object has event specific keys.  These are documented in detail in the [Graph Event Scripting Parameter Reference][16].
 
+# Conditions
+
+Conditions are a significant new feature, introduced in 1.2.  They have [their own documentation page][17].
 
 
 
@@ -455,6 +458,8 @@ The **params** dictionary object has event specific keys.  These are documented 
 [14]:	https://github.com/davidhstocker/Memetic/blob/master/README.md#back-references
 [15]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#evaluateEntity
 [16]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/GraphEventScriptingParameterReference.md
+[17]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Conditions.md
+
 
 
 [image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/ChildMemes.png
