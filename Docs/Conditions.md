@@ -28,7 +28,7 @@ SimlpleArgument is used when you want to dynamically compare an arbitrary value 
 
 In the example code, below, we define an Argument meme, called ExampleArgument and it has a SimpleArgument child called ExampleSimpleArgument .  The ArgumentTag is “Animal”.  
 
-'''
+```
 <Meme id="ExampleArgument" metameme="Graphyne.Condition.Argument">
 	<MemberMeme occurrence="1" memberID="ExampleSimpleArgument" linktype="subatomic"/>
 </Meme>
@@ -55,7 +55,7 @@ Argument memes using AgentAttributeArgument also have a very simple structure.  
 
 In the example code, below, we define an Argument meme, called ExampleArgument and it has an AgentAttributeArgument child called ExampleAAArgument.  The SubjectArgumentPath is “Animal”.  Essentially, this time we're looking for an "Animal" property on the subject entity, rather then passing it explicitly as a dictionary key in runtimeVariables.
 
-'''
+```
 <Meme id="ExampleArgument" metameme="Graphyne.Condition.Argument">
 	<MemberMeme occurrence="1" memberID="ExampleAAArgument" linktype="subatomic"/>
 </Meme>
@@ -63,7 +63,7 @@ In the example code, below, we define an Argument meme, called ExampleArgument a
 <Meme id="ExampleAAArgument" metameme="Graphyne.Condition.AgentAttributeArgument">
 	<MemeProperty name="SubjectArgumentPath" value="Animal"/>
 </Meme>
-'''
+```
 
 When we want to test the parent condition entity (presuming that the uuid in string form is entityID) with subject uuid (in string form) subjectID at runtime, we would execute the following:
 
@@ -81,7 +81,7 @@ Argument memes using MultiAgentAttributeArgument also have a very simple structu
 
 In the example code, below, we define an Argument meme, called ExampleArgument and it has an MultiAgentAttributeArgument child called ExampleMAAArgument .  The SubjectArgumentPath and ObjectArgumentPath are “Animal”.  Essentially, this time we're comparing the "Animal" property on the subject and object entities.
 
-'''
+```
 <Meme id="ExampleArgument" metameme="Graphyne.Condition.Argument">
 	<MemberMeme occurrence="1" memberID="ExampleAAAArgument" linktype="subatomic"/>
 </Meme>
@@ -90,7 +90,7 @@ In the example code, below, we define an Argument meme, called ExampleArgument a
 	<MemeProperty name="SubjectArgumentPath" value="Animal"/>
 	<MemeProperty name="ObjectArgumentPath" value="Animal"/>
 </Meme>
-'''
+```
 
 When we want to test the parent condition entity (presuming that the uuid in string form is entityID) with subject uuid (in string form) subjectID and object uuid (in string form) objectID at runtime, we would execute the following:
 
@@ -120,7 +120,7 @@ The Condition meme (and its descendants) below demonstrates a StringCondition el
 
 ![][image-4]
 
-'''
+```
 <Meme id="endsWith" metameme="Graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="EndsWith_CS" linktype="subatomic"/>
 </Meme>
@@ -139,7 +139,7 @@ The Condition meme (and its descendants) below demonstrates a StringCondition el
 <Meme id="endsWithValue_G" metameme="Graphyne.Condition.ValueString">
 	<MemeProperty name="Value" value="G"/>
 </Meme>
-'''
+```
 
 
 
@@ -164,7 +164,7 @@ The Condition meme (and its descendants) below demonstrates a ConditionNumeric e
 
 ![][image-5]
 
-'''
+```
 <Meme id="equalOrLessThan" metameme="Graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="equalOrLessThan_CN" linktype="subatomic"/>
 </Meme>
@@ -192,7 +192,7 @@ The Condition meme (and its descendants) below demonstrates a ConditionNumeric e
 	<MemeProperty name="Value" value="2"/>
 	<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
 </Meme>
-'''
+```
 
 
 ## ConditionScript
@@ -203,7 +203,7 @@ This is the simplest kind of condition of all, from a meme perspective.  It cont
 
 The example below is a built in meme from Graphyne.Condition and is always available.  It simply returns True.
 
-'''
+```
 <!-- The 'default' Condtiions -->
 <Meme id="True" metameme="Graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="Graphyne.Condition.True_CScr" linktype="subatomic"/>
@@ -211,7 +211,7 @@ The example below is a built in meme from Graphyne.Condition and is always avail
 <Meme id="True_CScr" metameme="Graphyne.Condition.ConditionScript">
 	<MemberMeme occurrence="1" memberID="Graphyne.DNA.TrueSES"/>
 </Meme>
-'''
+```
 
 
 
@@ -231,7 +231,7 @@ The nested Condition elements are evaluated and if the combination of their valu
 
 The following Condition contains a ConditionSet that in turn wraps all three of the previous example and returns True when all three are True.
 
-'''
+```
 <Meme id="ExampleCondition" metameme="Graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="ExampleConditionSet" linktype="subatomic"/>
 </Meme>
@@ -244,7 +244,7 @@ The following Condition contains a ConditionSet that in turn wraps all three of 
 	<MemberMeme occurrence="1" memberID="endsWith" linktype="subatomic"/>
 	<MemberMeme occurrence="1" memberID="True" linktype="subatomic"/>
 </Meme>
-'''
+```
 
 
 

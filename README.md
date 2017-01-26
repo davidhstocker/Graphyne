@@ -202,7 +202,7 @@ When designing memes, links defined in memes/child relationships can also be ato
 
 When a ParentMeme meme and its children are instantiated, the link between the *ParentMeme* entity and the *ChildMeme1* will be subatomic, while the link between *ParentMeme* entity and the *ChildMeme2* will be subatomic.  Note that there is no explicit **linktype="atomic"** attribute.  This is because the default value for link types is atomic, just as when dynamically creating links at runtime and a missing linktype attribute is treated as atomic.
 
-'''
+```
 <Meme id="ParentMeme" metameme="ParentMM">
 	<MemberMeme occurrence="1" memberID="ChildMeme1" linktype="subatomic"/>
 	<MemberMeme occurrence="1" memberID="ChildMeme2"/>
@@ -213,7 +213,7 @@ When a ParentMeme meme and its children are instantiated, the link between the *
 
 <Meme id="ChildMeme2" metameme="ChildMM">
 </Meme>
-'''
+```
 
 
 ## Traversing a Graph
