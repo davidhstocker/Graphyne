@@ -36,7 +36,7 @@ In the example code, below, we define an Argument meme, called ExampleArgument a
 <Meme id="ExampleSimpleArgument" metameme="Graphyne.Condition.SimpleArgument">
 	<MemeProperty name="ArgumentTag" value="Animal"/>
 </Meme>
-'''
+```
 
 When we want to test the parent condition entity (presuming that the uuid in string form is entityID) at runtime, we would execute the following:
 
