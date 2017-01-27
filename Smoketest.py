@@ -1952,7 +1952,7 @@ def testImplicitMeme(phaseName = 'testImplicitMeme', fName = "ImplicitMeme.atest
             
             #Attach entityID1 at the mount point specified in stringArray[2]
             if (stringArray[2] != '**DIRECT**'):
-                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 1)
+                mountPoints = api.getLinkCounterpartsByType(entityID0, stringArray[2], 0)
                 for mountPoint in mountPoints:
                     api.addEntityLink(mountPoint, entityID1)
             else:
