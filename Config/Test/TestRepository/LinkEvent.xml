@@ -1,29 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
-	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+<RMLModule xmlns="https://github.com/davidhstocker/Memetic"
+	xsi:schemaLocation="https://raw.githubusercontent.com/davidhstocker/Memetic/master/Memetic/Memetic.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-		<Metadata>
-		<Revision>
-		  <CreationDate>2016-10-20</CreationDate>
-		  <ParentUUID>ParentUUID</ParentUUID>
-		  <ParentURL>ParentURL</ParentURL>
-		</Revision>
-		<Contributor>
-		  <Author>David Stocker</Author>
-		  <AuthorContact></AuthorContact>
-		  <AuthorURL>http://www.projectangela.org</AuthorURL>
-		  <Comments>First definition of Agent in RML</Comments>
-		  <Copyright>Project Angela</Copyright>
-		  <License>MIT</License>
-		  <SourceData>SourceData</SourceData>
-		</Contributor>
-	</Metadata>	
 	
 	<ListOfPropertyRestriction>
 		<PropertyRestriction id="PropA_Restriction">
-			<RestrictionMinMaxInteger restrictionMin="10"/>
-			<RestrictionMinMaxInteger restrictionMax="20"/>
+			<RestrictionMinMaxInteger restrictionMin="10" restrictionMax="20"/>
 		</PropertyRestriction>
 	</ListOfPropertyRestriction>
 	<ListOfMetaMeme>

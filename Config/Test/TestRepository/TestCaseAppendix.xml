@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
-	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+<RMLModule xmlns="https://github.com/davidhstocker/Memetic"
+	xsi:schemaLocation="https://raw.githubusercontent.com/davidhstocker/Memetic/master/Memetic/Memetic.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-		<Metadata>
-		<Revision>
-		  <CreationDate>2008-07-05</CreationDate>
-		  <ParentUUID>ParentUUID</ParentUUID>
-		  <ParentURL>ParentURL</ParentURL>
-		</Revision>
-		<Contributor>
-		  <Author>David Stocker</Author>
-		  <AuthorContact></AuthorContact>
-		  <AuthorURL>http://www.projectangela.org</AuthorURL>
-		  <Comments>First definition of Agent in RML</Comments>
-		  <Copyright>Project Angela</Copyright>
-		  <License>MIT</License>
-		  <SourceData>SourceData</SourceData>
-		</Contributor>
-	</Metadata>	
 	
 	<ListOfMeme>
 	    
@@ -54,7 +37,7 @@
 			<MemberMeme occurrence="1" memberID="nc_equalToOne" linktype="subatomic"/>
 		</Meme>
 		<Meme id="nc_equalToOne" metameme="Graphyne.Condition.ConditionNumeric">
-			<MemeProperty name="NumericOperator" value="Equal" linktype="subatomic"/>
+			<MemeProperty name="NumericOperator" value="Equal"/>
 			<MemberMeme occurrence="1" memberID="fn_notEqualToOne" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="a_notEqualToOne" linktype="subatomic"/>
 		</Meme>		
@@ -62,26 +45,26 @@
 			<MemberMeme occurrence="1" memberID="nc_notEqualToOne" linktype="subatomic"/>
 		</Meme>
 		<Meme id="nc_notEqualToOne" metameme="Graphyne.Condition.ConditionNumeric">
-			<MemeProperty name="NumericOperator" value="NotEqual" linktype="subatomic"/>
+			<MemeProperty name="NumericOperator" value="NotEqual"/>
 			<MemberMeme occurrence="1" memberID="fn_notEqualToOne" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="a_notEqualToOne" linktype="subatomic"/>
 		</Meme>
 		<Meme id="sa_notEqualToOne" metameme="Graphyne.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="NumValue" linktype="subatomic"/>
+			<MemeProperty name="ArgumentTag" value="NumValue"/>
 		</Meme>
 		<Meme id="a_notEqualToOne" metameme="Graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="sa_notEqualToOne" linktype="subatomic"/>
 		</Meme>
 		
 		<Meme id="sa_Currency" metameme="Graphyne.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="Currency" linktype="subatomic"/>
+			<MemeProperty name="ArgumentTag" value="Currency"/>
 		</Meme>
 		<Meme id="a_Currency" metameme="Graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="sa_Currency" linktype="subatomic"/>
 		</Meme>				
 		
 		<Meme id="vs_CurrencyCrown" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="crown" linktype="subatomic"/>
+			<MemeProperty name="Value" value="crown"/>
 		</Meme>		
 		<Meme id="sc_CurrencyCrown" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Equal"/>
@@ -107,7 +90,7 @@
 			<MemberMeme occurrence="1" memberID="SingleCrown_Set" linktype="subatomic"/>
 		</Meme>	
 		<Meme id="SingleCrown_Set" metameme="Graphyne.Condition.ConditionSet">
-			<MemeProperty name="SetOperator" value="AND" linktype="subatomic"/>
+			<MemeProperty name="SetOperator" value="AND"/>
 			<MemberMeme occurrence="1" memberID="SingleCrown_I" linktype="subatomic"/>
 		</Meme>
 		<Meme id="SingleCrown_I" metameme="Graphyne.Condition.ConditionSetChildren">
@@ -116,7 +99,7 @@
 		</Meme>
 		
 		<Meme id="vs_CurrencyThaler" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="thaler" linktype="subatomic"/>
+			<MemeProperty name="Value" value="thaler"/>
 		</Meme>		
 		<Meme id="sc_CurrencyThaler" metameme="Graphyne.Condition.ConditionString">
 			<MemeProperty name="StringOperator" value="Equal"/>
@@ -131,7 +114,7 @@
 			<MemberMeme occurrence="1" memberID="MultipleThaler_Set" linktype="subatomic"/>
 		</Meme>
 		<Meme id="MultipleThaler_Set" metameme="Graphyne.Condition.ConditionSet">
-			<MemeProperty name="SetOperator" value="AND" linktype="subatomic"/>
+			<MemeProperty name="SetOperator" value="AND"/>
 			<MemberMeme occurrence="1" memberID="MultipleThaler_I" linktype="subatomic"/>
 		</Meme>
 		<Meme id="MultipleThaler_I" metameme="Graphyne.Condition.ConditionSetChildren">
@@ -142,7 +125,7 @@
 			<MemberMeme occurrence="1" memberID="SingleThaler_Set" linktype="subatomic"/>
 		</Meme>
 		<Meme id="SingleThaler_Set" metameme="Graphyne.Condition.ConditionSet">
-			<MemeProperty name="SetOperator" value="AND" linktype="subatomic"/>
+			<MemeProperty name="SetOperator" value="AND"/>
 			<MemberMeme occurrence="1" memberID="SingleThaler_I" linktype="subatomic"/>
 		</Meme>
 		<Meme id="SingleThaler_I" metameme="Graphyne.Condition.ConditionSetChildren">
@@ -154,7 +137,7 @@
 			<MemeProperty name="Value" value="penny"/>
 		</Meme>		
 		<Meme id="sc_CurrencyPenny" metameme="Graphyne.Condition.ConditionString">
-			<MemeProperty name="StringOperator" value="Equal" linktype="subatomic"/>
+			<MemeProperty name="StringOperator" value="Equal"/>
 			<MemberMeme occurrence="1" memberID="vs_CurrencyPenny" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="a_Currency" linktype="subatomic"/>
 		</Meme>
@@ -166,7 +149,7 @@
 			<MemberMeme occurrence="1" memberID="MultiplePennies_Set" linktype="subatomic"/>
 		</Meme>
 		<Meme id="MultiplePennies_Set" metameme="Graphyne.Condition.ConditionSet">
-			<MemeProperty name="SetOperator" value="AND" linktype="subatomic"/>
+			<MemeProperty name="SetOperator" value="AND"/>
 			<MemberMeme occurrence="1" memberID="MultiplePennies_I" linktype="subatomic"/>
 		</Meme>
 		<Meme id="MultiplePennies_I" metameme="Graphyne.Condition.ConditionSetChildren">
@@ -177,7 +160,7 @@
 			<MemberMeme occurrence="1" memberID="SinglePenny_Set" linktype="subatomic"/>
 		</Meme>
 		<Meme id="SinglePenny_Set" metameme="Graphyne.Condition.ConditionSet">
-			<MemeProperty name="SetOperator" value="AND" linktype="subatomic"/>
+			<MemeProperty name="SetOperator" value="AND"/>
 			<MemberMeme occurrence="1" memberID="SinglePenny_I" linktype="subatomic"/>
 		</Meme>
 		<Meme id="SinglePenny_I" metameme="Graphyne.Condition.ConditionSetChildren">

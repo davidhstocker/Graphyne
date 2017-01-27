@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
-	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../../RulesetModeling/Schemas/RMLDocument.xsd"
+<RMLModule xmlns="https://github.com/davidhstocker/Memetic"
+	xsi:schemaLocation="https://raw.githubusercontent.com/davidhstocker/Memetic/master/Memetic/Memetic.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Metadata>
 		<Revision>
@@ -56,44 +56,43 @@
 		</MetaMeme>	
 		<MetaMeme id="AgentAttributeArgument">
 			<MetaMemeProperty name="SubjectArgumentPath" type="string"/>
-			<MetaMemeProperty name="ArgumentTag" type="string"/>
 		</MetaMeme>
 		<MetaMeme id="MultiAgentAttributeArgument">
 			<MetaMemeProperty name="SubjectArgumentPath" type="string"/>
 			<MetaMemeProperty name="ObjectArgumentPath" type="string"/>
 		</MetaMeme>
 		<MetaMeme id="Argument" switch="true" singleton="true">
-			<MemberMetaMeme reference="SimpleArgument" min="1" max="1" linktype="subatomic"/>
-			<MemberMetaMeme reference="AgentAttributeArgument" min="1" max="1" linktype="subatomic"/> 
-			<MemberMetaMeme reference="MultiAgentAttributeArgument" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="SimpleArgument" min="1" max="1"/>
+			<MemberMetaMeme reference="AgentAttributeArgument" min="1" max="1"/> 
+			<MemberMetaMeme reference="MultiAgentAttributeArgument" min="1" max="1"/>
 	</MetaMeme>	
 		<MetaMeme id="ConditionSetChildren">
-			<MemberMetaMeme reference="Condition" min="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="Condition" min="1"/>
 		</MetaMeme>		
 		<MetaMeme id="ConditionSet" singleton="true">
 			<MetaMemeProperty name="SetOperator" type="string"/>
-			<MemberMetaMeme reference="ConditionSetChildren" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="ConditionSetChildren" min="1" max="1"/>
 		</MetaMeme>	
 		<MetaMeme id="ConditionString" singleton="true">
 			<MetaMemeProperty name="StringOperator" type="string" restriction="StringOperator"/>
-			<MemberMetaMeme reference="ValueString" min="0" linktype="subatomic"/>
-			<MemberMetaMeme reference="Argument" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="ValueString" min="0"/>
+			<MemberMetaMeme reference="Argument" min="1" max="1"/>
 		</MetaMeme>	
 		<MetaMeme id="ConditionNumeric" singleton="true">
 			<MetaMemeProperty name="NumericOperator" type="string"/>
-			<MemberMetaMeme reference="Graphyne.Numeric.Formula" min="0" linktype="subatomic"/>
-			<MemberMetaMeme reference="Argument" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="Graphyne.Numeric.Formula" min="0"/>
+			<MemberMetaMeme reference="Argument" min="1" max="1"/>
 		</MetaMeme>
 		<MetaMeme id="ConditionScript" singleton="true">
 			<MetaMemeProperty name="ScriptName" type="string"/>
-			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1"/>
 		</MetaMeme>	
 		<MetaMeme id="Condition" switch="true" singleton="true">
 			<MetaMemeProperty name="Priority" type="integer" constrained="true"/>
-			<MemberMetaMeme reference="ConditionSet" min="1" max="1" linktype="subatomic"/>
-			<MemberMetaMeme reference="ConditionString" min="1" max="1" linktype="subatomic"/>
-			<MemberMetaMeme reference="ConditionNumeric" min="1" max="1" linktype="subatomic"/>
-			<MemberMetaMeme reference="ConditionScript" min="1" max="1" linktype="subatomic"/>
+			<MemberMetaMeme reference="ConditionSet" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionString" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionNumeric" min="1" max="1"/>
+			<MemberMetaMeme reference="ConditionScript" min="1" max="1"/>
 		</MetaMeme>		
 	</ListOfMetaMeme>
 	

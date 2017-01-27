@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RMLModule xmlns="http://sourceforge.net/projects/rulesetmodeling"
-	xsi:schemaLocation="http://sourceforge.net/projects/rulesetmodeling ../../../RulesetModeling/Schemas/RMLDocument.xsd"
+<RMLModule xmlns="https://github.com/davidhstocker/Memetic"
+	xsi:schemaLocation="https://raw.githubusercontent.com/davidhstocker/Memetic/master/Memetic/Memetic.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Metadata>
-		<Revision>
-		  <CreationDate>2008-07-05</CreationDate>
-		  <ParentUUID>ParentUUID</ParentUUID>
-		  <ParentURL>ParentURL</ParentURL>
-		</Revision>
-		<Contributor>
-		  <Author>David Stocker</Author>
-		  <AuthorContact></AuthorContact>
-		  <AuthorURL>http://www.projectangela.org</AuthorURL>
-		  <Comments>First definition of Agent in RML</Comments>
-		  <Copyright>Project Angela</Copyright>
-		  <License>MIT</License>
-		  <SourceData>SourceData</SourceData>
-		</Contributor>
-	</Metadata>	
 	
 	<ListOfMeme>
 		
@@ -208,92 +192,92 @@
 		</Meme>
 
 		<Meme id="ArgumentTestString_SArgument" metameme="Graphyne.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="TestString" linktype="subatomic"/>
+			<MemeProperty name="ArgumentTag" value="TestString"/>
 		</Meme>
 		<Meme id="endsWithString_SArgument" metameme="Graphyne.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="endsWith" linktype="subatomic"/>
+			<MemeProperty name="ArgumentTag" value="endsWith"/>
 		</Meme>		
 		<Meme id="ArgumentTestStringCryllic_SArgument" metameme="Graphyne.Condition.SimpleArgument">
-			<MemeProperty name="ArgumentTag" value="Офисные" linktype="subatomic"/>
+			<MemeProperty name="ArgumentTag" value="Офисные"/>
 		</Meme>		
 			
 		
 		<!--Value String Memes -->
 		<Meme id="endsWithValue_s" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="s" linktype="subatomic"/>
+			<MemeProperty name="Value" value="s"/>
 		</Meme>
 		<Meme id="endsWithValue_S" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="S" linktype="subatomic"/>
+			<MemeProperty name="Value" value="S"/>
 		</Meme>
 		
 		<Meme id="stringValue_a" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="a" linktype="subatomic"/>
+			<MemeProperty name="Value" value="a"/>
 		</Meme>
 		<Meme id="stringValue_e" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="e" linktype="subatomic"/>
+			<MemeProperty name="Value" value="e"/>
 		</Meme>
 		<Meme id="stringValue_i" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="i" linktype="subatomic"/>
+			<MemeProperty name="Value" value="i"/>
 		</Meme>
 		<Meme id="stringValue_o" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="o" linktype="subatomic"/>
+			<MemeProperty name="Value" value="o"/>
 		</Meme>
 		<Meme id="stringValue_u" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="u" linktype="subatomic"/>
+			<MemeProperty name="Value" value="u"/>
 		</Meme>
 		<Meme id="stringValue_A" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="A" linktype="subatomic"/>
+			<MemeProperty name="Value" value="A"/>
 		</Meme>
 		<Meme id="stringValue_E" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="E" linktype="subatomic"/>
+			<MemeProperty name="Value" value="E"/>
 		</Meme>
 		<Meme id="stringValue_I" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="I" linktype="subatomic"/>
+			<MemeProperty name="Value" value="I"/>
 		</Meme>
 		<Meme id="stringValue_O" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="O" linktype="subatomic"/>
+			<MemeProperty name="Value" value="O"/>
 		</Meme>
 		<Meme id="stringValue_U" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="U" linktype="subatomic"/>
+			<MemeProperty name="Value" value="U"/>
 		</Meme>
 		
 		<Meme id="stringValue_Hofäcker" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="Hofäcker" linktype="subatomic"/>
+			<MemeProperty name="Value" value="Hofäcker"/>
 		</Meme>
 		<Meme id="stringValue_å" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="å" linktype="subatomic"/>
+			<MemeProperty name="Value" value="å"/>
 		</Meme>
 		<Meme id="stringValue_À" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="À" linktype="subatomic"/>
+			<MemeProperty name="Value" value="À"/>
 		</Meme>
 		<Meme id="stringValue_Æ" metameme="Graphyne.Condition.ValueString">
 			<MemeProperty name="Value" value="Æ"/>
 		</Meme>
 		<Meme id="stringValue_æ" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="æ" linktype="subatomic"/>
+			<MemeProperty name="Value" value="æ"/>
 		</Meme>
 		<Meme id="stringValue_û" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="û" linktype="subatomic"/>
+			<MemeProperty name="Value" value="û"/>
 		</Meme>
 		<Meme id="stringValue_ê" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="ê" linktype="subatomic"/>
+			<MemeProperty name="Value" value="ê"/>
 		</Meme>
 
 		<Meme id="stringValue_owl" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="owl" linktype="subatomic"/>
+			<MemeProperty name="Value" value="owl"/>
 		</Meme>
 		
 		<Meme id="stringValue_Офисные" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="Офисные" linktype="subatomic"/>
+			<MemeProperty name="Value" value="Офисные"/>
 		</Meme>
 		<Meme id="stringValue_ΓΔΘΣΦΨΩ" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="ΓΔΘΣΦΨΩ" linktype="subatomic"/>
+			<MemeProperty name="Value" value="ΓΔΘΣΦΨΩ"/>
 		</Meme>
 		<Meme id="stringValue_قـقـق" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="قـقـق" linktype="subatomic"/>
+			<MemeProperty name="Value" value="قـقـق"/>
 		</Meme>
 		<Meme id="stringValue_אבהעףצץקר" metameme="Graphyne.Condition.ValueString">
-			<MemeProperty name="Value" value="אבהעףצץקר" linktype="subatomic"/>
+			<MemeProperty name="Value" value="אבהעףצץקר"/>
 		</Meme>				
 	
 	</ListOfMeme>
