@@ -251,7 +251,7 @@ If you had an entity, **X**, that had **no** execute state event script and you 
 
 ## getCluster
 
-Initiates a traverse from a given entity  and returns a subgraph.  This subgraph can be limited to specific link types (atomic or subatomic) and to specific traverse parameters.   Because of this traverse parameter filtering, these subgraph fragments are referred to as clusters.  It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the cluster, their ID, meme and metameme.  “links” has a list of links pairs, from UUID and to UUID.  
+Initiates a generic (non-directed) traverse from a given entity  and returns a subgraph.  This subgraph can be limited to specific link types (atomic or subatomic) and to specific traverse parameters.   Because of this traverse parameter filtering, these subgraph fragments are referred to as clusters.  It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the cluster, their ID, meme and metameme.  “links” has a list of links pairs, from UUID and to UUID.  This method differs from [getTraverseReport][8] in that this method does not follow a specific traverse path and follows all branching links in all directions, while **getTraverseReport** traverses a specific path and returns only the entities along this path and their nearest neighbors.
 
 #### Parameters
 
@@ -261,6 +261,34 @@ This method has four positional parameters.
 **linkTypes** - Either 0 (atomic) or 1 (subatomic).  Default is 0.
 **linkAttributes** (default = {} ) - A python dictionary, containing the link attributes to be filtered for.  The keys will become the attribute names and the values will be the attribute values. 
 **crossSingletons** (default = False) - Whether or not singletons are to be treated as end effectors.  The default is false.  Crossing singleton bridges is considered an option, as there may be times when you want to do this, but it should be done with care as the result sets may be monumentally large.
+
+#### Returns
+
+It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the subgraph.  Each entity is represented by a dictionary; with, meme, metameme and position.  “links” has a list of links pairs, from UUID and to UUID.
+
+{
+	'nodes': [
+		{
+			'id': <entity UUID>, 
+			'meme': <entity Meme>, 
+			'metaMeme': '<entity Metameme>, 
+			'position': XXX
+		}, 
+		...										
+	],
+	'links' : [
+		{
+			'source': <source entity UUID>, 
+			'target': <target entity UUID>, 
+			'value': 1
+		}, 
+		...
+	]
+}
+
+The return value of **getCluster()** differs from the one from **getTraverseReport()** by its use of the **position** attribute in the entity dictionaries.  In this method, there is no traverse path to convey, so position tells us about the state of the entity.  If it is the entity that we are marshalling the subgraph from, then the value of the position attribute is **0**.  If it is a singleton (even if it is the origin entity), then the value of the position attribute is **2**.  In all other cases, it is **1**. 
+
+
 
 #### Example
 
@@ -708,51 +736,37 @@ This method has three positional parameters.
 
 #### Returns
 
-It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the subgraph, their ID, meme and metameme.  “links” has a list of links pairs, from UUID and to UUID. 
+It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the subgraph.  Each entity is represented by a dictionary; with, meme, metameme and position.  “links” has a list of links pairs, from UUID and to UUID.
 
-#### Example
+{
+	'nodes': [
+		{
+			'id': <entity UUID>, 
+			'meme': <entity Meme>, 
+			'metaMeme': '<entity Metameme>, 
+			'position': XXX
+		}, 
+		...										
+	],
+	'links' : [
+		{
+			'source': <source entity UUID>, 
+			'target': <target entity UUID>, 
+			'value': 1
+		}, 
+		...
+	]
+}
 
-This method in action can be best displayed by looking at the testGetCluster() method of Graphyne’s regression test utility, smoketest.py.  To set up te test, five Graphyne.Generic generic entities are created - which we will label **a**, **b**, **c**, **e** and **f** - and the createEntitiyFromMeme method is used on Examples.MemeA4, which is a singleton and will be labeled **d**.  We then chain them together with addEntityLink() to create the image below, which follows the [Graphyne graph diagraming conventions][2].  Note that the link from c to f is subatomic.
-![][image-1]
-
-The first test collects the atomic cluster rooted on **c**.  We use no link attribute filters.
-```python
-api.getClusterMembers(c)
-```
-![][image-2]
-
-Next, we repeat the last exercise, but allow the cluster to cross singleton bridges.
-```python
-api.getClusterMembers(c)
-```
-![][image-3]
-
-Next, we collect the subatomic cluster rooted on **c**.  We use no link attribute filters.
-```python
-api.getClusterMembers(c, 1)
-```
-![][image-4]
-
-The atomic cluster rooted on **e**.  We use no link attribute filters.
-```python
-api.getClusterMembers(e)
-```
-![][image-5]
-
-The subatomic cluster rooted on **e**.  We use no link attribute filters.
-```python
-api.getClusterMembers(e, 1)
-```
-![][image-6]
-
+The return value of **getTraverseReport()** differs from the one from **getCluster()** by its use of the **position** attribute in the entity dictionaries.  In this method, it conveys the position of each particular entity in the cluster.  The entities along the traverse path have positive values, with the starting entity having the lowest value and the value increasing with further distance along the traverse and the end effector having trhe highest value.  The subgraph also includes the nearest neighbor entities,  linked to the entities along the traverse path (one hop only), but not directly in the path themselves.  These entities are all given a **position** attribute value of -1.  The intent of this attribute is to give tools displaying thse subgraphs to convey spatial position withon the subgraph, relative to the start entity. 
 
 
 ---- 
 
 
-## getClusterJSON
+## getTraverseReportJSON
 
-An alternate to [getCluster][3], which returns the cluster in a [D3][4] friendly JSON format.
+An alternate to [getTraverseReport][8], which returns the subgraph in a [D3][4] friendly JSON format.
 
 
 ---- 
@@ -1145,6 +1159,7 @@ valList = api.sourceMemeSetSingleton(“Graphyne.CustomMeme”, True)
 [5]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#getcluster
 [6]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#revertentitypropertyvalues
 [7]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#removeallcustompropertiesfromentity
+[8]:	https://github.com/davidhstocker/Graphyne/blob/master/Docs/Graph%20API%20Methods.md#gettraversereport
 
 [image-1]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_Whole.png
 [image-2]:	https://raw.githubusercontent.com/davidhstocker/Graphyne/master/Docs/Images/GetCluster_CAtomic.png

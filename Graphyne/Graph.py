@@ -3085,7 +3085,13 @@ class Entity(object):
             for memberEntityID in members:
                 member = entityRepository.getEntity(memberEntityID)
                 isSingleton = member.getIsSingleton()
-                returnMembers.append([self.uuid, member.uuid, member.memePath.fullTemplatePath, member.metaMeme])
+                
+                if isSingleton == True:
+                    position = 2  #Singleton
+                else:
+                    position = 1  #Not the origin entity and not a singleton
+                
+                returnMembers.append([self.uuid, member.uuid, member.memePath.fullTemplatePath, member.metaMeme, position])
                 if (isSingleton == False) or (crossSingletons == True):
                     partialRet = member.getEntityCluster(linkTypes, crossSingletons, excludeLinks)
                     returnMembers.extend(partialRet)                      
@@ -5519,7 +5525,7 @@ class getCluster(object):
                 selfMetaMeme = api.getEntityMetaMemeType(params[0])
                 
                 entityString = getUUIDAsString(params[0])
-                nodeData = {"id": entityString, "meme": selfMeme, "metaMeme": selfMetaMeme}
+                nodeData = {"id": entityString, "meme": selfMeme, "metaMeme": selfMetaMeme, "position" : 0}
                 nodesDict[entityString] = nodeData
                 
                 entity.entityLock.acquire(True)
@@ -5535,7 +5541,7 @@ class getCluster(object):
                         links.append(linkdata)
                         
                         #We add the node data into a dict, to ensure that each node comes up exactly once
-                        nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3]}
+                        nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3], "position" : bigListEntry[4]}
                         nodesDict[targetID] = nodeData
                     for nodesDictKey in nodesDict.keys():
                         nodes.append(nodesDict[nodesDictKey])
@@ -5601,7 +5607,7 @@ class getClusterJSON(object):
                         links.append(linkdata)
                         
                         #We add the node data into a dict, to ensure that each node comes up exactly once
-                        nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3]}
+                        nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3], "position" : bigListEntry[4]}
                         nodesDict[targetID] = nodeData
                     for nodesDictKey in nodesDict.keys():
                         nodes.append(nodesDict[nodesDictKey])
