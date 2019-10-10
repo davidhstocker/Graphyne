@@ -694,6 +694,70 @@ isSingleton = Graph.api.getLinkCounterpartsByType(a, “\*\*\>\>e”)
 ---- 
 
 
+## getTraverseReport
+
+Initiates a traverse from a given entity  and returns a subgraph with the same format as [getCluster][3].  It returns dictionary with two keys; “links” and “nodes”.  “nodes” contaoins all of the entities in the subgraph and their metadata.  “links” has a list of links pairs, from UUID and to UUID.  
+
+#### Parameters
+
+This method has three positional parameters.
+
+**entityUUID** - The UUID (as a string) of the graph entity that you want use as the root node for finding the cluster. 
+**traversePath** - The traverse path, including filters.
+**isMeme** (default = True ) - Whether the traverse path follows the entity memes or not.  If False, it will follow the entity metamemes. 
+
+#### Returns
+
+It returns dictionary with two keys; “links” and “nodes”.  “nodes” has a list of all of the entities in the subgraph, their ID, meme and metameme.  “links” has a list of links pairs, from UUID and to UUID. 
+
+#### Example
+
+This method in action can be best displayed by looking at the testGetCluster() method of Graphyne’s regression test utility, smoketest.py.  To set up te test, five Graphyne.Generic generic entities are created - which we will label **a**, **b**, **c**, **e** and **f** - and the createEntitiyFromMeme method is used on Examples.MemeA4, which is a singleton and will be labeled **d**.  We then chain them together with addEntityLink() to create the image below, which follows the [Graphyne graph diagraming conventions][2].  Note that the link from c to f is subatomic.
+![][image-1]
+
+The first test collects the atomic cluster rooted on **c**.  We use no link attribute filters.
+```python
+api.getClusterMembers(c)
+```
+![][image-2]
+
+Next, we repeat the last exercise, but allow the cluster to cross singleton bridges.
+```python
+api.getClusterMembers(c)
+```
+![][image-3]
+
+Next, we collect the subatomic cluster rooted on **c**.  We use no link attribute filters.
+```python
+api.getClusterMembers(c, 1)
+```
+![][image-4]
+
+The atomic cluster rooted on **e**.  We use no link attribute filters.
+```python
+api.getClusterMembers(e)
+```
+![][image-5]
+
+The subatomic cluster rooted on **e**.  We use no link attribute filters.
+```python
+api.getClusterMembers(e, 1)
+```
+![][image-6]
+
+
+
+---- 
+
+
+## getClusterJSON
+
+An alternate to [getCluster][3], which returns the cluster in a [D3][4] friendly JSON format.
+
+
+---- 
+
+
 ## removeAllCustomPropertiesFromEntity
 
 Removes all properties on an entity that were not defined in its meme.  This is not a full reset, as properties that were defined in the meme are left untouched, even if they were changed.  To reset the properties to their meme defined values, you need to use [revertEntityPropertyValues()][6].  

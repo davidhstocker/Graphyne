@@ -7915,8 +7915,9 @@ class API(object):
             raise Exceptions.ScriptError(exception)  
         
         
-    def getTraverseReport(self, entityUUID, traversePath, isMeme = True, linkType = 0, returnUniqueValuesOnly = True):
+    def getTraverseReport(self, entityUUID, traversePath, isMeme = True, linkType = 0):
         #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+        returnUniqueValuesOnly = True
         params = [entityUUID, traversePath, isMeme, linkType, returnUniqueValuesOnly]
         traverseLinks, traverseNeighbors, traverseOrder = self._getTraverseReport.execute(params)
         traverseNodes = []
@@ -7932,6 +7933,29 @@ class API(object):
             traverseNodes.append(traverseOrder[nodeKey])
         fullReport = {"nodes" : traverseNodes, "links" : traverseLinks }
         return fullReport
+    
+    
+    
+    def getTraverseReportJSON(self, entityUUID, traversePath, isMeme = True, linkType = 0):
+        #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+        returnUniqueValuesOnly = True
+        params = [entityUUID, traversePath, isMeme, linkType, returnUniqueValuesOnly]
+        traverseLinks, traverseNeighbors, traverseOrder = self._getTraverseReport.execute(params)
+        traverseNodes = []
+        
+        #TraverseOder is a dict containing the members along the traverse path, including their linear pisition in the "position" attribute.
+        #traverseNeighbors contains everything that was noted as a neighbor of any node while traversing.  Their linear position is "-1"
+        #In principle, the traverse order members should also exist in that dict as members as well
+        #We Want to merge traverseOrder into traverseNeighbors, without revertying any existing traverseOrder member positions to -1
+        for neighborKey in traverseNeighbors:
+            if neighborKey not in traverseOrder:
+                traverseOrder[neighborKey] = traverseNeighbors[neighborKey]
+        for nodeKey in traverseOrder.keys():
+            traverseNodes.append(traverseOrder[nodeKey])
+        fullReport = {"nodes" : traverseNodes, "links" : traverseLinks }
+        fullReportJSON = json.dumps(fullReport)
+        return fullReportJSON
+    
         
                 
         
