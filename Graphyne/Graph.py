@@ -26,6 +26,7 @@ import queue
 import functools
 import platform
 import json
+import time
 from os.path import expanduser
 from .DatabaseDrivers import SQLDictionary
 from . import Exceptions
@@ -141,6 +142,8 @@ startupState = StartupState()
 renderStageStimuli = []
 logQ = queue.Queue()
 templateQueues = []
+
+global loggingService
 loggingService = None
 
 #databases.  The runtime and design persistences may not be the same
@@ -220,12 +223,19 @@ class TemplateRepository(object):
                 templateList.append(pathList)
                 self.modules[templatePath.modulePath] = templateList
                 #logQ.put( [logType , logLevel.DEBUG , method , 'Added %s to template repository under module %s' % (templatePath.templateName, templatePath.modulePath)])
-            except:
+            except KeyError:
                 # the package is not registered
                 templateList = []
                 templateList.append(pathList)
                 self.modules[templatePath.modulePath] = templateList
                 #logQ.put( [logType , logLevel.DEBUG , method , 'Added %s to template repository under module %s' % (templatePath.templateName, templatePath.modulePath)])
+            except Exception as e:
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                errorMsg = str(fullerror[1])
+                tb = sys.exc_info()[2]
+                exceptionMsg = "Unable to catalog template %s, Nested Traceback = %s: %s" %(templatePath.fullTemplatePath, errorID, errorMsg)
+                raise ValueError(exceptionMsg).with_traceback(tb)
             
         self.templates[templatePath.fullTemplatePath] = template
         #logQ.put( [logType , logLevel.DEBUG , method , 'Added %s under entry %s to template repository template list' % (template, templatePath.fullTemplatePath)])
@@ -915,19 +925,51 @@ class MetaMeme(object):
                         # THAT metameme should also me a member metameme of this one
                         #  If so, then we increment the total number of occurrences to account for this distinct member
                         oldCardinalityList = []
+                        extensionParents = []
                         try:
                             assert member.path.fullTemplatePath in memberMetaMemeCount
                             oldCardinalityList = memberMetaMemeCount[member.path.fullTemplatePath]
-                        except AssertionError:
-                            errorMsg = "Meme %s claims metameme %s has %s as member metameme, but it not is among the former's member metameme keys: %s" % (memePath.fullTemplatePath, self.path.fullTemplatePath, member.path.fullTemplatePath, list(memberMetaMemeCount.keys()))
-                            raise Exceptions.MemeMembershipValidationError(errorMsg)
+                        except AssertionError:                           
+                            #This assertion error might be falsely triggered, if the member meme is from a metameme that extends the original
+                            for extending in member.extends:
+                                try:
+                                    assert extending in memberMetaMemeCount
+                                    oldCardinalityList = memberMetaMemeCount[extending]
+                                    extensionParents.append(extending)
+                                except AssertionError: 
+                                    pass
+                            for extending in member.enhances:
+                                try:
+                                    assert extending in memberMetaMemeCount
+                                    oldCardinalityList = memberMetaMemeCount[extending]
+                                    extensionParents.append(extending)
+                                except AssertionError: 
+                                    pass
+                                
+                            #Hopefully extensionParents includes exactly one entry.  If it is zero, then we failed the 
+                            #    cardinality test outright.  If it is greater than 1, we have a ambiguous cardinality.
+                            if len(extensionParents) == 1:
+                                pass  #everything ok so far.  Pass the cardinality along
+                            elif len(extensionParents) > 1:
+                                errorMsg = "Meme %s claims metameme %s has %s as member metameme, but %s extends or enhances multiple members from the member keys, %s" % (memePath.fullTemplatePath, self.path.fullTemplatePath, member.path.fullTemplatePath, member.path.fullTemplatePath, list(extensionParents))
+                                raise Exceptions.MemeMembershipValidationError(errorMsg)
+                            else:
+                                errorMsg = "Meme %s claims metameme %s has %s as member metameme, but it not is among the former's member metameme keys: %s" % (memePath.fullTemplatePath, self.path.fullTemplatePath, member.path.fullTemplatePath, list(memberMetaMemeCount.keys()))
+                                raise Exceptions.MemeMembershipValidationError(errorMsg)
                         totalOcc = oldCardinalityList[2]
                         totalOcc = totalOcc + memeberMemeOcc
                         cardinalityList = [oldCardinalityList[0], oldCardinalityList[1], totalOcc]
+                        
                         memberMetaMemeCount[member.path.fullTemplatePath] = cardinalityList
+                        if len(extensionParents) == 1:
+                            #For purposes of tracking cardinality, also use the parent as a key
+                            memberMetaMemeCount[extensionParents[0]] = cardinalityList
                         
                         #Raises exception if member is not actually a member metameme of self
-                        memeberMetaMeme = self.memberMetaMemes[member.path.fullTemplatePath]
+                        if len(extensionParents) == 0:
+                            memeberMetaMeme = self.memberMetaMemes[member.path.fullTemplatePath]
+                        else:
+                            memeberMetaMeme = self.memberMetaMemes[extensionParents[0]]
                         
                         #lastly, if the allDesctinctMembers flag is set, then memeberMemeOcc must be < 2
                         #    Even if the members are not distinct, they still have to be within cardinality.
@@ -1966,7 +2008,7 @@ class SourceMeme(object):
                     #is a singleton, but has not yet been instantiated
                     pass
                 '''
-            validate = True
+            #validate = True
         except AssertionError:
             #Now it is perfectly possible to get this exception
             templateRepository.catalogTemplate(self.path, meme)            
@@ -2066,7 +2108,7 @@ class Meme(object):
                     unresolvedMember = True
                     logQ.put( [logType , logLevel.WARNING , method , errorMessage])
                     #debug
-                    #resolvedMemberMetaMeme = templateRepository.resolveTemplate(self.path, unresolvedMemberMeme)
+                    resolvedMemberMetaMeme = templateRepository.resolveTemplate(self.path, unresolvedMemberMeme)
             membersValidReport = parentMetaMeme.validateMembers(resolvedMembers, self.path)
             membersValid = membersValidReport[0]
             errorReport.extend(membersValidReport[1])
@@ -3105,6 +3147,193 @@ class Entity(object):
 
 
 
+    def getTraverseReport(self, splitPath, isMeme, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+        """
+            This method is an aid for designers troubleshooting traverse paths, or anyone simply asking 'what lies
+            along the path'.  It is very similar to getLinkedEntitiesByTemplateType, but works in some subtle and
+            substantially different ways.  Instead of delivering the uuid of an entity at the end effector of the 
+            traverse path, it delivers a report of what is along that path and what the nearest neighbors are of 
+            every hop.
+            
+            The format is very similar to the results of getClusterJSON, so that it can readily be drawn using charting tools
+            
+            Returns a python dict corresponding to the following JSON example
+            {
+              "nodes": [
+                {"id": "Myriel", "group": 1},
+                {"id": "Napoleon", "group": 1}
+              ],
+              "links": [
+                {"source": "Napoleon", "target": "Myriel", "value": 1},
+                {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8}
+              ]
+            }
+        """
+        method = moduleName + '.' +  self.className + '.getTraverseReport'
+        timestamp = time.time()
+        
+        #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+        #no traverse reports for traverse pathgs with wildcards
+        if "*" in splitPath:
+            ex = "Traverse path %s contains a wildcard (* or **).  It is not possible to create a traverse report for wildcard paths" %splitPath
+            raise Exceptions.TemplatePathError(ex)
+        
+        selfUUIDAsStr = str(self.uuid)
+        if excludeCluster is not None:
+            excludeCluster.append(selfUUIDAsStr)
+        excludeLinks.append(selfUUIDAsStr)
+        
+        try:
+            traverseOrder = {}
+            traverseNeighbors = {}
+            traverseLinks = []
+            runningPath = ''
+
+            #start by building the root node portion (index = "0") of the report
+            rootMeme = self.memePath.fullTemplatePath
+            rootMetaMeme = self.metaMeme
+            rootMemberList = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.BIDIRECTIONAL, [], [], linkTypes, excludeLinks)
+            memberListInbound = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.INBOUND, [], [], linkTypes, excludeLinks)      
+            
+            for memID in rootMemberList:
+                sMemID = str(memID)
+                if memID in memberListInbound:
+                    traverseLinks.append({"source": sMemID, "target": selfUUIDAsStr, "value": 1})
+                else:
+                    traverseLinks.append({"source": selfUUIDAsStr, "target": sMemID, "value": 1})
+                rootMember = entityRepository.getEntity(memID)
+                memMeme = rootMember.memePath.fullTemplatePath
+                memMetaMeme = rootMember.metaMeme
+                traverseNeighbors[sMemID] = {"id" : sMemID, "meme" : memMeme, "metaMeme" : memMetaMeme, "position" : "-1"}
+
+            traverseOrder[selfUUIDAsStr] = {"id" : selfUUIDAsStr, "meme" : rootMeme, "metaMeme" : rootMetaMeme, "position" : timestamp} 
+            
+            #Build up the list of traverse paths
+            forwardTraverseJoin = '>>'
+            backwardTraverseJoin = '<<'
+            polydirectionalTraverseJoin = '::'
+            
+            if len(splitPath) > 0:
+                #pathTraversed == True
+            #while (pathTraversed == False):
+                #Start by determining whether ot not the we have a leading direction indicator.  
+                #If so, then set the direction to search for currPath and then remove the leading linkdir
+                soughtPathDirection = linkDirectionTypes.BIDIRECTIONAL #by default
+                if splitPath.startswith(forwardTraverseJoin) == True:
+                    soughtPathDirection = linkDirectionTypes.OUTBOUND
+                    splitPath = splitPath[2:]
+                elif splitPath.startswith(backwardTraverseJoin) == True:
+                    soughtPathDirection = linkDirectionTypes.INBOUND
+                    splitPath = splitPath[2:]
+                elif splitPath.startswith(polydirectionalTraverseJoin) == True:
+                    splitPath = splitPath[2:]
+            
+                #determine which traverse direction we have in splitPath
+                partitionSequence = polydirectionalTraverseJoin
+                lowestIndex = -1
+                forwardIndex = -1
+                reverseIndex = -1
+                polydirectionalIndex = -1
+                try:
+                    forwardIndex = splitPath.index('>>')
+                except: pass
+                try:
+                    reverseIndex = splitPath.index('<<')
+                except: pass
+                try:
+                    polydirectionalIndex = splitPath.index('::')
+                    lowestIndex = polydirectionalIndex
+                except: pass
+                if (forwardIndex > -1):
+                    if (forwardIndex < lowestIndex) or\
+                        ((forwardIndex > lowestIndex) and (lowestIndex < 0)):
+                        lowestIndex = forwardIndex
+                        partitionSequence = forwardTraverseJoin
+                if ((reverseIndex > -1) or (reverseIndex == 0)):
+                    if (reverseIndex < lowestIndex) or\
+                        ((reverseIndex > lowestIndex) and (lowestIndex < 0)):  
+                        lowestIndex = reverseIndex
+                        partitionSequence = backwardTraverseJoin
+                        
+                        
+                #If forcedContinue is true, we don't bother splitting the path as there was a double wildcard in the recursion history
+                #    somewhere.  We'll just accept splitPath as it is.  
+                repartitionedSplitPath = splitPath.partition(partitionSequence)
+                runningPath = "%s%s%s" %(runningPath, partitionSequence, repartitionedSplitPath[0])
+                if ((len(repartitionedSplitPath[2]) > 0) and (len(repartitionedSplitPath[1]) > 0)):
+                    splitPath = "%s%s" %(repartitionedSplitPath[1], repartitionedSplitPath[2])
+                else:
+                    splitPath = repartitionedSplitPath[2]
+                currentPathFragment = repartitionedSplitPath[0]
+                    
+                        
+                #Peel off the parameter filters from currentPathFragment
+                linkParams, nodeParams = self.getTraverseFilters(currentPathFragment)
+                reOuterParentheses  = re.compile("\((.+)\)")
+                reInnerBrackets = re.compile("\[([^]]*)\]")
+        
+                #strip of the bits inside parenthesis and brackets
+                currentPathFragment = re.sub(reOuterParentheses, '', currentPathFragment)
+                currentPathFragment = re.sub(reInnerBrackets, '', currentPathFragment)
+                    
+                try:
+                    if (currentPathFragment is not None) and (len(currentPathFragment) > 0):
+                        if isMeme == True:
+                            try:
+                                soughtPath = templateRepository.resolveTemplate(self.memePath, currentPathFragment, True)
+                            except Exceptions.TemplatePathError as e:
+                                errorMsg = "Failed to resolve path relative to %s.  Nested Traceback = %s" %(self.memePath, e)
+                                logQ.put( [logType , logLevel.WARNING , method , errorMsg])
+                                raise e                         
+                        else:
+                            #We only the fullPemplatePath attribute of the entity, not the actual path pointer
+                            metaMeme = templateRepository.resolveTemplateAbsolutely(self.metaMeme)
+                            soughtPath = templateRepository.resolveTemplate(metaMeme.path, currentPathFragment, True)
+                except Exception as e:
+                    errorMsg = "Failed to resolve path relative to %s.  Nested Traceback = %s" %(self.memePath, e)
+                    logQ.put( [logType , logLevel.WARNING , method , errorMsg])
+                    raise e            
+        
+                try:
+                    #linkDirectionTypes.BIDIRECTIONAL, '', None, linkAttributeOperatorTypes.EQUAL
+                    members = linkRepository.getCounterparts(self.uuid, soughtPathDirection, linkParams, nodeParams, linkTypes, excludeLinks)
+                    
+                    if excludeCluster is not None:
+                        #we need to make sure that we don't backtrack, so filter the exclude list
+                        memberSet = set(members)
+                        excludeSet = set(excludeCluster)
+                        memberSet.difference_update(excludeSet)
+                        members = list(memberSet)
+                
+                    for memberEntityID in members:
+                        member = entityRepository.getEntity(memberEntityID)
+                        if ((isMeme == True) and\
+                            (str(memberEntityID) not in excludeLinks) and\
+                            (member.memePath.fullTemplatePath == soughtPath.path.fullTemplatePath)) or (member.metaMeme == soughtPath.path.fullTemplatePath):
+                            if len(splitPath) > 0:
+                                partialLinks, partialNodes, partialTraverseOrder = member.getTraverseReport(splitPath, isMeme, linkTypes, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                                traverseLinks.extend(partialLinks) 
+                                traverseOrder.update(partialTraverseOrder)
+                                traverseNeighbors.update(partialNodes)
+                            else:
+                                partialLinks, partialNodes, partialTraverseOrder = member.getTraverseReport("", isMeme, linkTypes, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                                traverseLinks.extend(partialLinks) 
+                                traverseOrder.update(partialTraverseOrder)
+                                traverseNeighbors.update(partialNodes)
+                
+                except KeyError as e:
+                    #self.getLinkedEntitiesByTemplateType(oldSplitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                    pass
+                except Exception as e:
+                    #logQ.put( [logType , logLevel.DEBUG , method , "Failure getting linked entities.  Traceback = %s" %e])
+                    pass
+                                                
+        except Exception as e:
+            ex = "Function getHasLinkedEntityByMemeType failed.  Traceback = %s" %e
+            #raise Exceptions.ScriptError(ex)
+        return traverseLinks, traverseNeighbors, traverseOrder
+
+
     #Todo - update the method with the getCounterparts
     def getLinkedEntitiesByTemplateType(self, splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
         """ This is a critically important method for finding associated (linked) entities.  It parses the
@@ -3298,8 +3527,7 @@ class Entity(object):
             return streamlinedReturnMembers
         else:
             return returnMembers
-
-
+        
 
 
     #Todo - propogate the method additions to the script acade
@@ -3772,7 +4000,7 @@ class Entity(object):
                 errorID = str(fullerror[0])
                 errorMsg = str(fullerror[1])
                 tb = sys.exc_info()[2]
-                raise Exceptions.StateEventScriptInitError("%s entity unable to aquire state event script %s in module %s.  Nested Traceback %s: %s" %(self.memePath, cName, mName, errorID, errorMsg)).with_traceback(tb)
+                raise Exceptions.StateEventScriptInitError("%s entity unable to aquire state event script %s in module %s.  Nested Traceback %s: %s" %(self.memePath.fullTemplatePath, cName, mName, errorID, errorMsg)).with_traceback(tb)
 
         else:
             #Note - If any script language is added, this will need to be updated
@@ -4513,6 +4741,7 @@ class getLinkCounterpartsByType(object):
             ex = "Function getHasLinkedEntityByMemeType failed.  Traceback = %s" %e
             #raise Exceptions.ScriptError(ex)
         return counterparts
+
     
     
 class getLinkCounterpartsByMetaMemeType(object):
@@ -4548,6 +4777,48 @@ class getLinkCounterpartsByMetaMemeType(object):
             #raise Exceptions.ScriptError(ex)
         return counterparts
     
+
+
+class getTraverseReport(object):
+    # getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = [])(self, meme):
+    ''' Four params: 
+            entity
+            memePath
+            linkType
+            traverseFilters
+    '''
+    def execute(self, params):
+        counterparts = []
+        try:
+            entity = entityRepository.getEntity(params[0])
+            
+            linkType = params[3]
+            if (params[3] != linkTypes.ALIAS) and (params[3] != linkTypes.ATOMIC) and (params[3] != linkTypes.SUBATOMIC):
+                linkType = None
+                
+            returnUniqueValuesOnly = True
+                
+            clusterExcludeList = []
+            if entity.depricated != True:
+                entity.entityLock.acquire(True)
+                try:
+                    isMeme = True
+                    try:
+                        #This param will be provided when this call is originating in getHasCounterpartsByType
+                        isMeme = params[2]
+                    except: pass
+                    traverseLinks, traverseNeighbors, traverseOrder = entity.getTraverseReport(params[1], isMeme, linkType, [], returnUniqueValuesOnly, clusterExcludeList)
+                except Exception as e:
+                    raise e                
+                finally:
+                    entity.entityLock.release()
+            else:
+                ex = "Entity %s has been archived and is no longer available" %params[1]
+                raise Exceptions.ScriptError(ex)
+        except Exception as e:
+            ex = "Function getHasLinkedEntityByMemeType failed.  Traceback = %s" %e
+            #raise Exceptions.ScriptError(ex)
+        return traverseLinks, traverseNeighbors, traverseOrder    
 
 
 class getHasCounterpartsByTag(object):
@@ -4925,12 +5196,12 @@ class evaluateEntity(object):
                         errorMsg = str(fullerror[1])
                         tb = sys.exc_info()[2]
                         try:
-                            scriptLoc = getScriptLocation(uuidVal, "execScript")
+                            scriptLoc = type(entity.execScript)
                         except Exception as e:
                             innerFullerror = sys.exc_info()
                             innerErrorMsg = str(innerFullerror[1])
-                            scriptLoc = "UNKNOWN LOCATION ((%s))" %innerErrorMsg
-                        errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script at %s during evaluate event."  %(entity.memePath.fullTemplatePath, scriptLoc)
+                            scriptLoc = "UNKNOWN SCRIPT CLASS ((%s))" %innerErrorMsg
+                        errorMessage = "EventScriptFailure!  Entity of type %s experienced an error while trying to execute script %s during evaluate event."  %(entity.memePath.fullTemplatePath, scriptLoc)
                         errorMessage = "%s  Entity is target." %(errorMessage)
                         errorMessage = "%s  Nested Traceback %s: %s" %(errorMessage, errorID, errorMsg)
                         logQ.put( [logType , logLevel.WARNING , "Graph.EvaluateEntity.execute" , errorMessage])
@@ -4939,7 +5210,7 @@ class evaluateEntity(object):
                         entity.execScript.entityLock.release()
                         #entity.entityLock.release()
                 else:
-                    ex = "%s Entity %s has no executor script installed." %(entity.memePath, uuidVal)
+                    ex = "%s Entity %s has no executor script installed." %(entity.memePath.fullTemplatePath, uuidVal)
                     raise Exceptions.ScriptError(ex)                    
             else:
                 ex = "%s Entity %s is depricated" %(entity.memePath, uuidVal)
@@ -4947,12 +5218,24 @@ class evaluateEntity(object):
         except Exceptions.EventScriptFailure as e:
             raise e
         except TypeError as e:
-            raise Exceptions.ScriptError("Function evaluateEntity failed") from e
+            fullerror = sys.exc_info()
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            raisedErrorMessage = "Function evaluateEntity failed.  %s" %errorMsg
+            raise Exceptions.ScriptError(raisedErrorMessage).with_traceback(tb)
         except AttributeError as e:
             em = "Entity %s has no execute script!"  %params[0]
-            raise Exceptions.ScriptError(em) from e
+            fullerror = sys.exc_info()
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            raisedErrorMessage = "Function evaluateEntity failed.  %s.  %s" %(errorMsg, em)
+            raise Exceptions.ScriptError(raisedErrorMessage).with_traceback(tb)
         except Exception as e:
-            raise Exceptions.ScriptError("Function evaluateEntity failed") from e
+            fullerror = sys.exc_info()
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            raisedErrorMessage = "Function evaluateEntity failed.  %s" %errorMsg
+            raise Exceptions.ScriptError(raisedErrorMessage).with_traceback(tb)
         return returnVal
 
 
@@ -5786,6 +6069,7 @@ def startLogger(lLevel = logLevel.WARNING, codePage = "utf-8", overwrite = True,
     #Ensure logging
     from . import Logger
     try:
+        global loggingService
         tmpClass = getattr(Logger, 'Logger')
         loggingService = tmpClass()
         loggingService.initialize(lLevel, codePage, logDir, overwrite)
@@ -5805,9 +6089,10 @@ def stopLogger():
         Stop the internal logging service.  The internal logging service is a seperate thread.  
     """
     try:
+        global loggingService
         print("stopping Graphyne Internal Logging Service")
         loggingService.join(30.0) #the timeout is because the join sometimes hangs in multiprocess usage
-    except:
+    except Exception as e:
         pass
     
     
@@ -5981,7 +6266,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
     if persistenceType == "none":
         #"none" - no persistence
         print("Warning!  No persistence declared.  Deaulting to in-memory transient persistentce")
-        logQ.put( [logType , logLevel.ERROR , method , "Warning!  No persistence declared.  Deaulting to in-memory transient persistentce"])
+        logQ.put( [logType , logLevel.WARNING , method , "Warning!  No persistence declared.  Deaulting to in-memory transient persistentce"])
         from .DatabaseDrivers import NonPersistent as persistenceNone
         #persistenceNone.initialize(api, repoLocations, logQ, persistenceArg)
         persistenceNone.initialize(api, templateRepository, logQ, persistenceArg)
@@ -6582,8 +6867,8 @@ def getMemesFromFile(dbConnectionString, xmlData, codePage, modulePath):
             try:
                 strName = memeElement.getAttribute("id")
                 #debug
-                #if "ConditionalDescriptor" in strName:
-                #    pass
+                if "Landmark1" in strName:
+                    pass
                 #/debug
                 path = TemplatePath(modulePath, strName)
                 try:
@@ -6823,7 +7108,7 @@ def getMemesFromFile(dbConnectionString, xmlData, codePage, modulePath):
         raise e
     except Exception as e:
         errorMsg =  "Fatal error while loading module %s.  Module not completely loaded.  Traceback = %s" %(modulePath, e)
-        logQ.put( [logType , logLevel.WARNING , method , errorMsg])
+        logQ.put( [logType , logLevel.ERROR , method , errorMsg])
     
     #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
     return memes
@@ -6986,6 +7271,7 @@ class API(object):
         self.scriptDict["getHasCounterpartsByMetaMemeType"] = getHasCounterpartsByMetaMemeType()
         self.scriptDict["getHasCounterpartsByTag"] = getHasCounterpartsByTag()
         self.scriptDict["getLinkCounterpartsByTag"] = getLinkCounterpartsByTag()
+        self.scriptDict["getTraverseReport"] = getTraverseReport()
         self.scriptDict["getAreEntitiesLinked"] = getAreEntitiesLinked()
         self.scriptDict["getIsEntitySingleton"] = getIsEntitySingleton()
         self.scriptDict["getIsEntityTaxonomyExact"] = getIsEntityTaxonomyExact()
@@ -7075,6 +7361,7 @@ class API(object):
             self._getHasCounterpartsByTag = self.scriptDict["getHasCounterpartsByTag"]
             self._getAreEntitiesLinked = self.scriptDict["getAreEntitiesLinked"]
             self._getIsEntitySingleton = self.scriptDict["getIsEntitySingleton"]
+            self._getTraverseReport = self.scriptDict["getTraverseReport"]
             self._getIsEntityTaxonomyExact = self.scriptDict["getIsEntityTaxonomyExact"]
             self._getIsEntityTaxonomyGeneralization = self.scriptDict["getIsEntityTaxonomyGeneralization"]
             self._getIsEntityTaxonomySpecialization = self.scriptDict["getIsEntityTaxonomySpecialization"]
@@ -7626,6 +7913,25 @@ class API(object):
             except:
                 exception = "Action on entity of unknown type: getLinkCounterparts(%s) .  Possible reason is that entity is not in database.  traceback = %s" %(entityUUID, e)
             raise Exceptions.ScriptError(exception)  
+        
+        
+    def getTraverseReport(self, entityUUID, traversePath, isMeme = True, linkType = 0, returnUniqueValuesOnly = True):
+        #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+        params = [entityUUID, traversePath, isMeme, linkType, returnUniqueValuesOnly]
+        traverseLinks, traverseNeighbors, traverseOrder = self._getTraverseReport.execute(params)
+        traverseNodes = []
+        
+        #TraverseOder is a dict containing the members along the traverse path, including their linear pisition in the "position" attribute.
+        #traverseNeighbors contains everything that was noted as a neighbor of any node while traversing.  Their linear position is "-1"
+        #In principle, the traverse order members should also exist in that dict as members as well
+        #We Want to merge traverseOrder into traverseNeighbors, without revertying any existing traverseOrder member positions to -1
+        for neighborKey in traverseNeighbors:
+            if neighborKey not in traverseOrder:
+                traverseOrder[neighborKey] = traverseNeighbors[neighborKey]
+        for nodeKey in traverseOrder.keys():
+            traverseNodes.append(traverseOrder[nodeKey])
+        fullReport = {"nodes" : traverseNodes, "links" : traverseLinks }
+        return fullReport
         
                 
         

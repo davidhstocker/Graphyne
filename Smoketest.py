@@ -3477,6 +3477,160 @@ def testGetCluster():
 
 
 
+def testGetTraverseReport():
+    """
+        Test Getting Traverse Report Dictionary.
+        Create 4 entities of type Graphyne.Generic. (as in the cluser test)  
+        Chain 3 of them together: E1 >> E2 >> E3
+        Connect E4 to a singleton, Examples.MemeA4
+        Connect E4 to Examples.MemeA4
+        
+        Now get the traverse report from E1 to E4.
+        The traverse report step for E1 should contain E2 and only E2.  
+        The traverse report step for E2 should contain E1 and E3.
+        The traverse report step for E3 should contain E2 and Examples.MemeA4.
+        The traverse report step for E3 should contain Examples.MemeA4 and only Examples.MemeA4.
+        
+        memeStructure = script.getTraversePathReport(conditionContainer, 1, False)
+        
+        
+    """
+    method = moduleName + '.' + 'testGetTraverseReport'
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "entering"])
+
+    resultSet = []
+    errata = []
+    testResult = "True"
+    expectedResult = "True"
+    errorMsg = ""
+    
+    #Create 5 entities of type Graphyne.Generic and get the Examples.MemeA4 singleton as well.  
+    #Chain them together: E1 >> E2 >> E3 >> E4 >> Examples.MemeA4 << E5
+    try:
+        testEntityID1 = api.createEntity()
+        testEntityID2 = api.createEntity()
+        testEntityID3 = api.createEntity()
+        testEntityID4 = api.createEntity()
+        theSingleton = Graph.api.createEntityFromMeme("Examples.MemeA4")
+        api.addEntityLink(testEntityID1, testEntityID2)
+        api.addEntityLink(testEntityID2, testEntityID3)
+        api.addEntityLink(testEntityID3, theSingleton)
+        api.addEntityLink(testEntityID4, theSingleton)
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error creating entities!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+    traverseStringByMeme = ">>Graphyne.Generic>>Graphyne.Generic>>Examples.MemeA4<<Graphyne.Generic"
+    traverseStringByMetaMeme = ">>Graphyne.GenericMetaMeme>>Graphyne.GenericMetaMeme>>Examples.A<<Graphyne.GenericMetaMeme"
+    expectedReport = {testEntityID1 : {"meme" : "Graphyne.Generic", 
+                                    "metameme" : "Graphyne.GenericMetaMeme",
+                                    "members" : {testEntityID2 : {"meme" : "Graphyne.Generic", "metameme" : "Graphyne.GenericMetaMeme"}}},
+                    testEntityID2 : {"meme" : "Graphyne.Generic", 
+                                    "metameme" : "Graphyne.GenericMetaMeme",
+                                    "members" : {testEntityID1 : {"meme" : "Graphyne.Generic", "metameme" : "Graphyne.GenericMetaMeme"},
+                                                testEntityID3 : {"meme" : "Graphyne.Generic", "metameme" : "Graphyne.GenericMetaMeme"}}},
+                    testEntityID3 : {"meme" : "Graphyne.Generic", 
+                                    "metameme" : "Graphyne.GenericMetaMeme",
+                                    "members" : {testEntityID2 : {"meme" : "Graphyne.Generic", "metameme" : "Graphyne.GenericMetaMeme"},
+                                                theSingleton : {"meme" : "Examples.MemeA4", "metameme" : "Examples.A"}}},
+                    testEntityID4 : {"meme" : "Graphyne.Generic", 
+                                    "metameme" : "Graphyne.GenericMetaMeme",
+                                    "members" : {theSingleton : {"meme" : "Examples.MemeA4", "metameme" : "Examples.A"}}}
+                                    }
+    #Navitate to end of chain and back
+    try:
+        uuid14 = api.getLinkCounterpartsByType(testEntityID1, traverseStringByMeme, None, True)
+        uuid41 = api.getLinkCounterpartsByType(uuid14[0], "Examples.MemeA4<<Graphyne.Generic<<Graphyne.Generic<<Graphyne.Generic", None, True)
+        if (testEntityID4 not in uuid14) or (testEntityID1 not in uuid41): 
+            testResult = "False"
+            errorMsg = ('%sShould be able to navigate full chain and back before measuring cluster membership, but could not!\n')
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Error reporting on traverse path!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+      
+    #From E1, atomic, Meme traverse
+    #    def getTraverseReport(self, entityUUID, traversePath, isMeme = True, linkType = None, returnUniqueValuesOnly = True):
+    try:
+        reportRaw = api.getTraverseReport(testEntityID1, traverseStringByMeme)     
+    except Exception as e:
+        testResult = "False"
+        errorMsg = ('Getting atomic cluster of E3!  Traceback = %s' % (e) )
+        errata.append(errorMsg)
+        
+        
+    testcase = "getTraverseReport()"
+    reportNodes = reportRaw["nodes"]
+    reportLinks = reportRaw["links"]
+    
+    e1ID = str(testEntityID1)
+    e2ID = str(testEntityID2)
+    e3ID = str(testEntityID3)
+    e4ID = str(testEntityID4)
+    eSID = str(theSingleton)
+    
+    traverseNodeKeyList = []
+    for reportNode in reportNodes:
+        traverseNodeKeyList.append(reportNode["id"])
+    
+    if e1ID not in traverseNodeKeyList:
+        testResult = False
+    if e2ID not in traverseNodeKeyList:
+        testResult = False
+    if e3ID not in traverseNodeKeyList:
+        testResult = False
+    if e4ID not in traverseNodeKeyList:
+        testResult = False
+    if eSID not in traverseNodeKeyList:
+        testResult = False
+        
+    tempTraverse12Found = False   #Entity 1 shoukd be the parent of 2, but not be connected to 3 or 4   
+    tempTraverse23Found = False
+    tempTraverse3SFound = False   #The singleton should be connected to 3 and 4, but not to 1 or 2.
+    tempTraverseS4Found = False
+    for traverseLink in reportLinks:
+        if (traverseLink["source"] == e1ID) and (traverseLink["target"] == e2ID):
+            tempTraverse12Found = True 
+        if (traverseLink["source"] == e2ID) and (traverseLink["target"] == e3ID):
+            tempTraverse23Found = True 
+        if (traverseLink["source"] == e3ID) and (traverseLink["target"] == eSID):
+            tempTraverse3SFound = True 
+        if (traverseLink["source"] == e4ID) and (traverseLink["target"] == eSID):
+            tempTraverseS4Found = True 
+            
+        # 1 >> 2, but not 1 << 2
+        # 2 >> 3 and 1 >> 2, but not 2 << 3
+        # 3 >> S and S << 4, but not 3 << S or S >> 4
+        if (traverseLink["source"] == e2ID) and (traverseLink["target"] == e1ID):
+            testResult = False 
+        if (traverseLink["source"] == e3ID) and (traverseLink["target"] == e2ID):
+            testResult = False     #wrong link
+        if (traverseLink["source"] == eSID) and (traverseLink["target"] == e3ID):
+            testResult = False     #wrong link
+        if (traverseLink["source"] == eSID) and (traverseLink["target"] == e4ID):
+            testResult = False 
+        if (traverseLink["source"] == eSID) and (traverseLink["target"] == e4ID):
+            testResult = False 
+        if (traverseLink["source"] == eSID) and (traverseLink["target"] == e1ID):
+            testResult = False 
+        if (traverseLink["source"] == e1ID) and (traverseLink["target"] == e3ID):
+            testResult = False 
+    if (tempTraverse12Found == False) or\
+        (tempTraverse23Found == False) or\
+        (tempTraverse3SFound == False) or\
+        (tempTraverseS4Found == False):
+        testResult = False
+    
+    results = [1, testcase, testResult, expectedResult, errata]
+    resultSet.append(results)
+    
+    Graph.logQ.put( [logType , logLevel.INFO , method , "Finished testcase %s" %(1)])
+    Graph.logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
+    return resultSet
+
+
+
 
 def testPropertyChangeEvent():
     """
@@ -4677,6 +4831,10 @@ def runTests(css):
     testSetPercentage = getResultPercentage(testSetData)
     resultSet.append(["Atomic and Subatomic", testSetPercentage, copy.deepcopy(testSetData)])
 
+    #testGetTraverseReport
+    testSetData = testGetTraverseReport()
+    testSetPercentage = getResultPercentage(testSetData)
+    resultSet.append(["Traverse Report", testSetPercentage, copy.deepcopy(testSetData)])
 
     #endTime = time.time()
     #validationTime = endTime - startTime     
