@@ -1235,8 +1235,7 @@ def testRevertEntity():
              
             #Make sure the custom property is gone       
             Graph.api.revertEntity(entityID, currValue)
-            getter = Graph.api.getEntityHasProperty(entityID, currValue)
-            getter = Graph.api.revertEntity(entityID, currValue)  
+            getter = Graph.api.getEntityHasProperty(entityID, currValue) 
             if getter == True:
                 testResult = False
 
@@ -2017,7 +2016,6 @@ def testCondition(filename):
         
         entityIDList = api.getEntitiesByMemeType(stringArray[0])
         for entityIDListEntry in entityIDList:
-            subjectID = entityIDListEntry
             testArgumentMap = {stringArray[2] : stringArray[1]}
         try:
             testArgumentMap[stringArray[4]] = stringArray[3]
@@ -2150,7 +2148,7 @@ def testSourceCreateMeme(filename):
             testResult = True
         else:
             testResult = False
-            errata = testResult[1]
+            errata = validation[1]
         
         allTrueResult = str(testResult)
         expectedResult = stringArray[3]
@@ -2175,7 +2173,7 @@ def testSourceCreateMeme(filename):
         testResult = True
     else:
         testResult = False
-        errata = testResult[1]
+        errata = validation[1]
     
     allTrueResult = str(testResult)
     expectedResult = "True"
@@ -2197,7 +2195,7 @@ def testSourceCreateMeme(filename):
         testResult = True
     else:
         testResult = False
-        errata = testResult[1]
+        errata = validation[1]
     
     allTrueResult = str(testResult)
     expectedResult = "True"
@@ -3288,7 +3286,7 @@ def testInstallExecutor():
         returnVal1 = api.evaluateEntity(testEntityID)
         if returnVal1 != e2MemeType:
             testResult = "False"
-            errorMsg = ("%Calling TestClass.execute() should return %s, but %s was returned instead!\n" %(errorMsg, e2MemeType, returnVal1))
+            errorMsg = ("%sCalling TestClass.execute() should return %s, but %s was returned instead!\n" %(errorMsg, e2MemeType, returnVal1))
         else:
             operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, errorMsg]} 
 
@@ -3296,15 +3294,15 @@ def testInstallExecutor():
             returnVal2 = api.evaluateEntity(testEntityID, {"returnMe" : "Hello World"})
             if returnVal2 != "Hello World":
                 testResult = "False"
-                errorMsg = ("%Calling TestClass.execute() with 'returnMe' in runtime parameter keys should return 'Hello World', but %s was returned instead!\n" %(errorMsg, returnVal2)) 
+                errorMsg = ("%sCalling TestClass.execute() with 'returnMe' in runtime parameter keys should return 'Hello World', but %s was returned instead!\n" %(errorMsg, returnVal2)) 
             else:
                 operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, []]}
         
         if testResult == "True":  
             try:
-                returnVal3 = api.evaluateEntity(testEntityID, {"thisWontReturnAnything" : "Hello World"})
+                unusedReturnVal3 = api.evaluateEntity(testEntityID, {"thisWontReturnAnything" : "Hello World"})
                 testResult = "False"
-                errorMsg = ("%Calling TestClass.execute() 'thisWontReturnAnything' in runtime parameter keys should return a keyError exception, but %s was returned instead!\n" %(errorMsg, returnVal2)) 
+                errorMsg = ("%sCalling TestClass.execute() 'thisWontReturnAnything' in runtime parameter keys should return a keyError exception, but %s was returned instead!\n" %(errorMsg, returnVal2)) 
             except Exceptions.EventScriptFailure as e:
                 #We should have this result
                 operationResult = {"metamemeID" : "Graphyne.GenericMetaMeme", "ValidationResults" : [True, errorMsg]}
@@ -3391,7 +3389,6 @@ def testGetCluster():
     #From E3, atomic
     try:
         entityListRaw = api.getCluster(testEntityID3)
-        entityClusterJSON1 = api.getClusterJSON(testEntityID3)
         entityList1 = []
         for entityNode in entityListRaw["nodes"]:
             entityList1.append(entityNode['id'])
@@ -3418,7 +3415,6 @@ def testGetCluster():
     #From E3, subatomic
     try:
         entityListRaw = api.getCluster(testEntityID3, 1)
-        entityClusterJSON2 = api.getClusterJSON(testEntityID3, 1)
         entityList2 = []
         for entityNode in entityListRaw["nodes"]:
             entityList2.append(entityNode['id'])
@@ -3436,7 +3432,6 @@ def testGetCluster():
     #From E5, atomic
     try:
         entityListRaw = api.getCluster(testEntityID5)
-        entityClusterJSON3 = api.getClusterJSON(testEntityID5)
         entityList3 = []
         for entityNode in entityListRaw["nodes"]:
             entityList3.append(entityNode['id'])
@@ -3454,7 +3449,6 @@ def testGetCluster():
     #From E5, subatomic
     try:
         entityListRaw = api.getCluster(testEntityID5, 1)
-        entityClusterJSON4 = api.getClusterJSON(testEntityID5, 1)
         entityList4 = []
         for entityNode in entityListRaw["nodes"]:
             entityList4.append(entityNode['id'])
@@ -3522,8 +3516,9 @@ def testGetTraverseReport():
         errata.append(errorMsg)
         
     traverseStringByMeme = ">>Graphyne.Generic>>Graphyne.Generic>>Examples.MemeA4<<Graphyne.Generic"
-    traverseStringByMetaMeme = ">>Graphyne.GenericMetaMeme>>Graphyne.GenericMetaMeme>>Examples.A<<Graphyne.GenericMetaMeme"
-    expectedReport = {testEntityID1 : {"meme" : "Graphyne.Generic", 
+
+    # Reference for debugging assistance
+    unusedExpectedReport = {testEntityID1 : {"meme" : "Graphyne.Generic", 
                                     "metameme" : "Graphyne.GenericMetaMeme",
                                     "members" : {testEntityID2 : {"meme" : "Graphyne.Generic", "metameme" : "Graphyne.GenericMetaMeme"}}},
                     testEntityID2 : {"meme" : "Graphyne.Generic", 
@@ -3538,6 +3533,7 @@ def testGetTraverseReport():
                                     "metameme" : "Graphyne.GenericMetaMeme",
                                     "members" : {theSingleton : {"meme" : "Examples.MemeA4", "metameme" : "Examples.A"}}}
                                     }
+                                    
     #Navitate to end of chain and back
     try:
         uuid14 = api.getLinkCounterpartsByType(testEntityID1, traverseStringByMeme, None, True)
@@ -3824,10 +3820,10 @@ def testLinkEvent():
         returnArray = api.removeEntityLink(genEntity1, genEntity1)
         if returnArray[0] is not None: 
             testResult = "False"
-            errorMsg = '%Removing link from generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[0])
+            errorMsg = '%sRemoving link from generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[0])
         if returnArray[1] is not None: 
             testResult = "False"
-            errorMsg = '%Removing link from generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
+            errorMsg = '%sRemoving link from generic entity should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, None, returnArray[1])
     except Exception as e:
         testResult = "False"
         errorMsg = ('Error removing link!  Traceback = %s' % (e) )
@@ -3856,7 +3852,7 @@ def testLinkEvent():
         returnArray = api.removeEntityLink(linkChangeTest0, linkChangeTest1)
         if returnArray[0] != expectedReturnValue70: 
             testResult = "False"
-            errorMsg = '%Removing link from LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue70, returnArray[0])
+            errorMsg = '%sRemoving link from LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue70, returnArray[0])
         if returnArray[1] != expectedReturnValue71: 
             testResult = "False"
             errorMsg = '%sRemoving link from LinkEvent.LinkChangeTest should return "%s" in the return value [0] of the link added event.  "%s returned" !\n' %(errorMsg, expectedReturnValue71, returnArray[1])

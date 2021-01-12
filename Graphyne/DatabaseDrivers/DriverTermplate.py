@@ -320,7 +320,7 @@ class LinkRepository(object):
             linkDictOutbound = self.getAllOutboundLinks(entityUUID)
             linkList.extend(linkDictInbound)
             linkList.extend(linkDictOutbound)
-            linkList.append(self.uuid)
+            linkList.append(entityUUID)
             filteredLinkList = filterListDuplicates(linkList)
             return filteredLinkList
         except KeyError as e:
@@ -331,7 +331,7 @@ class LinkRepository(object):
             
     def getAllInboundLinks(self, entityUUID):
         try:
-            linkDict = self.indexByAssociation[self.uuid]
+            linkDict = self.indexByAssociation[entityUUID]
             return linkDict["inbound"]
         except KeyError as e:
             raise e
@@ -340,7 +340,7 @@ class LinkRepository(object):
     
     def getAllOutboundLinks(self, entityUUID):
         try:
-            linkDict = self.indexByAssociation[self.uuid]
+            linkDict = self.indexByAssociation[entityUUID]
             return linkDict["outbound"]
         except KeyError as e:
             raise e
@@ -404,9 +404,9 @@ class LinkRepository(object):
                 else:
                     #if we land here, then linkDirectionType is not one of the allowed values
                     errorMsg = "%s.getCounterparts called with invalid linkDirection parameter %s.  " %(self.__class__, linkDirection)
-                    errorMsg = "Valid values are linkDirectionType.BIDIRECTIONAL (%s), " %(errorMsg, linkDirectionType.BIDIRECTIONAL)
-                    errorMsg = "linkDirectionType.INBOUND (%s), " %(errorMsg, linkDirectionType.INBOUND)
-                    errorMsg = "and linkDirectionType.OUTBOUND (%s)" %(errorMsg, linkDirectionType.OUTBOUND)
+                    errorMsg = "%sValid values are linkDirectionType.BIDIRECTIONAL (%s), " %(errorMsg, linkDirectionType.BIDIRECTIONAL)
+                    errorMsg = "%slinkDirectionType.INBOUND (%s), " %(errorMsg, linkDirectionType.INBOUND)
+                    errorMsg = "%sand linkDirectionType.OUTBOUND (%s)" %(errorMsg, linkDirectionType.OUTBOUND)
                     raise Exceptions.UndefinedReferenceDirectionalityError(errorMsg)
             except Exceptions.UndefinedReferenceDirectionalityError as e:
                 raise e
@@ -555,14 +555,14 @@ class LinkRepository(object):
                             pass #returnVal = False.   
                         else:
                             badOperatorMsg = "%s.testLinkForAttribute called with invalid attribute comparison operator parameter %s.  " %(self.__class__, operator)
-                            badOperatorMsg = "Valid values are linkAttributeOperator.EQUAL (%s), " %(badOperatorMsg, linkAttributeOperator.EQUAL)
-                            badOperatorMsg = "linkAttributeOperator.EQUALORGREATER (%s), " %(badOperatorMsg, linkAttributeOperator.EQUALORGREATER)
-                            badOperatorMsg = "linkAttributeOperator.EQUALORLESS (%s), " %(badOperatorMsg, linkAttributeOperator.EQUALORLESS)
-                            badOperatorMsg = "linkAttributeOperator.GREATER (%s), " %(badOperatorMsg, linkAttributeOperator.GREATER)
-                            badOperatorMsg = "linkAttributeOperator.LESS (%s), " %(badOperatorMsg, linkAttributeOperator.LESS)
-                            badOperatorMsg = "linkAttributeOperator.NOTEQUAL (%s), " %(badOperatorMsg, linkAttributeOperator.NOTEQUAL)
-                            badOperatorMsg = "linkAttributeOperator.IN (%s), " %(badOperatorMsg, linkAttributeOperator.IN)
-                            badOperatorMsg = "and linkAttributeOperator.NOTIN (%s)" %(badOperatorMsg, linkAttributeOperator.NOTIN)
+                            badOperatorMsg = "%sValid values are linkAttributeOperator.EQUAL (%s), " %(badOperatorMsg, linkAttributeOperator.EQUAL)
+                            badOperatorMsg = "%slinkAttributeOperator.EQUALORGREATER (%s), " %(badOperatorMsg, linkAttributeOperator.EQUALORGREATER)
+                            badOperatorMsg = "%slinkAttributeOperator.EQUALORLESS (%s), " %(badOperatorMsg, linkAttributeOperator.EQUALORLESS)
+                            badOperatorMsg = "%slinkAttributeOperator.GREATER (%s), " %(badOperatorMsg, linkAttributeOperator.GREATER)
+                            badOperatorMsg = "%slinkAttributeOperator.LESS (%s), " %(badOperatorMsg, linkAttributeOperator.LESS)
+                            badOperatorMsg = "%slinkAttributeOperator.NOTEQUAL (%s), " %(badOperatorMsg, linkAttributeOperator.NOTEQUAL)
+                            badOperatorMsg = "%slinkAttributeOperator.IN (%s), " %(badOperatorMsg, linkAttributeOperator.IN)
+                            badOperatorMsg = "%sand linkAttributeOperator.NOTIN (%s)" %(badOperatorMsg, linkAttributeOperator.NOTIN)
                             raise Exceptions.UndefinedReferenceValueComparisonOperator(badOperatorMsg)
                 except KeyError:
                     #The attribute is not in entityLink.attributes{}.  If operator == linkAttributeOperator.NOTIN, then this is valid  

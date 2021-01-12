@@ -2,9 +2,9 @@ import threading
 import decimal
 import random
 from . import Condition
-import Graphyne.Graph as Graph
-import Graphyne.Scripting as Scripting
-import Graphyne.Exceptions as Exceptions
+from . import Graph
+from . import Scripting
+from . import Exceptions
 
 
 class ArgumentType(object):
@@ -117,7 +117,6 @@ class RandomLinear(threading.Thread):
     def __init__(self, randomElements):
         try:
             pass
-            """
             minEntity = None
             maxEntity = None
             for randomElement in randomElements:
@@ -129,7 +128,6 @@ class RandomLinear(threading.Thread):
                     pass #raise an exception
             self.minVal = decimal.Decimal(minVal)
             self.maxVal = decimal.Decimal(maxVal)
-            """
         except Exception as e:
             raise Exceptions.GeneratorError(e)
 

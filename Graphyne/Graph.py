@@ -28,11 +28,6 @@ import platform
 import json
 import time
 from os.path import expanduser
-from .DatabaseDrivers import SQLDictionary
-from . import Exceptions
-from . import Condition
-from . import Fileutils
-#import PluginFacade
 
 #remote debugger support for pydev
 #import pydevd
@@ -134,9 +129,11 @@ moduleName = 'Graph'
 serverLanguage = 'en' 
 logTypes =  LogType()
 global logType 
+global linkTypes
 global validateOnLoad
 logType = logTypes.ENGINE
 logLevel = LogLevel()
+linkTypes = LinkType()
 validateOnLoad = True
 startupState = StartupState()
 renderStageStimuli = []
@@ -145,6 +142,15 @@ templateQueues = []
 
 global loggingService
 loggingService = None
+
+
+from .DatabaseDrivers import SQLDictionary
+from Graphyne import Exceptions
+from Graphyne import Condition
+from Graphyne import Fileutils
+#import PluginFacade
+
+
 
 #databases.  The runtime and design persistences may not be the same
 global persistenceType
@@ -229,7 +235,7 @@ class TemplateRepository(object):
                 templateList.append(pathList)
                 self.modules[templatePath.modulePath] = templateList
                 #logQ.put( [logType , logLevel.DEBUG , method , 'Added %s to template repository under module %s' % (templatePath.templateName, templatePath.modulePath)])
-            except Exception as e:
+            except Exception:
                 fullerror = sys.exc_info()
                 errorID = str(fullerror[0])
                 errorMsg = str(fullerror[1])
@@ -274,7 +280,7 @@ class TemplateRepository(object):
                         pathPrefix = str(splitTemplatePath[0])
                         while n < nMax:
                             pathPrefix = pathPrefix + '.' +str(splitTemplatePath[n])
-                            n = n+1;
+                            n = n+1
                         pathSuffix = str(splitTemplatePath[nMax])
                         dotOccurances.append(pathPrefix)
                         dotOccurances.append(pathSuffix)
@@ -320,7 +326,7 @@ class TemplateRepository(object):
                 #logQ.put( [logType , logLevel.DEBUG , method , 'Resolved path of %s == %s' % (calledTemplate, resolvedTemplatePath)])
                 try:
                     resolvedTemplate = self.templates[resolvedTemplatePath]
-                except Exception as e:
+                except Exception:
                     fullerror = sys.exc_info()
                     errorID = str(fullerror[0])
                     errorMsg = str(fullerror[1])
@@ -344,7 +350,7 @@ class TemplateRepository(object):
                     '''
                     raise Exceptions.TemplatePathError(exception).with_traceback(tb)
             
-            except Exception as e:
+            except Exception:
                 
                 # If noWarningOnFail is set to true, then the calling method considers a None type 
                 #    return acceptable and there is no need to clutter up the log files with warnings.
@@ -399,7 +405,7 @@ class TemplateRepository(object):
         resolvedTemplate = None
         try:
             resolvedTemplate = self.templates[calledTemplate]
-        except Exception as e:
+        except Exception:
             fullerror = sys.exc_info()
             errorID = str(fullerror[0])
             errorMsg = str(fullerror[1])
@@ -550,7 +556,6 @@ sourceTemplateRepository = TemplateRepository()
 #linkRepository = LinkRepository()
 tempRepository = TemplateRepository() # remporary repo for bootstrapping
 enhancementIndex = EnhancementIndex()
-linkTypes = LinkType()  
 linkDirectionTypes = LinkDirectionType()
 linkAttributeOperatorTypes = LinkAttributeOperatorType()
 
@@ -818,7 +823,7 @@ class MetaMeme(object):
             try:
                 self.merge(mergeMe)
             except Exception as e:
-                errorMsg = "Metameme %s can't extend %s" %(self.path.fullTemplatePath, mergeMe, e)
+                errorMsg = "Metameme %s can't extend %s, %s" %(self.path.fullTemplatePath, mergeMe, e)
                 logQ.put( [logType , logLevel.WARNING , method , errorMsg])
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         
@@ -1288,9 +1293,9 @@ class MemberMetaMeme(object):
         '''Ensure that the member metameme is indeed a metameme '''
         method = moduleName + '.' +  self.className + '.validateMemberIsMetaMeme'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
-        returnVal = False;
+        returnVal = False
         try:
-            memberMetameme = tempRepository.resolveTemplate(parentMetaMeme.path, self.memPath.fullTemplatePath)
+            memberMetameme = tempRepository.resolveTemplate(parentMetaMeme.path, self.memberPath.fullTemplatePath)
             if type(memberMetameme) == "MetaMeme":
                 returnVal = False
         except:
@@ -1314,6 +1319,7 @@ class PropertyDefinition(object):
         self.restMax = restMax
         self.restList = restList
         self.constrained = constrained
+        self.propError = []
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"]) 
         
         
@@ -1527,7 +1533,7 @@ class Taxonomy(object):
         #method = moduleName + '.' +  self.className + '.__init__'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
         self.fullPath = taxonomyString
-        dot = re.compile('\.')
+        dot = re.compile(r'\.')
         self.splitPath = re.split(dot, taxonomyString)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
 
@@ -1591,8 +1597,12 @@ class Property(PropertyDefinition):
                     isValid = False   
                     exception = "Out of bounds list property %s.  Value %s is not among list of valid values %s " % (self.name, self.value, self.restList)
                     self.propError.append(exception)            
-        except Exception as eE:
-            exception = "Property %s of meme %s has no value property.  Likely reason is that restriction constraints were violated during intiialization" % (self.name, memeID)
+        except Exception:
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            tb = sys.exc_info()[2]
+            exception = "Property %s of meme %s has no value property.  Likely reason is that restriction constraints were violated during intiialization.  Nested traceback = %s, %s : %s" % (self.name, memeID, errorID, errorMsg, tb)
             self.propError.append(exception)
             isValid = False
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
@@ -2438,17 +2448,7 @@ class EntityProperty(PropertyDefinition):
 
 
 class Entity(object):
-    """  The runtime instances of memes.  This method is usually called from the meme's getEntityFromMeme() 
-    method, but can be called from anywhere as long as the meme can be supplied.
-        self.memePath = the path of the parent meme
-        self.uuid = a type 4 UUID
-        self.memberEntities = list of uuids
-        self.properties = dict
-            key  = name (property name)
-            value = occurrence (a EntityProperty object) 
-    """  
-    className = "Entity"
-
+    """  The runtime instances of memes. """  
     
     def __init__(self, parentMeme, masterEntity = None, noMembers = False, passedUUID = None):
         """ Initialization of entities
@@ -2477,6 +2477,7 @@ class Entity(object):
         #/debug
         global entityRepository
         
+        self.className = "Entity"
         self.depricated = False
         self.memePath = parentMeme.path
         self.metaMeme = parentMeme.metaMeme
@@ -2683,7 +2684,7 @@ class Entity(object):
         
                     newCondition = None
                     if conditionType == "Graphyne.Condition.ConditionSet":
-                        newCondition = Condition.ConditionSet(self.uuid, self.path.fullTemplatePath, operator, childConditions)
+                        newCondition = Condition.ConditionSet(self.uuid, self.memePath.fullTemplatePath, operator, childConditions)
                     else:
                         #determine the paths and argument types    
                         
@@ -2693,28 +2694,28 @@ class Entity(object):
                         if currArgumentType == Condition.argumentType.MULTI_ATTRIBUTE:
                             if conditionType == 'Graphyne.Condition.ConditionString':
                                 #self.uuid, name, operator, subjectArgumentPath, argumentTag1, objectArgumentPath, argumentTag2
-                                newCondition = Condition.ConditionStringMultiA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths)
+                                newCondition = Condition.ConditionStringMultiA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths)
                             elif conditionType == 'Graphyne.Condition.ConditionNumeric':
-                                newCondition = Condition.ConditionNumericMultiA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths)
+                                newCondition = Condition.ConditionNumericMultiA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths)
                         elif currArgumentType == Condition.argumentType.ATTRIBUTE:
                             values = Condition.getTestValuesFromConditionEntity(self.uuid)
                             if conditionType == 'Graphyne.Condition.ConditionString':
                                 #totdo - crash here
-                                newCondition = Condition.ConditionStringAAA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
+                                newCondition = Condition.ConditionStringAAA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
                             elif conditionType == 'Graphyne.Condition.ConditionNumeric':
-                                newCondition = Condition.ConditionNumericAAA(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
+                                newCondition = Condition.ConditionNumericAAA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
                         else:
                             values = Condition.getTestValuesFromConditionEntity(self.uuid)
                             if conditionType == 'Graphyne.Condition.ConditionString':
                                 values = Condition.getTestValuesFromConditionEntity(self.uuid)
-                                newCondition = Condition.ConditionStringSimple(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, values)
+                                newCondition = Condition.ConditionStringSimple(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
                             elif conditionType == 'Graphyne.Condition.ConditionNumeric':
                                 memberUUIDs = api.getLinkCounterpartsByMetaMemeType(self.uuid, "**::Numeric.Formula")
-                                newCondition = Condition.ConditionNumericSimple(self.uuid, self.path.fullTemplatePath, operator, argumentPaths, memberUUIDs)
+                                newCondition = Condition.ConditionNumericSimple(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, memberUUIDs)
                         
                         self.installExecutorObject(newCondition)
                         uuidAsStr = str(self.uuid)
-                        logStatement = "Added executor object to %s condition %s" %(self.path.fullTemplatePath, uuidAsStr)
+                        logStatement = "Added executor object to %s condition %s" %(self.memePath.fullTemplatePath, uuidAsStr)
                         api.writeLog(logStatement)
             except Exception as e:
                 unusedDebugCatch = "me"
@@ -2922,13 +2923,13 @@ class Entity(object):
         
         
     
-    def getHasLinkedEntityByMemeType(self, meme, splitMetaMemePath = None, linkTypes = 0):
+    def getHasLinkedEntityByMemeType(self, meme, splitMetaMemePath = None, linkType = 0):
         """  """
         #method = moduleName + '.' +  self.className + '.getHasLinkedEntityByMemeType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
         hasMember = False
         try:
-            findList = self.getLinkedEntitiesByMemeType(meme, splitMetaMemePath, linkTypes)
+            findList = self.getLinkedEntitiesByMemeType(meme, splitMetaMemePath, linkType)
             if len(findList) > 0:
                 hasMember = True
         except:
@@ -2987,7 +2988,7 @@ class Entity(object):
 
 
 
-    def getLinkedEntitiesByMemeType(self, memePath, splitMetaMemePath = None, linkTypes = 0):
+    def getLinkedEntitiesByMemeType(self, memePath, splitMetaMemePath = None, linkType = 0):
         """ Find the member entities at the end of the Member Path.
         May be called with a composite path (e.g. Inventory.Inventory::Loot.GoldCoin) in meme
         or may be called with an explicitly regression split member path (which is a list)
@@ -2998,12 +2999,12 @@ class Entity(object):
         """
         #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByMemeType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
-        returnMembers = self.getLinkedEntitiesByTemplateType(memePath, True, linkTypes, False, [], True, None)
+        returnMembers = self.getLinkedEntitiesByTemplateType(memePath, True, linkType, False, [], True, None)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return returnMembers
         
     
-    def getLinkedEntitiesByMetaMemeType(self, metaMemePath, linkTypes = 0, returnUniqueValuesOnly = True):
+    def getLinkedEntitiesByMetaMemeType(self, metaMemePath, linkType = 0, returnUniqueValuesOnly = True):
         """ Find the member entities at the end of the Member Path.
         May be called with a composite path (e.g. Inventory.Inventory::Loot.GoldCoin) in meme
         or may be called with an explicitly regression split member path (which is a list)
@@ -3014,7 +3015,7 @@ class Entity(object):
         """
         #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByMetaMemeType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
-        returnMembers = self.getLinkedEntitiesByTemplateType(metaMemePath, False, linkTypes, False, [], returnUniqueValuesOnly, None)
+        returnMembers = self.getLinkedEntitiesByTemplateType(metaMemePath, False, linkType, False, [], returnUniqueValuesOnly, None)
         #logQ.put( [logType , logLevel.DEBUG , method , "exiting"])
         return returnMembers
     
@@ -3033,14 +3034,14 @@ class Entity(object):
     
 
 
-    def getClusterMembers(self, linkTypes = 0, crossSingletons = False, excludeLinks = []):
+    def getClusterMembers(self, linkType= 0, crossSingletons = False, excludeLinks = []):
         """ 
             This method wraps getEntityCluster and then returns only the UUIDS of the members of the cluster
         """
         #method = moduleName + '.' +  self.className + '.getLinkedEntitiesByTemplateType'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
 
-        entireCluster = self.getEntityCluster(linkTypes, crossSingletons, excludeLinks)
+        entireCluster = self.getEntityCluster(linkType, crossSingletons, excludeLinks)
         clusterMetaData = self.buildClusterMemberMetadata(entireCluster)
         
         #buildClusterMemberMetadata returns the UUIDs as strings, because UUIDs can't be used for indexing dicts.
@@ -3056,7 +3057,7 @@ class Entity(object):
     
     
     
-    def getEntityCluster(self, linkTypes = 0, crossSingletons = False, excludeLinks = []):
+    def getEntityCluster(self, linkType = 0, crossSingletons = False, excludeLinks = []):
         """ This is a method is a close relative of getLinkedEntitiesByTemplateType.  It is used for finding 
         associated (linked) entities and their meme types.  Like getLinkedEntitiesByTemplateType, it parses the
             link path and follows each step of the path in turn by a recursive call.  
@@ -3077,7 +3078,7 @@ class Entity(object):
         returnMembers = []
         
         try:
-            members = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.BIDIRECTIONAL, [], [], linkTypes, excludeLinks)
+            members = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.BIDIRECTIONAL, [], [], linkType, excludeLinks)
             newExcludeLinks = self.getLinkIDs()
             excludeLinks.extend(newExcludeLinks)
             
@@ -3093,7 +3094,7 @@ class Entity(object):
                 
                 returnMembers.append([self.uuid, member.uuid, member.memePath.fullTemplatePath, member.metaMeme, position])
                 if (isSingleton == False) or (crossSingletons == True):
-                    partialRet = member.getEntityCluster(linkTypes, crossSingletons, excludeLinks)
+                    partialRet = member.getEntityCluster(linkType, crossSingletons, excludeLinks)
                     returnMembers.extend(partialRet)                      
 
         except Exception as e:
@@ -3118,13 +3119,13 @@ class Entity(object):
         #reInnerBrackets = re.compile("\[([^]]*)\]")
         #reOPMatches = reOuterParentheses.search(filterStatement)
         #reIBMatches = reInnerBrackets.search(filterStatement)
-        reParenthesis = re.compile("\(.+?\)")
-        reBrackets = re.compile("\[.+?\]")
+        reParenthesis = re.compile(r"\(.+?\)")
+        reBrackets = re.compile(r"\[.+?\]")
         allParenthesis = reParenthesis.findall(filterStatement)
         allBrackets = reBrackets.findall(filterStatement)
         
         for reP in allParenthesis:
-            reStripParentheses  = re.compile("\((.+)\)")
+            reStripParentheses  = re.compile(r"\((.+)\)")
             reOPMatches = reStripParentheses.search(reP)
             reOPMatch = reOPMatches.groups(1)
             innerLinkParams, innerNodeParams = self.getTraverseFilters(reOPMatch[0])
@@ -3132,7 +3133,7 @@ class Entity(object):
             nodeParams.extend(innerNodeParams)
 
         for reB in allBrackets:
-            reStripBrackets  = re.compile("\[([^]]*)\]")
+            reStripBrackets  = re.compile(r"\[([^]]*)\]")
             reIBMatches = reStripBrackets.search(reB)            
             reIBMatch = reIBMatches.groups(1)
             innerLinkParams, innerNodeParams = self.getTraverseFilters(reIBMatch[0], False)
@@ -3153,7 +3154,7 @@ class Entity(object):
 
 
 
-    def getTraverseReport(self, splitPath, isMeme, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+    def getTraverseReport(self, splitPath, isMeme, linkType = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
         """
             This method is an aid for designers troubleshooting traverse paths, or anyone simply asking 'what lies
             along the path'.  It is very similar to getLinkedEntitiesByTemplateType, but works in some subtle and
@@ -3198,8 +3199,8 @@ class Entity(object):
             #start by building the root node portion (index = "0") of the report
             rootMeme = self.memePath.fullTemplatePath
             rootMetaMeme = self.metaMeme
-            rootMemberList = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.BIDIRECTIONAL, [], [], linkTypes, excludeLinks)
-            memberListInbound = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.INBOUND, [], [], linkTypes, excludeLinks)      
+            rootMemberList = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.BIDIRECTIONAL, [], [], linkType, excludeLinks)
+            memberListInbound = linkRepository.getCounterparts(self.uuid, linkDirectionTypes.INBOUND, [], [], linkType, excludeLinks)      
             
             for memID in rootMemberList:
                 sMemID = str(memID)
@@ -3275,8 +3276,8 @@ class Entity(object):
                         
                 #Peel off the parameter filters from currentPathFragment
                 linkParams, nodeParams = self.getTraverseFilters(currentPathFragment)
-                reOuterParentheses  = re.compile("\((.+)\)")
-                reInnerBrackets = re.compile("\[([^]]*)\]")
+                reOuterParentheses  = re.compile(r"\((.+)\)")
+                reInnerBrackets = re.compile(r"\[([^]]*)\]")
         
                 #strip of the bits inside parenthesis and brackets
                 currentPathFragment = re.sub(reOuterParentheses, '', currentPathFragment)
@@ -3302,7 +3303,7 @@ class Entity(object):
         
                 try:
                     #linkDirectionTypes.BIDIRECTIONAL, '', None, linkAttributeOperatorTypes.EQUAL
-                    members = linkRepository.getCounterparts(self.uuid, soughtPathDirection, linkParams, nodeParams, linkTypes, excludeLinks)
+                    members = linkRepository.getCounterparts(self.uuid, soughtPathDirection, linkParams, nodeParams, linkType, excludeLinks)
                     
                     if excludeCluster is not None:
                         #we need to make sure that we don't backtrack, so filter the exclude list
@@ -3317,18 +3318,18 @@ class Entity(object):
                             (str(memberEntityID) not in excludeLinks) and\
                             (member.memePath.fullTemplatePath == soughtPath.path.fullTemplatePath)) or (member.metaMeme == soughtPath.path.fullTemplatePath):
                             if len(splitPath) > 0:
-                                partialLinks, partialNodes, partialTraverseOrder = member.getTraverseReport(splitPath, isMeme, linkTypes, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                                partialLinks, partialNodes, partialTraverseOrder = member.getTraverseReport(splitPath, isMeme, linkType, excludeLinks, returnUniqueValuesOnly, excludeCluster)
                                 traverseLinks.extend(partialLinks) 
                                 traverseOrder.update(partialTraverseOrder)
                                 traverseNeighbors.update(partialNodes)
                             else:
-                                partialLinks, partialNodes, partialTraverseOrder = member.getTraverseReport("", isMeme, linkTypes, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                                partialLinks, partialNodes, partialTraverseOrder = member.getTraverseReport("", isMeme, linkType, excludeLinks, returnUniqueValuesOnly, excludeCluster)
                                 traverseLinks.extend(partialLinks) 
                                 traverseOrder.update(partialTraverseOrder)
                                 traverseNeighbors.update(partialNodes)
                 
                 except KeyError as e:
-                    #self.getLinkedEntitiesByTemplateType(oldSplitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                    #self.getLinkedEntitiesByTemplateType(oldSplitPath, isMeme, linkType, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
                     pass
                 except Exception as e:
                     #logQ.put( [logType , logLevel.DEBUG , method , "Failure getting linked entities.  Traceback = %s" %e])
@@ -3341,7 +3342,7 @@ class Entity(object):
 
 
     #Todo - update the method with the getCounterparts
-    def getLinkedEntitiesByTemplateType(self, splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+    def getLinkedEntitiesByTemplateType(self, splitPath, isMeme, linkType = 0, forcedContinue = False, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
         """ This is a critically important method for finding associated (linked) entities.  It parses the
             link path and follows each step of the path in turn by a recursive call.  
             
@@ -3443,8 +3444,8 @@ class Entity(object):
                 
         #Peel off the parameter filters from currentPathFragment
         linkParams, nodeParams = self.getTraverseFilters(currentPathFragment)
-        reOuterParentheses  = re.compile("\((.+)\)")
-        reInnerBrackets = re.compile("\[([^]]*)\]")
+        reOuterParentheses  = re.compile(r"\((.+)\)")
+        reInnerBrackets = re.compile(r"\[([^]]*)\]")
 
         #strip of the bits inside parenthesis and brackets
         currentPathFragment = re.sub(reOuterParentheses, '', currentPathFragment)
@@ -3482,7 +3483,7 @@ class Entity(object):
 
         try:
             #linkDirectionTypes.BIDIRECTIONAL, '', None, linkAttributeOperatorTypes.EQUAL
-            members = linkRepository.getCounterparts(self.uuid, soughtPathDirection, linkParams, nodeParams, linkTypes, excludeLinks)
+            members = linkRepository.getCounterparts(self.uuid, soughtPathDirection, linkParams, nodeParams, linkType, excludeLinks)
             
             if excludeCluster is not None:
                 #we need to make sure that we don't backtrack, so filter the exclude list
@@ -3506,22 +3507,22 @@ class Entity(object):
                         if ((isMeme == True) and (member.memePath.fullTemplatePath == soughtPath.path.fullTemplatePath)) or\
                             (member.metaMeme == soughtPath.path.fullTemplatePath):
                             if len(splitPath) > 0:
-                                #splitPath, isMeme, linkTypes = 0, forcedContinue = False, excludeLinks = []
-                                partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, False, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                                #splitPath, isMeme, linkType = 0, forcedContinue = False, excludeLinks = []
+                                partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkType, False, excludeLinks, returnUniqueValuesOnly, excludeCluster)
                                 returnMembers.extend(partialRet)
                             else:
                                 returnMembers.append(member.uuid)   
                         if (forcedContinue == True) and (isSingleton == False):
-                            partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                            partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkType, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
                             returnMembers.extend(partialRet)                      
                     else:
                         #currentPathFragment is a wildcard.  Therefore soughtPath is None 
                         #    In ths case, we follow ALL the rabbit holes looking for our next hit, but with forcedContinue turned off
-                        partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkTypes, False, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+                        partialRet = member.getLinkedEntitiesByTemplateType(splitPath, isMeme, linkType, False, excludeLinks, returnUniqueValuesOnly, excludeCluster)
                         returnMembers.extend(partialRet)
         
         except KeyError as e:
-            #self.getLinkedEntitiesByTemplateType(oldSplitPath, isMeme, linkTypes, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
+            #self.getLinkedEntitiesByTemplateType(oldSplitPath, isMeme, linkType, forcedContinue, excludeLinks, returnUniqueValuesOnly, excludeCluster)
             pass
         except Exception as e:
             #logQ.put( [logType , logLevel.DEBUG , method , "Failure getting linked entities.  Traceback = %s" %e])
@@ -3637,10 +3638,13 @@ class Entity(object):
                 newprop = EntityProperty(name, value, entityPropTypes.List, constrained, restMin, restMax, restList, memePath)
                 self.properties[name] = newprop 
                 
+                """
+                deprecated, todo - delete
                 #If self is not archived in an Entity table pickle column
                 global entityRepository
                 if self.getThreadable() == True:  
                     entityRepository.addEntityLinkProperty(self.uuid, name, value, memePath)
+                """
             except Exception as e:
                 e = "List Property %s can't be added to %s entity %s.  Proposed value %s is not iterable.  Traceback = %s" %(name, self.memePath, self.uuid, value, e)
                 #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
@@ -3893,7 +3897,7 @@ class Entity(object):
                             allInList = False
                             bogusValues.append(propVal)
                     if allInList == False:
-                        e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and the following values violate the constraint: %s" %(self.memePath, self.uuid, property.name, value, bogusValues)
+                        e = "Can't set value of %s entity %s property %s to %s.  It is a constrained property and the following values violate the constraint: %s" %(self.memePath, self.uuid, fullPropPath, value, bogusValues)
                         #logQ.put( [logType , logLevel.DEBUG , method , "exiting - with error"])
                         raise Exceptions.EntityPropertyValueOutOfBoundsError(e)
                 else:
@@ -4000,7 +4004,7 @@ class Entity(object):
                     else:
                         errorMessage = "%s entity unable to initialize propertyChanged state event script %s.%s, as no property has been assigned."  %(self.memePath, mName, cName)
                         raise Exceptions.StateEventScriptInitError(errorMessage)
-            except Exception as e:
+            except Exception:
                 #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
                 fullerror = sys.exc_info()
                 errorID = str(fullerror[0])
@@ -4095,8 +4099,6 @@ class createEntityFromMeme(object):
                     pass
                 '''
                 raise Exceptions.ScriptError(ex)
-            #finally:
-                entity.entityLock.release()
     
             return entityID
         except Exception as e:
@@ -4671,7 +4673,7 @@ class getEntityPropertyValue(object):
             errorMsg = str(fullerror[1])
             tb = sys.exc_info()[2]
             try:
-                entity = self.getEntity(params[0])
+                entity = entityRepository.getEntity(params[0])
                 ex = "Function getEntityPropertyValue failed. on entitty of type %s.  Details: (%s, %s, %s, %s, %s).  Traceback = %s" %(entity.memePath.fullTemplatePath, params[0], params[1], params[2], params[3], params[4], errorMsg)
             except Exception as e:
                 ex = "Function getEntityPropertyValue failed. on entitty of unknown type.  Details: (%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  Traceback = %s" %(params[0], params[1], params[2], params[3], params[4], errorMsg)   
@@ -4786,7 +4788,7 @@ class getLinkCounterpartsByMetaMemeType(object):
 
 
 class getTraverseReport(object):
-    # getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = [])(self, meme):
+    # getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkType = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = [])(self, meme):
     ''' Four params: 
             entity
             memePath
@@ -4979,8 +4981,6 @@ class getMemberEnties(object):
             entity = entityRepository.getEntity(params[0])
             if entity.depricated != True:
                 entity.entityLock.acquire(True)
-                e = Entity()
-                e.memberEntities
                 try:
                     returnEntities = entity.getMemberEnties()
                 except Exception as e:
@@ -5648,7 +5648,10 @@ class sourceMemeCreate (object):
                 sourceTemplateRepository.catalogTemplate(meme.path, meme)
                 validationResults = meme.compile(True, False)
             except Exception as e:
-                errorMsg = "Error while trying to create compile meme %s" %(path.fullTemplatePath, e)
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                nestEerrorMsg = str(fullerror[1])
+                errorMsg = "Error while trying to create compile meme %s,   Nested Traceback = %s: %s" %(path.fullTemplatePath, errorID, nestEerrorMsg)
                 logQ.put( [logType , logLevel.WARNING , method , errorMsg])
                 raise Exceptions.SourceMemeManipulationError(errorMsg)
             finally:
@@ -6098,7 +6101,7 @@ def stopLogger():
         global loggingService
         print("stopping Graphyne Internal Logging Service")
         loggingService.join(30.0) #the timeout is because the join sometimes hangs in multiprocess usage
-    except Exception as e:
+    except Exception:
         pass
     
     
@@ -6984,7 +6987,7 @@ def getMemesFromFile(dbConnectionString, xmlData, codePage, modulePath):
                             errorMsg = "%s Github repository for Graphyne, at https://github.com/davidhstocker/Graphyne.  In any case, a traceback of the underlying exception is provided." %errorMsg
                             errorMsg = "%s  \n\nIt whould be noted that in this case, the environment (PYTHONPATH) should include the parent directory of TestUtils.  Env= %s" %(errorMsg, os.environ)
                             errorMsg = "%s  \n\nTraceback = %s" %(errorMsg, e)
-                            raise Exceptions.InconsistentPersistenceArchitecture(errorMsg)
+                            raise Exceptions.InconsistentPersistenceArchitecture(persistenceDB, persistenceDB, errorMsg)
                 else:
                     #designTimeConnection is passed as an arg at startup.  it might be a string representing a file location of an sqlite file, or a pyodbc connection string.
                     #We don't yet know which it is
@@ -7178,7 +7181,7 @@ def getSourceMemesExtension(iterationsList, sourceMemeList):
                             if oldMemberPath in toBeTransformed:
                                 implicitReferenceValue = sourceMeme.implicitReferences[toBeTransformed]
                                 del sourceMeme.implicitReferences[toBeTransformed]
-                                newlyTransformed = toBeTransformed.replace(oldMemberPath, path.fullTemplatePath);
+                                newlyTransformed = toBeTransformed.replace(oldMemberPath, path.fullTemplatePath)
                                 sourceMeme.implicitReferences[newlyTransformed] = implicitReferenceValue
                                 
 
@@ -7538,7 +7541,6 @@ class API(object):
             return entity
         except Exceptions.StateEventScriptInitError as e:
             #Build up a full java or C# style stacktrace, so that devs can track down errors in script modules within repositories
-            fullerror = sys.exc_info()
             tb = sys.exc_info()[2]
             exception = "createEntityFromMeme(%s, %s, %s, %s) traceback = %s" %(memePath, ActionID, Subject, Controller, e)
             logQ.put( [logType , logLevel.WARNING , "createEntityFromMeme" , exception])
@@ -7616,6 +7618,7 @@ class API(object):
             raise Exceptions.ScriptError(exception)  
         
 
+    """
     def getAllAgentsInAgentScope(self, agentUUID):
         try: 
             params = [agentUUID]
@@ -7624,7 +7627,7 @@ class API(object):
         except Exception as e:
             exception = "getAllAgentsInAgentScope(%s) error %s" %(agentUUID, e)
             raise Exceptions.ScriptError(exception)
-      
+    """ 
        
 
     def getEntity(self, entityUUID):
@@ -7675,14 +7678,17 @@ class API(object):
             params = [entityUUID, propertyName, ActionID, Subject, Controller]
             hasProperty = self._getEntityHasProperty.execute(params)
             return hasProperty
-        except Exception as e:
-            exception = None
+        except Exception:
+            errorMessage = ""
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            tb = sys.exc_info()[2]
             try:
                 entity = self.getEntity(entityUUID)
-                exception = "Action on %s entity: getEntityHasProperty(%s, %s, %s, %s, %s, %s) traceback = %s" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller, e)
+                errorMessage = "Action on %s entity: getEntityHasProperty(%s, %s, %s, %s, %s) traceback = %s : %s" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller, errorID, tb)
             except:
-                exception = "Action on entity of unknown type: getEntityHasProperty(%s, %s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  traceback = %s" %(entityUUID, propertyName, ActionID, Subject, Controller, e)
-            raise Exceptions.ScriptError(exception)          
+                errorMessage = "Action on entity of unknown type: getEntityHasProperty(%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  traceback = %s : %s" %(entityUUID, propertyName, ActionID, Subject, Controller, errorID, tb)
+            raise Exceptions.ScriptError(errorMessage)          
         
         
     def getEntityPropertyType(self, entityUUID, propertyName, ActionID = None, Subject = None, Controller = None):
@@ -7694,9 +7700,9 @@ class API(object):
             exception = None
             try:
                 entity = self.getEntity(entityUUID)
-                exception = "Action on %s entity: getEntityPropertyType(%s, %s, %s, %s, %s, %s) traceback = %s" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller, e)
+                exception = "Action on %s entity: getEntityPropertyType(%s, %s, %s, %s, %s) traceback = %s" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller, e)
             except:
-                exception = "Action on entity of unknown type: getEntityPropertyType(%s, %s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  traceback = %s" %(entityUUID, propertyName, ActionID, Subject, Controller, e)
+                exception = "Action on entity of unknown type: getEntityPropertyType(%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository.  traceback = %s" %(entityUUID, propertyName, ActionID, Subject, Controller, e)
             raise Exceptions.ScriptError(exception)             
         
         
@@ -7706,22 +7712,22 @@ class API(object):
             params = [entityUUID, propertyName, ActionID, Subject, Controller]
             value = self._getEntityPropertyValue.execute(params)
             return value
-        except Exceptions.EntityPropertyMissingValueError as e:
+        except Exceptions.EntityPropertyMissingValueError:
             fullerror = sys.exc_info()
             errorMsg = str(fullerror[1])
             tb = sys.exc_info()[2]
             raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
-        except Exception as e:
-            exception = None
+        except Exception:
+            errorMessage = ""
             fullerror = sys.exc_info()
             errorMsg = str(fullerror[1])
             tb = sys.exc_info()[2]
             try:
                 entity = self.getEntity(entityUUID)
-                exception = "Action on %s entity: getEntityPropertyValue(%s, %s, %s, %s, %s)" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller)
-            except Exception as e:
-                exception = "Action on entity of unknown type: getEntityPropertyValue(%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository." %(entityUUID, propertyName, ActionID, Subject, Controller)
-            raise Exceptions.ScriptError(exception).with_traceback(tb)          
+                errorMessage = "Action on %s entity: getEntityPropertyValue(%s, %s, %s, %s, %s)" %(entity.memePath.fullTemplatePath, entityUUID, propertyName, ActionID, Subject, Controller)
+            except Exception:
+                errorMessage = "Action on entity of unknown type: getEntityPropertyValue(%s, %s, %s, %s, %s) .  Possible reason is that entity is not in repository." %(entityUUID, propertyName, ActionID, Subject, Controller)
+            raise Exceptions.ScriptError(errorMessage).with_traceback(tb)          
 
 
 
@@ -7892,7 +7898,7 @@ class API(object):
     def getHasCounterpartsByMetaMemeType(self, entityUUID, metaMemePath, linkType = None):
         try: 
             params = [entityUUID, metaMemePath, linkType]
-            hasCounterparts = self._getHasCounterpartsMetaMemeByType.execute(params)
+            hasCounterparts = self._getHasCounterpartsByMetaMemeType.execute(params)
             return hasCounterparts
         except Exception as e:
             exception = None
@@ -7922,7 +7928,7 @@ class API(object):
         
         
     def getTraverseReport(self, entityUUID, traversePath, isMeme = True, linkType = 0):
-        #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+        #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkType = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
         returnUniqueValuesOnly = True
         params = [entityUUID, traversePath, isMeme, linkType, returnUniqueValuesOnly]
         traverseLinks, traverseNeighbors, traverseOrder = self._getTraverseReport.execute(params)
@@ -7943,7 +7949,7 @@ class API(object):
     
     
     def getTraverseReportJSON(self, entityUUID, traversePath, isMeme = True, linkType = 0):
-        #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkTypes = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
+        #getTraverseReport(self, splitPath, isMeme, lthLevel = 0, linkType = 0, excludeLinks = [], returnUniqueValuesOnly = True, excludeCluster = []):
         returnUniqueValuesOnly = True
         params = [entityUUID, traversePath, isMeme, linkType, returnUniqueValuesOnly]
         traverseLinks, traverseNeighbors, traverseOrder = self._getTraverseReport.execute(params)
@@ -7971,7 +7977,7 @@ class API(object):
             memeExists = self._getMemeExists.execute(params)
             return memeExists
         except Exception as e:
-            exception = "getMemeExists(%s, %s) error %s" %(memePath, e)
+            exception = "getMemeExists(%s) error %s" %(memePath, e)
             raise Exceptions.ScriptError(exception)     
         
         
@@ -8180,6 +8186,8 @@ class API(object):
             raise Exceptions.ScriptError(exception) 
 
 
+    """
+    # Deprecated - todo, remove
     def getTemplateCatalog(self):
         try: 
             params = []
@@ -8199,6 +8207,7 @@ class API(object):
         except Exception as e:
             exception = "Get Template %s head revision Failed. traceback = %s" %(tempLateFullPath, e)
             raise Exceptions.ScriptError(exception)   
+    """
         
 
     def getEntityCounterparts(self, entityUUID):
@@ -8207,7 +8216,7 @@ class API(object):
             #params = [entityUUID]
             evalResult = linkRepository.getCounterpartIndices(entityUUID)
             return evalResult
-        except KeyError as e:
+        except KeyError:
             fullerror = sys.exc_info()
             errorID = str(fullerror[0])
             nestEerrorMsg = str(fullerror[1])
@@ -8235,9 +8244,9 @@ class API(object):
                 raise Exceptions.ScriptError(errorMsg).with_traceback(tb)
 
 
-    def getCluster(self, entityUUID, linkTypes = 0, crossSingletons = False):
+    def getCluster(self, entityUUID, linkType = 0, crossSingletons = False):
         try: 
-            params = [entityUUID, linkTypes, crossSingletons]
+            params = [entityUUID, linkType, crossSingletons]
             evalResult = self._getCluster.execute(params)
             return evalResult
         except Exception:
@@ -8251,12 +8260,12 @@ class API(object):
 
         
         
-    def getClusterJSON(self, entityUUID, linkTypes = 0, crossSingletons = False):
+    def getClusterJSON(self, entityUUID, linkType = 0, crossSingletons = False):
         """
             Acts as a wrapper for getCluster() and returns the result as a JSON, instead of as a native Python dict
         """
         try: 
-            params = [entityUUID, linkTypes, crossSingletons]
+            params = [entityUUID, linkType, crossSingletons]
             evalResult = self._getClusterJSON.execute(params)
             return evalResult
         except Exception as e:
@@ -8264,9 +8273,9 @@ class API(object):
             raise Exceptions.ScriptError(exception)
 
         
-    def getClusterMembers(self, entityUUID, linkTypes = 0, crossSingletons = False):
+    def getClusterMembers(self, entityUUID, linkType = 0, crossSingletons = False):
         try: 
-            params = [entityUUID, linkTypes, crossSingletons]
+            params = [entityUUID, linkType, crossSingletons]
             evalResult = self._getClusterMembers.execute(params)
             return evalResult
         except Exception as e:

@@ -202,7 +202,7 @@ class InconsistentPersistenceArchitecture(Exception):
                 errorMsg = "%s(1) - It contains a valid filename, ending in '.sqlite'.  If it is an existing file, then that will be used.  Otherwise, it will be created. " %errorMsg
                 errorMsg = "%s(2) - It is 'memory', in which case the sqlite3 database will be started with the :memory: connection option. " %errorMsg
                 errorMsg = "%s(3) - It is None, in which case the sqlite3 database will be started with the :memory: connection option as default. " %errorMsg
-                errorMsg = "%The provided value %s for 'persistenceArg' does not fit this pattern" %(errorMsg, persistenceArg)
+                errorMsg = "%sThe provided value %s for 'persistenceArg' does not fit this pattern" %(errorMsg, persistenceArg)
                 self.enumeration = errorMsg
             elif (self.persistenceType == "mssql"):
                 self.enumeration = "Backend persistence type (persistenceType) is set to '%s', the provided connection string argument (persistenceArg) of %s is inconsistent.  Please provide a valid connection string." %(persistenceType, persistenceArg)

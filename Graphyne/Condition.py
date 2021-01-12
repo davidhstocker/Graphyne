@@ -1,6 +1,7 @@
 
 import decimal
 import threading
+import sys
 from . import Graph
 from . import Scripting
 from . import Exceptions
@@ -68,7 +69,10 @@ class SimpleArgument(object):
         try:
             self.argumentTag = argumentPaths["ArgumentTag"]
         except Exception as e:
-            message = "WARNING - Unable to attach argument %s to condition %s.  Traceback = %s" (argumentPaths, self.meme, e)
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            message = "WARNING - Unable to attach argument %s to condition %s.  Traceback = %s : %s" %(argumentPaths, argumentPaths["conditionMemeID"], errorID, errorMsg)
             Graph.api.writeError(message)
         
         
@@ -77,7 +81,7 @@ class SimpleArgument(object):
 
 
     def getRequiredArgumentList(self):
-        return [self.argument]
+        return []
 
     
     def getRequiredAgentPathList(self):
@@ -245,7 +249,7 @@ class ConditionSet(threading.Thread):
             errorMsg = "Condition set encountered problem while evaluating child condition %s.  Traceback = %s" %(self.meme, e)
             raise Exceptions.ScriptError(errorMsg)
         except Exceptions.MissingAgentError as agentPathList:
-            errMsg = 'Condition set %s required agent attributes:' % (self.meme, agentPathList)
+            errMsg = 'Condition set %s required agent attributes: %s' % (self.meme, agentPathList)
             raise Exceptions.MissingAgentError(errMsg)
         except Exceptions.MissingArgumentError as exception:
             errMsg = 'Test of condition set %s is missing required argument %s and can not be processed!' % (self.meme, exception)
@@ -311,11 +315,17 @@ class ConditionString(Condition):
             errorMsg = 'Condition %s has error %s.  defaulting to False' % (exception, self.meme)
             Graph.api.writeError(errorMsg)
         except Exceptions.MissingArgumentError:
-            errorMsgPart1 = '%Missing argument on call to condition %s!  There needs to be either a stored comparison value set, or one passed from the calling constructor' % self.meme
-            errorMsg = 'Condition %s.  defaulting to False.  Traceback = %s' % (self.meme, errorMsgPart1)
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            errorMsgPart1 = 'Missing argument on call to condition %s!  There needs to be either a stored comparison value set, or one passed from the calling constructor\n' %(self.meme)
+            errorMsg = '%sCondition %s.  defaulting to False.  Traceback = %s : %s' % (self.meme, errorMsgPart1, errorID, errorMsg)
             Graph.api.writeError(errorMsg)     
         except Exception as e:
-            Graph.api.writeError('Condition %s.  defaulting to False' % (self.meme, e))
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            Graph.api.writeError('Condition %s.  defaulting to False %s : %s' % (self.meme, errorID, errorMsg))
 
         return returnValue
 
@@ -444,7 +454,7 @@ class ConditionNumeric(Condition):
         except Exceptions.MalformedConditionalError as exception:
             Graph.api.writeError('Condition %s defaulting to False. Traceback = %s' % (self.meme, exception))
         except Exceptions.MissingArgumentError:
-            errorMsgPart1 = '%Missing argument on call to condition %s!  There needs to be either a stored comparison value set, or one passed from the calling constructor' % self.meme
+            errorMsgPart1 = 'Missing argument on call to condition %s!  There needs to be either a stored comparison value set, or one passed from the calling constructor' % self.meme
             errorMsg = 'Condition %s.  defaulting to False.  Traceback = %s' % (self.meme, errorMsgPart1)
             Graph.api.writeError(errorMsg)
         except Exception as e:
@@ -531,14 +541,20 @@ class ConditionNumericAAA(ConditionNumeric, AgentAttributeArgument):
             try:
                 argumentValue = self.getArgumentValue(argumentMap['subjectID'])
             except Exception as e:
-                errorMsg = "Condition %s not called with required subject ID!  Condition has no entity for comparison and can't proceed!  Traceback = %s" % (self.meme, e)
+                fullerror = sys.exc_info()
+                errorID = str(fullerror[0])
+                errorMsg = str(fullerror[1])
+                errorMsg = "Condition %s not called with required subject ID!  Condition has no entity for comparison and can't proceed!  Traceback = %s : %s" % (self.meme, errorID, errorMsg)
                 raise Exceptions.MissingArgumentError(errorMsg)      
                 #for debugging
                 argumentValue = self.getArgumentValue(argumentMap['subjectID'])       
             
             returnValue = self.innerTest(self.valueList, argumentValue)
         except Exception as e:
-            errMsg = 'Condition %s defaulting to False.  MismatchedArgumentPathError while processing%s:, params = %s  Traceback = %s' % (self.meme, argumentMap, e)
+            fullerror = sys.exc_info()
+            errorID = str(fullerror[0])
+            errorMsg = str(fullerror[1])
+            errMsg = 'Condition %s defaulting to False.  MismatchedArgumentPathError while processing:, params = %s  Traceback = %s : %s' % (self.meme, argumentMap, errorID, errorMsg)
             Graph.api.writeError(errMsg)
         return returnValue         
 
@@ -657,7 +673,8 @@ def getArgumentsFromConditionEntity(conditionContainer):
         Simple arguments will have just a key name for lookup in an argument map (dict)
         AA Arguments will have a full blown Member Path
         '''
-    argumentInfo = {}
+    conditionMemePath = Graph.api.getEntityMemeType(conditionContainer)
+    argumentInfo = {"conditionMemeID" : conditionMemePath}
     memberUUIDs = Graph.api.getLinkCounterpartsByMetaMemeType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.SimpleArgument")
     if len(memberUUIDs) < 1:
         memberUUIDs = Graph.api.getLinkCounterpartsByMetaMemeType(conditionContainer, "*::Graphyne.Condition.Argument::Graphyne.Condition.AgentAttributeArgument")

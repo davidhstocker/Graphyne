@@ -12,7 +12,7 @@ __email__ = 'mrdave991@gmail.com'
 __status__ = 'Production'
 
 
-from . import Graph as Graph
+from Graphyne import Graph as Graph
 import threading
 
 
