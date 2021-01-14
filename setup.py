@@ -13,7 +13,7 @@ setup(
   author = 'David Stocker',
   author_email = 'mrdave991@gmail.com',
   url = 'https://github.com/davidhstocker/Graphyne',
-  download_url = 'https://github.com/davidhstocker/Graphyne/tarball/1.2', 
+  download_url = 'https://github.com/davidhstocker/Graphyne/tarball/1.2.1', 
   keywords = ['graph', 'propertygraph', 'property graph', 'graphdatabase', 'graph database', 'smart graph', 'smartgraph'],
   install_requires=[],
   classifiers = [],
