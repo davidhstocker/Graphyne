@@ -1,7 +1,7 @@
 """
    Graph.py: Core Graph Plumbing for Graphyne.
 """
-from _ast import Str
+from ast import Str
 from uuid import UUID
 
 __author__ = 'David Stocker'
