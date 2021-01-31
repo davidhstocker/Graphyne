@@ -4,7 +4,8 @@ Created on September 19, 2016
 @author: David Stocker
 '''
 
-from distutils.core import setup
+from setuptools import setup
+
 setup(
   name = 'graphyne',
   packages = ['graphyne'],
