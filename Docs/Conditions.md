@@ -173,7 +173,7 @@ This is the simplest kind of condition of all, from a meme perspective.  It cont
 
 ![][image-6]
 
-The example below is a built in meme from Graphyne.Condition and is always available.  It simply returns True.
+The example below is a built in meme from graphyne.Condition and is always available.  It simply returns True.
 
 	<!-- The 'default' Condtiions -->
 	<Meme id="True" metameme="Graphyne.Condition.Condition">

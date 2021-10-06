@@ -340,22 +340,22 @@ def smokeTestSet(restltQueue, lLevel, css, dbConnectionString = None, persistenc
         try:
             if persistenceType is None:
                 #pydevd.settrace()
-                from Graphyne.DatabaseDrivers import NonPersistent as persistenceModule1
+                from graphyne.DatabaseDrivers import NonPersistent as persistenceModule1
                 testReport = Smoketest.smokeTestSet(persistenceModule1, lLevel, css, "No-Persistence", dbConnectionString, persistenceType, True, True, scaleFactor)
             elif ((persistenceType == "sqlite") and (dbConnectionString== "memory")):
                 #pydevd.settrace()
-                from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
+                from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
                 testReport = Smoketest.smokeTestSet(persistenceModule2, lLevel, css, "sqllite", dbConnectionString, persistenceType, True, True, scaleFactor)
             elif persistenceType == "memory":
-                from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule4
+                from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule4
                 testReport = Smoketest.smokeTestSet(persistenceModule4, lLevel, css, "sqllite", dbConnectionString, persistenceType, True, True, scaleFactor)
             else:
                 #pydevd.settrace()
-                from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul3
+                from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul3
                 testReport = Smoketest.smokeTestSet(persistenceModul3, lLevel, css, persistenceType, dbConnectionString, persistenceType, True, True, scaleFactor)
             restltQueue.put(testReport)
         except Exception:
-            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul32
+            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul32
             testReport = Smoketest.smokeTestSet(persistenceModul32, lLevel, css, persistenceType, dbConnectionString, persistenceType, True, True, scaleFactor)
             restltQueue.put(testReport) 
     except Exception as e:

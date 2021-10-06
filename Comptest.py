@@ -54,15 +54,15 @@ if __name__ == "__main__":
     ####
     # Database Connections
     ####
-    from Graphyne.DatabaseDrivers import NonPersistent as persistenceModuleNone
-    from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule1
+    from graphyne.DatabaseDrivers import NonPersistent as persistenceModuleNone
+    from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule1
     persistenceConstellations = []
     persistenceConstellations.append([persistenceModuleNone, lLevel, css, "No-Persistence", None, None, False, True])
     persistenceConstellations.append([persistenceModule1, lLevel, css, "sqllite", 'memory', 'sqlite', False, True])
 
     try:
         if (sys.argv[1] is not None) and (sys.argv[2] is not None):
-            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModuleArg
+            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModuleArg
             persistenceConstellations.append([persistenceModuleArg, lLevel, css, "%s - Reset" %sys.argv[2], sys.argv[1], sys.argv[2], True, False])   
             persistenceConstellations.append([persistenceModuleArg, lLevel, css, "%s - NoReset" %sys.argv[2], sys.argv[1], sys.argv[2], False, False]) 
     except: 

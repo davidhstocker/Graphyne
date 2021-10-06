@@ -411,7 +411,7 @@ The actual state event "scripts" themselves are python classes that have an exec
 Writing SES script python code is easy.  If you want to write a state event script class, you will need the following:    
 - import Graphyne.Scripting in the module containing your class.
 - import Graph.api, if you plan on accessing the graph api.
-- Your class should extend **StateEventScript** (from Graphyne.Scripting).  
+- Your class should extend **StateEventScript** (from graphyne.Scripting).  
 - **Do not** override the __init__() method.  That is triggered behind the scenes during bootstrapping of the entity.
 - Override the execute() method.  This is where your scripting goes.  This method will always be called with two positional parameters at runtime; UUID (as a string) of the entity at position 0 and a dictionary at position 1.
 - The dictionary object at position 1 has content that may be useful in handling the event script.  It has [event specific keys][16].

@@ -393,7 +393,6 @@ class EntityRepository(object):
         returnEntities = []
         try:
             #Set the SQL Syntax
-            global sqlSyntax
             try:
                 if activeState == 0:
                     entitySelectStatement = sqlSyntax.selectGetRessurectedEntities0

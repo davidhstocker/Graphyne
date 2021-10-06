@@ -720,7 +720,7 @@ if __name__ == "__main__":
 
     try:
         if dbConnectionString == "sqlite":
-            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
+            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
             main(css, additionalRepoToTest, None, lLevel, alsoValidateRepo, persistenceModule2)
             time.sleep(10.0)
         else:
