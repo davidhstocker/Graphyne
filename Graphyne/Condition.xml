@@ -80,12 +80,12 @@
 		</MetaMeme>	
 		<MetaMeme id="ConditionNumeric" singleton="true">
 			<MetaMemeProperty name="NumericOperator" type="string"/>
-			<MemberMetaMeme reference="Graphyne.Numeric.Formula" min="0"/>
+			<MemberMetaMeme reference="graphyne.Numeric.Formula" min="0"/>
 			<MemberMetaMeme reference="Argument" min="1" max="1"/>
 		</MetaMeme>
 		<MetaMeme id="ConditionScript" singleton="true">
 			<MetaMemeProperty name="ScriptName" type="string"/>
-			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1"/>
+			<MemberMetaMeme reference="graphyne.DNA.StateEventScript" min="1" max="1"/>
 		</MetaMeme>	
 		<MetaMeme id="Condition" switch="true" singleton="true">
 			<MetaMemeProperty name="Priority" type="integer" constrained="true"/>
@@ -99,18 +99,18 @@
 	<ListOfMeme>
 
 		<!-- The 'default' Condtiions -->
-		<Meme id="True" metameme="Graphyne.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="Graphyne.Condition.True_CScr" linktype="subatomic"/>
+		<Meme id="True" metameme="graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="graphyne.Condition.True_CScr" linktype="subatomic"/>
 		</Meme>
-		<Meme id="True_CScr" metameme="Graphyne.Condition.ConditionScript">
-			<MemberMeme occurrence="1" memberID="Graphyne.DNA.TrueSES"/>
+		<Meme id="True_CScr" metameme="graphyne.Condition.ConditionScript">
+			<MemberMeme occurrence="1" memberID="graphyne.DNA.TrueSES"/>
 		</Meme>
 		
-		<Meme id="False" metameme="Graphyne.Condition.Condition">
-			<MemberMeme occurrence="1" memberID="Graphyne.Condition.False_CScr" linktype="subatomic"/>
+		<Meme id="False" metameme="graphyne.Condition.Condition">
+			<MemberMeme occurrence="1" memberID="graphyne.Condition.False_CScr" linktype="subatomic"/>
 		</Meme>
-		<Meme id="False_CScr" metameme="Graphyne.Condition.ConditionScript">
-			<MemberMeme occurrence="1" memberID="Graphyne.DNA.FalseSES"/>
+		<Meme id="False_CScr" metameme="graphyne.Condition.ConditionScript">
+			<MemberMeme occurrence="1" memberID="graphyne.DNA.FalseSES"/>
 		</Meme>
 	
 

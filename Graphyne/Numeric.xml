@@ -53,30 +53,30 @@
 		</MetaMeme>
 		<MetaMeme id="ValueNumeric" singleton="true">
 			<MetaMemeProperty name="Value" type="decimal"/>
-			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript" min="1" max="1"/>
+			<MemberMetaMeme reference="graphyne.DNA.StateEventScript" min="1" max="1"/>
 		</MetaMeme>		
 	
 	</ListOfMetaMeme>
 	
 	<ListOfMeme>
 		<!--Random Distribution Init State Event Script-->
-		<Meme id="RandomInitScript" metameme="Graphyne.DNA.Script">
-			<MemeProperty name="Script" value="Graphyne.Numeric.InitRandom"/>
+		<Meme id="RandomInitScript" metameme="graphyne.DNA.Script">
+			<MemeProperty name="Script" value="graphyne.Numeric.InitRandom"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
-		<Meme id="RandomInitSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="RandomInitSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="initialize"/>
-			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.RandomInitScript" linktype="subatomic" />
+			<MemberMeme occurrence="1" memberID="graphyne.Numeric.RandomInitScript" linktype="subatomic" />
 		</Meme>	
 		
 		<!--Random Distribution Init State Event Script-->
-		<Meme id="ValueNumericInitScript" metameme="Graphyne.DNA.Script">
-			<MemeProperty name="Script" value="Graphyne.Numeric.InitValueNumeric"/>
+		<Meme id="ValueNumericInitScript" metameme="graphyne.DNA.Script">
+			<MemeProperty name="Script" value="graphyne.Numeric.InitValueNumeric"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
-		<Meme id="ValueNumericInitSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="ValueNumericInitSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="initialize"/>
-			<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitScript" linktype="subatomic" />
+			<MemberMeme occurrence="1" memberID="graphyne.Numeric.ValueNumericInitScript" linktype="subatomic" />
 		</Meme>		
 	</ListOfMeme>
 </RMLModule>

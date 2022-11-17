@@ -379,11 +379,11 @@ You can see an example of this in action in Graphyne’s test framework.  In the
 <MemberMeme occurrence="1" memberID="Memetic.Condition.ConditionInitSES"/\>
 <MemberMeme occurrence="1" memberID="TrueOrFalseSES"/\>
 </Meme\>
-<Meme id="TrueOrFalseScript" metameme="Graphyne.DNA.Script"\>
+<Meme id="TrueOrFalseScript" metameme="graphyne.DNA.Script"\>
 <MemeProperty name="Script" value="TestCaseAppendix.ConditionTrueOrFalse"/\>
 <MemeProperty name="Language" value="python"/\>
 </Meme\>
-<Meme id="TrueOrFalseSES" metameme="Graphyne.DNA.StateEventScript"\>
+<Meme id="TrueOrFalseSES" metameme="graphyne.DNA.StateEventScript"\>
 <MemeProperty name="State" value="execute"/\>
 <MemberMeme occurrence="1" memberID="TrueOrFalseScript" /\>
 </Meme\>

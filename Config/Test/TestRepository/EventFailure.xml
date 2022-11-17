@@ -23,7 +23,7 @@
 	<ListOfMetaMeme>
 		<MetaMeme id="BrokenEventsMM">	
 			<MetaMemeProperty name="propB" type="string"/>
-			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript"/>
+			<MemberMetaMeme reference="graphyne.DNA.StateEventScript"/>
 		</MetaMeme>
 	</ListOfMetaMeme>
 	
@@ -37,27 +37,27 @@
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenPropertySES" />
 		</Meme>
 		
-		<Meme id="BrokenScript" metameme="Graphyne.DNA.Script">
+		<Meme id="BrokenScript" metameme="graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventFailure.BrokenScript"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		
-		<Meme id="BrokenLinkChangeAddedSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="BrokenLinkChangeAddedSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
 		</Meme>	
 
-		<Meme id="BrokenLinkChangeRemovedSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="BrokenLinkChangeRemovedSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkRemove"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
 		</Meme>	
 		
-		<Meme id="BrokenExecuteSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="BrokenExecuteSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="execute"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.BrokenScript" />
 		</Meme>
 		
-		<Meme id="BrokenPropertySES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="BrokenPropertySES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="propertyChanged"/>
 			<MemeProperty name="PropertyID" value="propB"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
@@ -75,27 +75,27 @@
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsPropertySES" />
 		</Meme>
 		
-		<Meme id="ThrowsScript" metameme="Graphyne.DNA.Script">
+		<Meme id="ThrowsScript" metameme="graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventFailure.ThrowsException"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		
-		<Meme id="ThrowsLinkChangeAddedSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="ThrowsLinkChangeAddedSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
 		</Meme>	
 
-		<Meme id="ThrowsLinkChangeRemovedSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="ThrowsLinkChangeRemovedSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkRemove"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
 		</Meme>	
 		
-		<Meme id="ThrowsExecuteSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="ThrowsExecuteSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="execute"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
 		</Meme>
 		
-		<Meme id="ThrowsPropertySES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="ThrowsPropertySES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="propertyChanged"/>
 			<MemeProperty name="PropertyID" value="propB"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsScript" />
@@ -108,12 +108,12 @@
 			<MemberMeme occurrence="1" memberID="EventFailure.ThrowsExecuteSES" />
 		</Meme>
 		
-		<Meme id="MalformedEventScript" metameme="Graphyne.DNA.Script">
+		<Meme id="MalformedEventScript" metameme="graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventFailure.NotAStateEventScript"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		
-		<Meme id="MalformedEventSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="MalformedEventSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="linkAdd"/>
 			<MemberMeme occurrence="1" memberID="EventFailure.MalformedEventScript" />
 		</Meme>	

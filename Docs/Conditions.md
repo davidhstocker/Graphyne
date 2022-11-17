@@ -28,11 +28,11 @@ SimlpleArgument is used when you want to dynamically compare an arbitrary value 
 
 In the example code, below, we define an Argument meme, called ExampleArgument and it has a SimpleArgument child called ExampleSimpleArgument .  The ArgumentTag is “Animal”.  
 
-	<Meme id="ExampleArgument" metameme="Graphyne.Condition.Argument">
+	<Meme id="ExampleArgument" metameme="graphyne.Condition.Argument">
 	<MemberMeme occurrence="1" memberID="ExampleSimpleArgument" linktype="subatomic"/>
 	</Meme>
 	
-	<Meme id="ExampleSimpleArgument" metameme="Graphyne.Condition.SimpleArgument">
+	<Meme id="ExampleSimpleArgument" metameme="graphyne.Condition.SimpleArgument">
 	<MemeProperty name="ArgumentTag" value="Animal"/>
 	</Meme>
 
@@ -49,11 +49,11 @@ Argument memes using AgentAttributeArgument also have a very simple structure.  
 
 In the example code, below, we define an Argument meme, called ExampleArgument and it has an AgentAttributeArgument child called Example AgentAttributeArgument .  The SubjectArgumentPath is “Animal”.  
 
-	<Meme id="ExampleArgument" metameme="Graphyne.Condition.Argument">
+	<Meme id="ExampleArgument" metameme="graphyne.Condition.Argument">
 	<MemberMeme occurrence="1" memberID="ExampleAAArgument" linktype="subatomic"/>
 	</Meme>
 	
-	<Meme id="ExampleAAArgument" metameme="Graphyne.Condition.AgentAttributeArgument">
+	<Meme id="ExampleAAArgument" metameme="graphyne.Condition.AgentAttributeArgument">
 	<MemeProperty name="SubjectArgumentPath" value="Animal"/>
 	</Meme>
 
@@ -68,11 +68,11 @@ Argument memes using MultiAgentAttributeArgument also have a very simple structu
 
 ![][image-3]
 
-	<Meme id="ExampleArgument" metameme="Graphyne.Condition.Argument">
+	<Meme id="ExampleArgument" metameme="graphyne.Condition.Argument">
 	<MemberMeme occurrence="1" memberID="ExampleAAAArgument" linktype="subatomic"/>
 	</Meme>
 	
-	<Meme id="ExampleMAAArgument" metameme="Graphyne.Condition.MultiAgentAttributeArgument">
+	<Meme id="ExampleMAAArgument" metameme="graphyne.Condition.MultiAgentAttributeArgument">
 	<MemeProperty name="SubjectArgumentPath" value="Animal"/>
 	<MemeProperty name="ObjectArgumentPath" value="Animal"/>
 	</Meme>
@@ -101,11 +101,11 @@ The Condition meme (and its descendants) below demonstrates a StringCondition el
 
 ![][image-4]
 
-	<Meme id="endsWith" metameme="Graphyne.Condition.Condition">
+	<Meme id="endsWith" metameme="graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="EndsWith_CS" linktype="subatomic"/>
 	</Meme>
 	
-	<Meme id="EndsWith_CS" metameme="Graphyne.Condition.ConditionString">
+	<Meme id="EndsWith_CS" metameme="graphyne.Condition.ConditionString">
 	<MemeProperty name="StringOperator" value="EndsWith"/>
 	<MemberMeme occurrence="1" memberID="endsWithValue_g" linktype="subatomic"/>
 	<MemberMeme occurrence="1" memberID="endsWithValue_G" linktype="subatomic"/>
@@ -113,10 +113,10 @@ The Condition meme (and its descendants) below demonstrates a StringCondition el
 	<Description>Test - EndsWith</Description>
 	</Meme>
 	
-	<Meme id="endsWithValue_g" metameme="Graphyne.Condition.ValueString">
+	<Meme id="endsWithValue_g" metameme="graphyne.Condition.ValueString">
 	<MemeProperty name="Value" value="g"/>
 	</Meme>
-	<Meme id="endsWithValue_G" metameme="Graphyne.Condition.ValueString">
+	<Meme id="endsWithValue_G" metameme="graphyne.Condition.ValueString">
 	<MemeProperty name="Value" value="G"/>
 	</Meme>
 
@@ -138,11 +138,11 @@ The Condition meme (and its descendants) below demonstrates a ConditionNumeric e
 
 ![][image-5]
 
-	<Meme id="equalOrLessThan" metameme="Graphyne.Condition.Condition">
+	<Meme id="equalOrLessThan" metameme="graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="equalOrLessThan_CN" linktype="subatomic"/>
 	</Meme>
 	
-	<Meme id="equalOrLessThan_CN" metameme="Graphyne.Condition.ConditionNumeric">
+	<Meme id="equalOrLessThan_CN" metameme="graphyne.Condition.ConditionNumeric">
 	<MemeProperty name="NumericOperator" value="EqualOrLessThan"/>
 	<MemberMeme occurrence="1" memberID="NumericValue.intValue_2" linktype="subatomic"/>
 	<MemberMeme occurrence="1" memberID="NumericValue.intValue_3" linktype="subatomic"/>
@@ -150,20 +150,20 @@ The Condition meme (and its descendants) below demonstrates a ConditionNumeric e
 	<Description/>
 	</Meme>
 	
-	<Meme id="intValue_3" metameme="Graphyne.Numeric.Formula">
+	<Meme id="intValue_3" metameme="graphyne.Numeric.Formula">
 	<MemberMeme occurrence="1" memberID="nv_intValue_3"/>
 	</Meme>
-	<Meme id="intValue_2" metameme="Graphyne.Numeric.Formula">
+	<Meme id="intValue_2" metameme="graphyne.Numeric.Formula">
 	<MemberMeme occurrence="1" memberID="nv_intValue_2"/>
 	</Meme>
 	
-	<Meme id="nv_intValue_3" metameme="Graphyne.Numeric.ValueNumeric">
+	<Meme id="nv_intValue_3" metameme="graphyne.Numeric.ValueNumeric">
 	<MemeProperty name="Value" value="3"/>
-	<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
+	<MemberMeme occurrence="1" memberID="graphyne.Numeric.ValueNumericInitSES"/>
 	</Meme>
-	<Meme id="nv_intValue_2" metameme="Graphyne.Numeric.ValueNumeric">
+	<Meme id="nv_intValue_2" metameme="graphyne.Numeric.ValueNumeric">
 	<MemeProperty name="Value" value="2"/>
-	<MemberMeme occurrence="1" memberID="Graphyne.Numeric.ValueNumericInitSES"/>
+	<MemberMeme occurrence="1" memberID="graphyne.Numeric.ValueNumericInitSES"/>
 	</Meme>
 
 
@@ -176,11 +176,11 @@ This is the simplest kind of condition of all, from a meme perspective.  It cont
 The example below is a built in meme from graphyne.Condition and is always available.  It simply returns True.
 
 	<!-- The 'default' Condtiions -->
-	<Meme id="True" metameme="Graphyne.Condition.Condition">
-	<MemberMeme occurrence="1" memberID="Graphyne.Condition.True_CScr" linktype="subatomic"/>
+	<Meme id="True" metameme="graphyne.Condition.Condition">
+	<MemberMeme occurrence="1" memberID="graphyne.Condition.True_CScr" linktype="subatomic"/>
 	</Meme>
-	<Meme id="True_CScr" metameme="Graphyne.Condition.ConditionScript">
-	<MemberMeme occurrence="1" memberID="Graphyne.DNA.TrueSES"/>
+	<Meme id="True_CScr" metameme="graphyne.Condition.ConditionScript">
+	<MemberMeme occurrence="1" memberID="graphyne.DNA.TrueSES"/>
 	</Meme>
 
 
@@ -198,14 +198,14 @@ The nested Condition elements are evaluated and if the combination of their valu
 
 The following Condition contains a ConditionSet that in turn wraps all three of the previous example and returns True when all three are True.
 
-	<Meme id="ExampleCondition" metameme="Graphyne.Condition.Condition">
+	<Meme id="ExampleCondition" metameme="graphyne.Condition.Condition">
 	<MemberMeme occurrence="1" memberID="ExampleConditionSet" linktype="subatomic"/>
 	</Meme>
-	<Meme id="ExampleConditionSet" metameme="Graphyne.Condition.ConditionSet">
+	<Meme id="ExampleConditionSet" metameme="graphyne.Condition.ConditionSet">
 	<MemeProperty name="SetOperator" value="AND"/>
 	<MemberMeme occurrence="1" memberID="ExampleCSChildren" linktype="subatomic"/>
 	</Meme>
-	<Meme id="ExampleCSChildren" metameme="Graphyne.Condition.ConditionSetChildren">
+	<Meme id="ExampleCSChildren" metameme="graphyne.Condition.ConditionSetChildren">
 	<MemberMeme occurrence="1" memberID="equalOrLessThan" linktype="subatomic"/>
 	<MemberMeme occurrence="1" memberID="endsWith" linktype="subatomic"/>
 	<MemberMeme occurrence="1" memberID="True" linktype="subatomic"/>

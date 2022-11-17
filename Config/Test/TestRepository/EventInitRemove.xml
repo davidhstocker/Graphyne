@@ -5,7 +5,7 @@
 	
 	<ListOfMetaMeme>
 		<MetaMeme id="MMWithEvents">	
-			<MemberMetaMeme reference="Graphyne.DNA.StateEventScript"/>
+			<MemberMetaMeme reference="graphyne.DNA.StateEventScript"/>
 		</MetaMeme>
 	</ListOfMetaMeme>
 	
@@ -15,22 +15,22 @@
 			<MemberMeme occurrence="1" memberID="EventInitRemove.DelSES" />
 		</Meme>
 		
-		<Meme id="InitScript" metameme="Graphyne.DNA.Script">
+		<Meme id="InitScript" metameme="graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventInitRemove.OnInitialize"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
-		<Meme id="InitSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="InitSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="initialize"/>
 			<MemberMeme occurrence="1" memberID="EventInitRemove.InitScript" />
 			
 		</Meme>	
 		
 		
-		<Meme id="DelScript" metameme="Graphyne.DNA.Script">
+		<Meme id="DelScript" metameme="graphyne.DNA.Script">
 			<MemeProperty name="Script" value="EventInitRemove.OnDelete"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
-		<Meme id="DelSES" metameme="Graphyne.DNA.StateEventScript">
+		<Meme id="DelSES" metameme="graphyne.DNA.StateEventScript">
 			<MemeProperty name="State" value="terminate"/>
 			<MemberMeme occurrence="1" memberID="EventInitRemove.DelScript" />
 		</Meme>	

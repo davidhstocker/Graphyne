@@ -260,7 +260,7 @@
 			<MetaMemeExtensions>
 				<MetaMemeID>OrderedListMember</MetaMemeID>	
 			</MetaMemeExtensions>
-			<MemberMetaMeme reference="Graphyne.Condition.Condition" min="1" max="1"/>
+			<MemberMetaMeme reference="graphyne.Condition.Condition" min="1" max="1"/>
 		</MetaMeme>
 		
 		<!-- Controller -->
@@ -303,7 +303,7 @@
 	
 	<ListOfMeme>
 		<Meme id="TrueScript" metameme="Script">
-			<MemeProperty name="Script" value="Graphyne.Scripts.ConditionTrue"/>
+			<MemeProperty name="Script" value="graphyne.Scripts.ConditionTrue"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		<Meme id="TrueSES" metameme="StateEventScript">
@@ -312,7 +312,7 @@
 		</Meme>	
 
 		<Meme id="FalseScript" metameme="Script">
-			<MemeProperty name="Script" value="Graphyne.Scripts.ConditionFalse"/>
+			<MemeProperty name="Script" value="graphyne.Scripts.ConditionFalse"/>
 			<MemeProperty name="Language" value="python"/>
 		</Meme>
 		<Meme id="FalseSES" metameme="StateEventScript">

@@ -5,55 +5,55 @@
 	
 	<ListOfMeme>
 
-		<Meme id="setWithTargetsInPackage" metameme="Graphyne.Condition.Condition">
+		<Meme id="setWithTargetsInPackage" metameme="graphyne.Condition.Condition">
 			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInPackage_ConSet" metameme="Graphyne.Condition.ConditionSet">
+		<Meme id="setWithTargetsInPackage_ConSet" metameme="graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="NOT"/>
 			<MemberMeme occurrence="1" memberID="setWithTargetsInPackage_ConSet_I" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInPackage_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
+		<Meme id="setWithTargetsInPackage_ConSet_I" metameme="graphyne.Condition.ConditionSetChildren">
 			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel" linktype="subatomic"/>
 		</Meme>		
 		
 		
-		<Meme id="setWithTargetsInAnotherPackage" metameme="Graphyne.Condition.Condition">
+		<Meme id="setWithTargetsInAnotherPackage" metameme="graphyne.Condition.Condition">
 			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInAnotherPackage_ConSet" metameme="Graphyne.Condition.ConditionSet">
+		<Meme id="setWithTargetsInAnotherPackage_ConSet" metameme="graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="OR"/>
 			<MemberMeme occurrence="1" memberID="setWithTargetsInAnotherPackage_ConSet_I" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInAnotherPackage_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
+		<Meme id="setWithTargetsInAnotherPackage_ConSet_I" metameme="graphyne.Condition.ConditionSetChildren">
 			<MemberMeme occurrence="1" memberID="TestPackage1.ConditionsString.endsWith" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="TestPackage2.ConditionsString.endsWith" linktype="subatomic"/>
 		</Meme>		
 
 		
-		<Meme id="setWithTargetsInFreeModule" metameme="Graphyne.Condition.Condition">
+		<Meme id="setWithTargetsInFreeModule" metameme="graphyne.Condition.Condition">
 			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInFreeModule_ConSet" metameme="Graphyne.Condition.ConditionSet">
+		<Meme id="setWithTargetsInFreeModule_ConSet" metameme="graphyne.Condition.ConditionSet">
 			<MemeProperty name="SetOperator" value="OR"/>
 			<MemberMeme occurrence="1" memberID="setWithTargetsInFreeModule_ConSet_I" linktype="subatomic"/>
 		</Meme>
-		<Meme id="setWithTargetsInFreeModule_ConSet_I" metameme="Graphyne.Condition.ConditionSetChildren">
+		<Meme id="setWithTargetsInFreeModule_ConSet_I" metameme="graphyne.Condition.ConditionSetChildren">
 			<MemberMeme occurrence="1" memberID="ConditionsString.endsWith" linktype="subatomic"/>
 			<MemberMeme occurrence="1" memberID="ConditionsString.startsWithVowel" linktype="subatomic"/>
 		</Meme>	
 		
 		<!-- Arguments -->
-		<Meme id="ArgumentCurrency" metameme="Graphyne.Condition.Argument">
+		<Meme id="ArgumentCurrency" metameme="graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="ArgumentCurrency_SArgument" linktype="subatomic"/>
 		</Meme>			
-		<Meme id="ArgumentCurrency_SArgument" metameme="Graphyne.Condition.SimpleArgument">
+		<Meme id="ArgumentCurrency_SArgument" metameme="graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="Currency"/>
 		</Meme>	
-		<Meme id="ArgumentTestWord" metameme="Graphyne.Condition.Argument">
+		<Meme id="ArgumentTestWord" metameme="graphyne.Condition.Argument">
 			<MemberMeme occurrence="1" memberID="ArgumentTestWord_SArgument" linktype="subatomic"/>
 		</Meme>			
-		<Meme id="ArgumentTestWord_SArgument" metameme="Graphyne.Condition.SimpleArgument">
+		<Meme id="ArgumentTestWord_SArgument" metameme="graphyne.Condition.SimpleArgument">
 			<MemeProperty name="ArgumentTag" value="TestWord"/>
 		</Meme>			
 
