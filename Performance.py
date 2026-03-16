@@ -5,20 +5,24 @@
 """
 
 __author__ = 'David Stocker'
-__copyright__ = 'Copyright 2016, David Stocker'   
- 
+__copyright__ = 'Copyright 2016, David Stocker'
+
 __license__ = 'MIT'
 __version__ = '1.0.0'
 __maintainer__ = 'David Stocker'
 __email__ = 'mrdave991@gmail.com'
 __status__ = 'Production'
 
+import sys
+from pathlib import Path
+# Add the repo root to sys.path to import local Graphyne package
+sys.path.insert(0, str(Path(__file__).parent))
+
 import Graphyne
 import multiprocessing
 import os
 import shutil
 import queue
-import sys
 import time
 import math
 import urllib.parse
@@ -340,22 +344,22 @@ def smokeTestSet(restltQueue, lLevel, css, dbConnectionString = None, persistenc
         try:
             if persistenceType is None:
                 #pydevd.settrace()
-                from graphyne.DatabaseDrivers import NonPersistent as persistenceModule1
+                from Graphyne.DatabaseDrivers import NonPersistent as persistenceModule1
                 testReport = Smoketest.smokeTestSet(persistenceModule1, lLevel, css, "No-Persistence", dbConnectionString, persistenceType, True, True, scaleFactor)
             elif ((persistenceType == "sqlite") and (dbConnectionString== "memory")):
                 #pydevd.settrace()
-                from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
+                from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
                 testReport = Smoketest.smokeTestSet(persistenceModule2, lLevel, css, "sqllite", dbConnectionString, persistenceType, True, True, scaleFactor)
             elif persistenceType == "memory":
-                from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule4
+                from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule4
                 testReport = Smoketest.smokeTestSet(persistenceModule4, lLevel, css, "sqllite", dbConnectionString, persistenceType, True, True, scaleFactor)
             else:
                 #pydevd.settrace()
-                from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul3
+                from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul3
                 testReport = Smoketest.smokeTestSet(persistenceModul3, lLevel, css, persistenceType, dbConnectionString, persistenceType, True, True, scaleFactor)
             restltQueue.put(testReport)
         except Exception:
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul32
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul32
             testReport = Smoketest.smokeTestSet(persistenceModul32, lLevel, css, persistenceType, dbConnectionString, persistenceType, True, True, scaleFactor)
             restltQueue.put(testReport) 
     except Exception as e:

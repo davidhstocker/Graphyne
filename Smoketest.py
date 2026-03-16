@@ -6,7 +6,8 @@
 
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent.parent))
+# Add the repo root to sys.path to import local Graphyne package
+sys.path.insert(0, str(Path(__file__).parent))
 
 from Graphyne.DatabaseDrivers.DriverTermplate import linkTypes
 
@@ -33,9 +34,9 @@ import queue
 import sys
 import argparse
 
-from ..Graphyne import Graph
-from ..Graphyne import Fileutils
-from ..Graphyne import Exceptions
+from Graphyne import Graph
+from Graphyne import Fileutils
+from Graphyne import Exceptions
 
 responseQueue = queue.Queue()
 entityList = []
@@ -5021,19 +5022,19 @@ if __name__ == "__main__":
     css = Fileutils.defaultCSS()
     try:
         if persistenceType is None:
-            from graphyne.DatabaseDrivers import NonPersistent as persistenceModule1
+            from Graphyne.DatabaseDrivers import NonPersistent as persistenceModule1
             testReport = smokeTestSet(persistenceModule1, lLevel, css, "No-Persistence", dbConnectionString, persistenceType, resetDatabase, True)
         elif ((persistenceType == "sqlite") and (dbConnectionString== "memory")):
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
             testReport = smokeTestSet(persistenceModule2, lLevel, css, "sqllite", dbConnectionString, persistenceType, resetDatabase, True)
         elif persistenceType == "sqlite":
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule4
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule4
             testReport = smokeTestSet(persistenceModule4, lLevel, css, "sqllite", dbConnectionString, persistenceType, resetDatabase)
         else:
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul3
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul3
             testReport = smokeTestSet(persistenceModul3, lLevel, css, persistenceType, dbConnectionString, persistenceType, resetDatabase)
     except Exception as e:
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul32
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModul32
             testReport = smokeTestSet(persistenceModul32, lLevel, css, persistenceType, dbConnectionString, persistenceType, resetDatabase)
 
     titleText = "Graphyne Smoke Test Suite - Results"

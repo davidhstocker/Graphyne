@@ -5,8 +5,8 @@
 """
 
 __author__ = 'David Stocker'
-__copyright__ = 'Copyright 2016, David Stocker'   
- 
+__copyright__ = 'Copyright 2016, David Stocker'
+
 __license__ = 'MIT'
 __version__ = '1.0.0'
 __maintainer__ = 'David Stocker'
@@ -14,8 +14,12 @@ __email__ = 'mrdave991@gmail.com'
 __status__ = 'Production'
 
 
-from Smoketest import publishResults
 import sys
+from pathlib import Path
+# Add the repo root to sys.path to import local Graphyne package
+sys.path.insert(0, str(Path(__file__).parent))
+
+from Smoketest import publishResults
 import Graphyne.Graph as Graph
 import Graphyne.Fileutils as Fileutils
 
@@ -54,15 +58,15 @@ if __name__ == "__main__":
     ####
     # Database Connections
     ####
-    from graphyne.DatabaseDrivers import NonPersistent as persistenceModuleNone
-    from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule1
+    from Graphyne.DatabaseDrivers import NonPersistent as persistenceModuleNone
+    from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule1
     persistenceConstellations = []
     persistenceConstellations.append([persistenceModuleNone, lLevel, css, "No-Persistence", None, None, False, True])
     persistenceConstellations.append([persistenceModule1, lLevel, css, "sqllite", 'memory', 'sqlite', False, True])
 
     try:
         if (sys.argv[1] is not None) and (sys.argv[2] is not None):
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModuleArg
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModuleArg
             persistenceConstellations.append([persistenceModuleArg, lLevel, css, "%s - Reset" %sys.argv[2], sys.argv[1], sys.argv[2], True, False])   
             persistenceConstellations.append([persistenceModuleArg, lLevel, css, "%s - NoReset" %sys.argv[2], sys.argv[1], sys.argv[2], False, False]) 
     except: 

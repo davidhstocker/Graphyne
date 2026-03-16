@@ -145,9 +145,9 @@ loggingService = None
 
 
 from .DatabaseDrivers import SQLDictionary
-from graphyne import Exceptions
-from graphyne import Condition
-from graphyne import Fileutils
+from . import Exceptions
+from . import Condition
+from . import Fileutils
 #import PluginFacade
 
 

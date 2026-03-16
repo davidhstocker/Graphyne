@@ -5,8 +5,8 @@
 """
 
 __author__ = 'David Stocker'
-__copyright__ = 'Copyright 2016, David Stocker'   
- 
+__copyright__ = 'Copyright 2016, David Stocker'
+
 __license__ = 'MIT'
 __version__ = '1.0.0'
 __maintainer__ = 'David Stocker'
@@ -14,13 +14,16 @@ __email__ = 'mrdave991@gmail.com'
 __status__ = 'Production'
 
 
+import sys
+from pathlib import Path
+# Add the repo root to sys.path to import local Graphyne package
+sys.path.insert(0, str(Path(__file__).parent))
 
 from xml.dom import minidom
 from os.path import expanduser
 from time import ctime
 import os
 import time
-import sys
 import argparse
 
 import Graphyne.Graph as Graph
@@ -720,7 +723,7 @@ if __name__ == "__main__":
 
     try:
         if dbConnectionString == "sqlite":
-            from graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
+            from Graphyne.DatabaseDrivers import RelationalDatabase as persistenceModule2
             main(css, additionalRepoToTest, None, lLevel, alsoValidateRepo, persistenceModule2)
             time.sleep(10.0)
         else:
