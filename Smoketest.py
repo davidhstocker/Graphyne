@@ -3,8 +3,12 @@
 """
    Smoketest.py: Regression testing utility for Graphyne.  Multiprocessing wrapper for Smokest, allowing multiple simultaneous tests against different persistence types.
 """
-from tkinter.test.runtktests import this_dir_path
-from graphyne.DatabaseDrivers.DriverTermplate import linkTypes
+
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+
+from Graphyne.DatabaseDrivers.DriverTermplate import linkTypes
 
 __author__ = 'David Stocker'
 __copyright__ = 'Copyright 2016, David Stocker'   
@@ -28,11 +32,10 @@ import decimal
 import queue
 import sys
 import argparse
-#from os.path import expanduser
 
-import graphyne.Graph as Graph
-import graphyne.Fileutils as Fileutils
-import graphyne.Exceptions as Exceptions
+from ..Graphyne import Graph
+from ..Graphyne import Fileutils
+from ..Graphyne import Exceptions
 
 responseQueue = queue.Queue()
 entityList = []
