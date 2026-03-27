@@ -2591,7 +2591,7 @@ class Entity(object):
 
         # The script entity is special in that is is non-executable and is only ever linked to by an SES meme.
         #    Therefore, we should skip initializing it
-        if self.metaMeme.rfind("graphyne.DNA.Script") != -1:
+        if self.metaMeme.rfind("Graphyne.DNA.Script") != -1:
             return
         
         #SES Handling
@@ -2603,18 +2603,18 @@ class Entity(object):
         #    python scripts, we want to be future-proofe and leave open the possibility of having additional
         #    scripting options in the future.
         #ConditionXXX entities have special handling and are ignored here.  
-        conditionMetaMemes = ['Graphyne.condition.ConditionSet', 'Graphyne.condition.ConditionString', 'Graphyne.condition.ConditionNumeric']
+        conditionMetaMemes = ['Graphyne.Condition.ConditionSet', 'Graphyne.Condition.ConditionString', 'Graphyne.Condition.ConditionNumeric']
         if self.metaMeme in conditionMetaMemes:
-            parentConditionIDList = self.getLinkedEntitiesByMetaMemeType("Graphyne.condition.Condition", linkTypes.SUBATOMIC)
+            parentConditionIDList = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.Condition", linkTypes.SUBATOMIC)
             for parentConditionIDListItem in parentConditionIDList:
                 parentConditionID = parentConditionIDListItem
-            if self.metaMeme == "Graphyne.condition.ConditionSet":
-                childConditions = self.getLinkedEntitiesByMetaMemeType("Graphyne.condition.ConditionSetChildren::Graphyne.condition.Condition", None)
+            if self.metaMeme == "Graphyne.Condition.ConditionSet":
+                childConditions = self.getLinkedEntitiesByMetaMemeType("Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", None)
 
             operator = Condition.getOperatorFromConditionEntity(parentConditionID)
             path = api.getEntityMemeType(parentConditionID)
             newCondition = None
-            if self.metaMeme  == "Graphyne.condition.ConditionSet":
+            if self.metaMeme  == "Graphyne.Condition.ConditionSet":
                 newCondition = Condition.ConditionSet(parentConditionID, path, operator, childConditions)
             else:
                 #determine the paths and argument types    
@@ -2632,27 +2632,28 @@ class Entity(object):
                     raise Exceptions.EntityInitializationError(ex).with_traceback(tb)
                 
                 if currArgumentType == Condition.argumentType.MULTI_ATTRIBUTE:
-                    if self.metaMeme == 'Graphyne.condition.ConditionString':
+                    if self.metaMeme == 'Graphyne.Condition.ConditionString':
                         #conditionContainerUUID, name, operator, subjectArgumentPath, argumentTag1, objectArgumentPath, argumentTag2
                         newCondition = Condition.ConditionStringMultiA(parentConditionID, path, operator, argumentPaths)
-                    elif self.metaMeme == 'Graphyne.condition.ConditionNumeric':
+                    elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
                         newCondition = Condition.ConditionNumericMultiA(parentConditionID, path, operator, argumentPaths)
                 elif currArgumentType == Condition.argumentType.ATTRIBUTE:
                     values = Condition.getTestValuesFromConditionEntity(parentConditionID)
-                    if self.metaMeme == 'Graphyne.condition.ConditionString':
+                    if self.metaMeme == 'Graphyne.Condition.ConditionString':
                         #totdo - crash here
                         newCondition = Condition.ConditionStringAAA(parentConditionID, path, operator, argumentPaths, values)
-                    elif self.metaMeme == 'Graphyne.condition.ConditionNumeric':
+                    elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
                         newCondition = Condition.ConditionNumericAAA(parentConditionID, path, operator, argumentPaths, values)
                 else:
                     values = Condition.getTestValuesFromConditionEntity(parentConditionID)
-                    if self.metaMeme == 'Graphyne.condition.ConditionString':
+                    if self.metaMeme == 'Graphyne.Condition.ConditionString':
                         values = Condition.getTestValuesFromConditionEntity(parentConditionID)
                         newCondition = Condition.ConditionStringSimple(parentConditionID, path, operator, argumentPaths, values)
-                    elif self.metaMeme == 'Graphyne.condition.ConditionNumeric':
-                        memberUUIDs = api.getLinkCounterpartsByMetaMemeType(parentConditionID, "**::graphyne.Numeric.Formula", None)
-                        newCondition = Condition.ConditionNumericSimple(parentConditionID, path, operator, argumentPaths, memberUUIDs)
-            
+                    elif self.metaMeme == 'Graphyne.Condition.ConditionNumeric':
+                        memberUUIDs = api.getLinkCounterpartsByMetaMemeType(parentConditionID, "**::Graphyne.Numeric.Formula", None)
+                        ##newCondition = Condition.ConditionNumericSimple(parentConditionID, path, operator, argumentPaths, memberUUIDs)
+                        newCondition = Condition.ConditionNumericSimple(parentConditionID, path, operator, argumentPaths, values)
+
             api.installPythonExecutor(parentConditionID, newCondition)
             
             uuidAsStr = str(parentConditionID)
@@ -2662,28 +2663,28 @@ class Entity(object):
             #  Event installation of Conditions other script conditions.  Conditions are two tiered, with a 
             #    condition entity as parent for a xxxCondition entity, which in turn has the SES child.  
             #ConditionSet
-            listOfSetConditions = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.condition.ConditionSet", None)
+            listOfSetConditions = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", None)
             for setConditionUUID in listOfSetConditions:
-                childConditions = api.getLinkCounterpartsByMetaMemeType(setConditionUUID, ">>Graphyne.condition.ConditionSetChildren::Graphyne.condition.Condition", None)
+                childConditions = api.getLinkCounterpartsByMetaMemeType(setConditionUUID, ">>Graphyne.Condition.ConditionSetChildren::Graphyne.Condition.Condition", None)
     
             conditionType = None
             try:
-                memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.condition.ConditionSet", None)
+                memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionSet", None)
                 if len(memberUUIDs) < 1:
-                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.condition.ConditionString", None)
+                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionString", None)
                 if len(memberUUIDs) < 1:
-                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.condition.ConditionNumeric", None)
+                    memberUUIDs = self.getLinkedEntitiesByMetaMemeType(">>Graphyne.Condition.ConditionNumeric", None)
                 for conditionToTestUUID in memberUUIDs:
                     #There should be exactly ONE member.  Condition is a switch
                     conditionType = api.getEntityMetaMemeType(conditionToTestUUID)
                 
                 if conditionType is not None:
-                    if conditionType != "Graphyne.condition.ConditionScript":
+                    if conditionType != "Graphyne.Condition.ConditionScript":
                         #Operators are not relevant for script conditions
                         operator = Condition.getOperatorFromConditionEntity(self.uuid)
         
                     newCondition = None
-                    if conditionType == "Graphyne.condition.ConditionSet":
+                    if conditionType == "Graphyne.Condition.ConditionSet":
                         newCondition = Condition.ConditionSet(self.uuid, self.memePath.fullTemplatePath, operator, childConditions)
                     else:
                         #determine the paths and argument types    
@@ -2692,26 +2693,27 @@ class Entity(object):
                         argumentPaths = Condition.getArgumentsFromConditionEntity(self.uuid)
                         
                         if currArgumentType == Condition.argumentType.MULTI_ATTRIBUTE:
-                            if conditionType == 'Graphyne.condition.ConditionString':
+                            if conditionType == 'Graphyne.Condition.ConditionString':
                                 #self.uuid, name, operator, subjectArgumentPath, argumentTag1, objectArgumentPath, argumentTag2
                                 newCondition = Condition.ConditionStringMultiA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths)
-                            elif conditionType == 'Graphyne.condition.ConditionNumeric':
+                            elif conditionType == 'Graphyne.Condition.ConditionNumeric':
                                 newCondition = Condition.ConditionNumericMultiA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths)
                         elif currArgumentType == Condition.argumentType.ATTRIBUTE:
                             values = Condition.getTestValuesFromConditionEntity(self.uuid)
-                            if conditionType == 'Graphyne.condition.ConditionString':
+                            if conditionType == 'Graphyne.Condition.ConditionString':
                                 #totdo - crash here
                                 newCondition = Condition.ConditionStringAAA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
-                            elif conditionType == 'Graphyne.condition.ConditionNumeric':
+                            elif conditionType == 'Graphyne.Condition.ConditionNumeric':
                                 newCondition = Condition.ConditionNumericAAA(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
                         else:
                             values = Condition.getTestValuesFromConditionEntity(self.uuid)
-                            if conditionType == 'Graphyne.condition.ConditionString':
+                            if conditionType == 'Graphyne.Condition.ConditionString':
                                 values = Condition.getTestValuesFromConditionEntity(self.uuid)
                                 newCondition = Condition.ConditionStringSimple(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
-                            elif conditionType == 'Graphyne.condition.ConditionNumeric':
+                            elif conditionType == 'Graphyne.Condition.ConditionNumeric':
                                 memberUUIDs = api.getLinkCounterpartsByMetaMemeType(self.uuid, "**::Numeric.Formula")
-                                newCondition = Condition.ConditionNumericSimple(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, memberUUIDs)
+                                #newCondition = Condition.ConditionNumericSimple(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, memberUUIDs)
+                                newCondition = Condition.ConditionNumericSimple(self.uuid, self.memePath.fullTemplatePath, operator, argumentPaths, values)
                         
                         self.installExecutorObject(newCondition)
                         uuidAsStr = str(self.uuid)
@@ -2721,14 +2723,14 @@ class Entity(object):
                 unusedDebugCatch = "me"
         else:
             #Install SES scripts
-            sesEntities = self.getLinkedEntitiesByMetaMemeType('graphyne.DNA.StateEventScript', None)
+            sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.StateEventScript', None)
             
             #this block is for Script conditions.  They function as normal SES evaluate events, but whereas 
-            #    the callable object (script) is normally installed onto the parent of graphyne.DNA.StateEventScript 
-            #    (which in this case is Graphyne.condition.ConditionScript), it is instead called on the grandparent, 
-            #    which in this case is Graphyne.condition.Condition entity
-            if self.metaMeme == 'Graphyne.condition.Condition':
-                sesEntities = self.getLinkedEntitiesByMetaMemeType('graphyne.Condition.ConditionScript::graphyne.DNA.StateEventScript', None)
+            #    the callable object (script) is normally installed onto the parent of Graphyne.DNA.StateEventScript
+            #    (which in this case is Graphyne.Condition.ConditionScript), it is instead called on the grandparent,
+            #    which in this case is Graphyne.Condition.Condition entity
+            if self.metaMeme == 'Graphyne.Condition.Condition':
+                sesEntities = self.getLinkedEntitiesByMetaMemeType('Graphyne.Condition.ConditionScript::Graphyne.DNA.StateEventScript', None)
                 
             for sesEntityUUID in sesEntities:
                 sesEntity = entityRepository.getEntity(sesEntityUUID)
@@ -2739,7 +2741,7 @@ class Entity(object):
                         propertyID = sesEntity.getPropertyValue('PropertyID')
                     except Exception as e:
                         pass #getPropertyValue() throws an exception if the property is not present.  Ignore this exception
-                    scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('graphyne.DNA.Script', None)
+                    scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.Script', None)
                     for scriptEntityUUID in scriptEntities:
                         scriptEntity = entityRepository.getEntity(scriptEntityUUID)
                         scriptLocation = scriptEntity.getPropertyValue('Script')
@@ -7224,12 +7226,12 @@ def getScriptLocation(entityID, eventType, propID = None):
     try:
         #find the location of the script
         theEntity = entityRepository.getEntity(entityID)
-        sesEntities = theEntity.getLinkedEntitiesByMetaMemeType('graphyne.DNA.StateEventScript', linkTypes.SUBATOMIC)
+        sesEntities = theEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.StateEventScript', linkTypes.SUBATOMIC)
         for sesEntityUUID in sesEntities:
             sesEntity = entityRepository.getEntity(sesEntityUUID)
             state = sesEntity.getPropertyValue('State')
             if state == eventType:
-                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('graphyne.DNA.Script', linkTypes.SUBATOMIC)
+                scriptEntities = sesEntity.getLinkedEntitiesByMetaMemeType('Graphyne.DNA.Script', linkTypes.SUBATOMIC)
                 for scriptEntityUUID in scriptEntities:
                     scriptEntity = entityRepository.getEntity(scriptEntityUUID)
                     scriptLoc = scriptEntity.getPropertyValue('Script')

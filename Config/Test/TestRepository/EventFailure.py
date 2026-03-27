@@ -4,6 +4,11 @@ Created on Nov 11, 2016
 @author: d035331
 '''
 
+import sys
+from pathlib import Path
+# Add repo root to sys.path (3 levels up from this file)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+
 import Graphyne.Scripting
 
 

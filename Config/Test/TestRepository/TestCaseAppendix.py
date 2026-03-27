@@ -3,7 +3,7 @@
 Created by the project angela team
     http://sourceforge.net/projects/projectangela/
     http://www.projectangela.org"""
-    
+
 __license__ = "MIT"
 __version__ = "$Revision: 1.0.0 $"
 __author__ = 'David Stocker'
@@ -11,7 +11,7 @@ __author__ = 'David Stocker'
 
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
-# Module copyright (C) David Stocker 
+# Module copyright (C) David Stocker
 #
 # This module is part of the Angela RML Engine.
 
@@ -30,6 +30,11 @@ __author__ = 'David Stocker'
 #
 # ***** END GPL LICENCE BLOCK *****
 # --------------------------------------------------------------------------
+
+import sys
+from pathlib import Path
+# Add repo root to sys.path (3 levels up from this file)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import Graphyne.Scripting
 

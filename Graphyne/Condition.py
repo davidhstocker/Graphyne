@@ -1,4 +1,4 @@
-
+import copy
 import decimal
 import threading
 import sys
@@ -478,10 +478,12 @@ class ConditionNumericSimple(ConditionNumeric, SimpleArgument):
             development, before the Numeric module and it's instantiation by proxy was implemented.  
             When the shift was made, it was easiest to simply override SimpleArgument.getArgumentValue().
         """
+        entityID = argumentMap['entityID']
+        runtimeVariables = argumentMap['runtimeVariables']
         returnVals = []
         for valueEntry in self.valueList:
             try:
-                returnVal = Graph.api.evaluateEntity(valueEntry, argumentMap)
+                returnVal = Graph.api.evaluateEntity(entityID, runtimeVariables)
                 returnVals.extend(returnVal)
             except Exception as e:
                 memeType = None
@@ -503,14 +505,16 @@ class ConditionNumericSimple(ConditionNumeric, SimpleArgument):
         try:
             #See the ConditionSet.test method for a full explanation of this trickery. 
             try:
-                passedValue = argumentMap['runtimeVariables'][self.argumentTag]
+                runtimeVariables = argumentMap['runtimeVariables']
+                tempRTV = copy.deepcopy(runtimeVariables)
+                passedValue = tempRTV.pop(self.argumentTag)
             except:
                 errorMsgPart1 = 'Condition %s not called with required argument tag %s among parameters %s!  Evaluation Failed!' % (self.meme, self.argumentTag, argumentMap)
                 errorMsg = 'Condition %s has error. %s.  defaulting to False' % (errorMsgPart1, self.meme)
                 Graph.api.writeError(errorMsg) 
                 raise Exceptions.MissingArgumentError(errorMsg)    
-            valueList = self.getArgumentValue(argumentMap)            
-            returnValue = self.innerTest(valueList, passedValue)
+            #valueList = self.getArgumentValue(argumentMap)
+            returnValue = self.innerTest(self.valueList, passedValue)
             
         except Exceptions.MissingArgumentError as e:
             raise e
